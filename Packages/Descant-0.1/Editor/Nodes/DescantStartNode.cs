@@ -1,14 +1,18 @@
 ﻿using Editor.Window;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Editor.Nodes
 {
-    public class DescantStartNode : DescantScopeNode
+    public class DescantStartNode : DescantNode
     {
-        public DescantStartNode(DescantGraphView graphView, Vector2 position) : base(graphView, position)
+        public DescantStartNode(
+            DescantGraphView graphView,
+            Vector2 position)
+            : base(graphView, position)
         {
-            Type = ScopeNodeType.Start;
+            Type = NodeType.Start;
         }
         
         public new void Draw()
@@ -21,6 +25,11 @@ namespace Editor.Nodes
             output.portName = "";
             output.name = "Start";
             outputContainer.Add(output);
+            
+            output.RegisterCallback<MouseUpEvent>(callback =>
+            {
+                graphView.CheckAndSave();
+            });
         }
     }
 }

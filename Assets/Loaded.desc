@@ -1,0 +1,64 @@
+{
+	"Name": "Loaded",
+	"Autosave": true,
+	"ChoiceNodeID": 1,
+	"ResponseNodeID": 1,
+	"EndNodeID": 0,
+	"GroupID": 0,
+	"ChoiceNodes": [
+		{
+			"Name": "ChoiceNode",
+			"ID": 0,
+			"Position": {
+				"x": 350.0,
+				"y": 284.5
+			},
+			"Choices": [
+				"1",
+				"2",
+				"3"
+			]
+		}
+	],
+	"ResponseNodes": [
+		
+	],
+	"StartNode": {
+		"Name": "StartNode",
+		"ID": 0,
+		"Position": {
+			"x": 34.0,
+			"y": 159.5
+		}
+	},
+	"EndNodes": [
+		
+	],
+	"Groups": [
+		{
+			"Name": "NodeGroup",
+			"ID": 0,
+			"Position": {
+				"x": 9.0,
+				"y": 101.0
+			},
+			"Nodes": [
+				"StartNode",
+				"ChoiceNode"
+			],
+			"NodeIDs": [
+				0,
+				0
+			]
+		}
+	],
+	"Connections": [
+		{
+			"From": "StartNode",
+			"FromID": 0,
+			"To": "ChoiceNode",
+			"ToID": 0,
+			"ChoiceIndex": 0
+		}
+	]
+}

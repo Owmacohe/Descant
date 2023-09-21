@@ -1,24 +1,29 @@
 ﻿using Editor.Window;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Editor.Nodes
 {
-    public class DescantEndNode : DescantScopeNode
+    public class DescantEndNode : DescantNode
     {
-        public int ID { get; }
-        
-        public DescantEndNode(DescantGraphView graphView, Vector2 position) : base(graphView, position)
+        public DescantEndNode(
+            DescantGraphView graphView,
+            Vector2 position)
+            : base(graphView, position)
         {
-            Type = ScopeNodeType.End;
-            
-            ID = graphView.EndNodeID;
-            graphView.EndNodeID++;
+            Type = NodeType.End;
         }
         
         public new void Draw()
         {
             base.Draw();
+            
+            if (ID < 0)
+            {
+                ID = graphView.EndNodeID;
+                graphView.EndNodeID++;
+            }
             
             style.width = 250;
             
@@ -26,6 +31,11 @@ namespace Editor.Nodes
             input.portName = "";
             input.name = "End";
             inputContainer.Add(input);
+            
+            input.RegisterCallback<MouseUpEvent>(callback =>
+            {
+                graphView.CheckAndSave();
+            });
         }
     }
 }

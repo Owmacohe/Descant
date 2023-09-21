@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
+using Editor.Data;
 using Editor.Nodes;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -11,19 +10,93 @@ namespace Editor.Window
 {
     public class DescantGraphView : GraphView
     {
+        public DescantEditor Editor;
+        
         public int ChoiceNodeID { get; set; }
         public int ResponseNodeID { get; set; }
         public int EndNodeID { get; set; }
+        public int GroupID { get; set; }
+
+        public List<DescantChoiceNode> ChoiceNodes = new List<DescantChoiceNode>();
+        public List<DescantResponseNode> ResponseNodes = new List<DescantResponseNode>();
+        public DescantStartNode StartNode;
+        public List<DescantEndNode> EndNotes = new List<DescantEndNode>();
+        
+        public List<DescantNodeGroup> Groups = new List<DescantNodeGroup>();
 
         IManipulator startNodeManipulator;
         List<IManipulator> contextMenuManipulators = new List<IManipulator>();
 
-        public DescantGraphView()
+        public DescantGraphView(DescantEditor editor)
         {
+            Editor = editor;
+            
             AddGridBackground();
             AddManipulators();
             
             AddStyleSheet();
+
+            DescantGraphData data = Editor.data;
+
+            ChoiceNodeID = data.ChoiceNodeID;
+            ResponseNodeID = data.ResponseNodeID;
+            EndNodeID = data.EndNodeID;
+            GroupID = data.GroupID;
+
+            foreach (var i in data.ChoiceNodes)
+            {
+                var temp = CreateChoiceNode(i.Position, i.Name, i.ID);
+
+                foreach (var ii in i.Choices)
+                    temp.AddChoice(ii);
+                
+                AddElement(temp);
+            }
+
+            foreach (var j in data.ResponseNodes)
+            {
+                var temp = CreateResponseNode(j.Position, j.Name, j.ID);
+                temp.SetResponse(j.Response);
+                
+                AddElement(temp);
+            }
+
+            if (data.StartNode != null)
+                AddElement(CreateStartNode(
+                    data.StartNode.Position,
+                    data.StartNode.Name,
+                    data.StartNode.ID
+                ));
+            else AddElement(CreateStartNode(new Vector2(50, 70)));
+            
+            this.RemoveManipulator(startNodeManipulator);
+            
+            foreach (var k in data.EndNodes)
+                AddElement(CreateEndNode(k.Position, k.Name, k.ID));
+            
+            foreach (var l in data.Groups)
+            {
+                var temp = CreateGroup(l.Position, l.Name, l.ID);
+
+                for (int li = 0; li < l.Nodes.Count; li++)
+                    temp.AddElement(FindNode(l.Nodes[li], l.NodeIDs[li]));
+                
+                AddElement(temp);
+            }
+            
+            foreach (var m in data.Connections)
+            {
+                var from = FindNode(m.From, m.FromID);
+                var to = FindNode(m.To, m.ToID);
+
+                int fromPortIndex = from.Type.Equals(NodeType.Start) ? 0 : 1;
+                if (from.Type.Equals(NodeType.Choice)) fromPortIndex = m.ChoiceIndex;
+
+                Port fromPort = DescantUtilities.FindAllElements<Port>(from)[fromPortIndex];
+                Port toPort = DescantUtilities.FindFirstElement<Port>(to);
+
+                Add(fromPort.ConnectTo(toPort));
+            }
         }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
@@ -63,10 +136,10 @@ namespace Editor.Window
 
         public void AddContextMenuManipulators()
         {
-            this.AddManipulator(CreateActionNodeContextualMenu("Add Choice Node", ActionNodeType.Choice));
-            this.AddManipulator(CreateActionNodeContextualMenu("Add Response Node", ActionNodeType.Response));
-            this.AddManipulator(CreateScopeNodeContextualMenu("Add Start Node", ScopeNodeType.Start));
-            this.AddManipulator(CreateScopeNodeContextualMenu("Add End Node", ScopeNodeType.End));
+            this.AddManipulator(CreateNodeContextualMenu("Add Choice Node", NodeType.Choice));
+            this.AddManipulator(CreateNodeContextualMenu("Add Response Node", NodeType.Response));
+            this.AddManipulator(CreateNodeContextualMenu("Add Start Node", NodeType.Start));
+            this.AddManipulator(CreateNodeContextualMenu("Add End Node", NodeType.End));
 
             this.AddManipulator(CreateGroupContextualMenu());
         }
@@ -80,33 +153,38 @@ namespace Editor.Window
 
             AddContextMenuManipulators();
         }
-
-        IManipulator CreateActionNodeContextualMenu(string actionTitle, ActionNodeType type)
+        
+        IManipulator CreateNodeContextualMenu(string actionTitle, NodeType type)
         {
             ContextualMenuManipulator context = new ContextualMenuManipulator(
                 menuEvent => menuEvent.menu.AppendAction(actionTitle,
-                actionEvent => AddElement(type.Equals(ActionNodeType.Choice)
-                    ? CreateChoiceNode(actionEvent.eventInfo.localMousePosition)
-                    : CreateResponseNode(actionEvent.eventInfo.localMousePosition))
-                )
+                    actionEvent =>
+                    {
+                        switch (type)
+                        {
+                            case NodeType.Choice:
+                                AddElement(CreateChoiceNode(actionEvent.eventInfo.localMousePosition));
+                                break;
+                            
+                            case NodeType.Response:
+                                AddElement(CreateResponseNode(actionEvent.eventInfo.localMousePosition));
+                                break;
+                            
+                            case NodeType.Start:
+                                AddElement(CreateStartNode(actionEvent.eventInfo.localMousePosition));
+                                break;
+
+                            case NodeType.End:
+                                AddElement(CreateEndNode(actionEvent.eventInfo.localMousePosition));
+                                break;
+
+                        }
+                        
+                        CheckAndSave();
+                    })
             );
             
-            contextMenuManipulators.Add(context);
-
-            return context;
-        }
-        
-        IManipulator CreateScopeNodeContextualMenu(string actionTitle, ScopeNodeType type)
-        {
-            ContextualMenuManipulator context = new ContextualMenuManipulator(
-                menuEvent => menuEvent.menu.AppendAction(actionTitle,
-                actionEvent => AddElement(type.Equals(ScopeNodeType.Start)
-                    ? CreateStartNode(actionEvent.eventInfo.localMousePosition)
-                    : CreateEndNode(actionEvent.eventInfo.localMousePosition))
-                )
-            );
-
-            if (startNodeManipulator == null) startNodeManipulator = context;
+            if (startNodeManipulator == null && type.Equals(NodeType.Start)) startNodeManipulator = context;
             contextMenuManipulators.Add(context);
 
             return context;
@@ -116,8 +194,11 @@ namespace Editor.Window
         {
             ContextualMenuManipulator context = new ContextualMenuManipulator(
                 menuEvent => menuEvent.menu.AppendAction("Add Group",
-                    actionEvent => AddElement(CreateGroup(actionEvent.eventInfo.localMousePosition))
-                )
+                    actionEvent =>
+                    {
+                        AddElement(CreateGroup(actionEvent.eventInfo.localMousePosition));
+                        CheckAndSave();
+                    })
             );
             
             contextMenuManipulators.Add(context);
@@ -125,44 +206,70 @@ namespace Editor.Window
             return context;
         }
 
-        DescantChoiceNode CreateChoiceNode(Vector2 position)
+        DescantChoiceNode CreateChoiceNode(Vector2 nodePosition, string nodeName = "", int nodeID = -1)
         {
-            DescantChoiceNode choiceNode = new DescantChoiceNode(this, position);
+            var choiceNode = new DescantChoiceNode(this, nodePosition);
+
+            choiceNode.Name = nodeName;
+            choiceNode.ID = nodeID;
+
             choiceNode.Draw();
+            
+            ChoiceNodes.Add(choiceNode);
 
             return choiceNode;
         }
         
-        DescantResponseNode CreateResponseNode(Vector2 position)
+        DescantResponseNode CreateResponseNode(Vector2 nodePosition, string nodeName = "", int nodeID = -1)
         {
-            DescantResponseNode responseNode = new DescantResponseNode(this, position);
+            var responseNode = new DescantResponseNode(this, nodePosition);
+            
+            responseNode.Name = nodeName;
+            responseNode.ID = nodeID;
+
             responseNode.Draw();
+            
+            ResponseNodes.Add(responseNode);
 
             return responseNode;
         }
         
-        DescantStartNode CreateStartNode(Vector2 position)
+        DescantStartNode CreateStartNode(Vector2 nodePosition, string nodeName = "", int nodeID = -1)
         {
-            DescantStartNode startNode = new DescantStartNode(this, position);
-            startNode.Draw();
+            StartNode = new DescantStartNode(this, nodePosition);
+            
+            StartNode.Name = nodeName;
+            StartNode.ID = nodeID;
+
+            StartNode.Draw();
             
             this.RemoveManipulator(startNodeManipulator);
             contextMenuManipulators.Remove(startNodeManipulator);
 
-            return startNode;
+            return StartNode;
         }
         
-        DescantEndNode CreateEndNode(Vector2 position)
+        DescantEndNode CreateEndNode(Vector2 nodePosition, string nodeName = "", int nodeID = -1)
         {
-            DescantEndNode endNode = new DescantEndNode(this, position);
+            var endNode = new DescantEndNode(this, nodePosition);
+            
+            endNode.Name = nodeName;
+            endNode.ID = nodeID;
+
             endNode.Draw();
+            
+            EndNotes.Add(endNode);
 
             return endNode;
         }
         
-        DescantNodeGroup CreateGroup(Vector2 position)
+        DescantNodeGroup CreateGroup(Vector2 groupPosition, string groupName = "", int groupID = -1)
         {
-            DescantNodeGroup group = new DescantNodeGroup(position);
+            var group = new DescantNodeGroup(this, groupPosition);
+
+            group.Name = groupName;
+            group.ID = groupID;
+
             group.Draw();
             
             foreach (var i in selection)
@@ -172,6 +279,8 @@ namespace Editor.Window
                     i.GetType() == typeof(DescantEndNode))
                     group.AddElement((GraphElement)i);
 
+            Groups.Add(group);
+            
             return group;
         }
 
@@ -187,18 +296,34 @@ namespace Editor.Window
                 if (i.connected && (onlyThisPort == null || i.Equals(onlyThisPort)))
                     DeleteElements(i.connections);
         }
-        
-        public string FilterText(string text)
+
+        DescantNode FindNode(string nodeName, int nodeID)
         {
-            string special = "/\\`~!@#$%^*()+={}[]|;:'\",.<>?";
+            foreach (var i in ChoiceNodes)
+                if (NodeMatches(i, nodeName, nodeID))
+                    return i;
             
-            text = text.Trim();
+            foreach (var j in ResponseNodes)
+                if (NodeMatches(j, nodeName, nodeID))
+                    return j;
 
-            for (int i = 0; i < text.Length; i++)
-                if (special.Contains(text[i]))
-                    text = text.Remove(i);
+            if (NodeMatches(StartNode, nodeName, nodeID)) return StartNode;
+            
+            foreach (var k in EndNotes)
+                if (NodeMatches(k, nodeName, nodeID))
+                    return k;
 
-            return text;
+            return null;
+        }
+
+        bool NodeMatches(DescantNode node, string nodeName, int nodeID)
+        {
+            return node.Name == nodeName && node.ID == nodeID;
+        }
+
+        public void CheckAndSave()
+        {
+            if (Editor.AutoSave != null && Editor.AutoSave.value) Editor.Save();
         }
     }
 }

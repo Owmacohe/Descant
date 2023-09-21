@@ -160,7 +160,6 @@ DescantChoiceNode #output Label {
 DescantChoiceNode #input {
     width: 10;
     justify-content: center;
-    align-items: center;
 }
 
 DescantChoiceNode #output {
