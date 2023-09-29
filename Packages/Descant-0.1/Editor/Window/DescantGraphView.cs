@@ -35,6 +35,11 @@ namespace Editor.Window
             AddManipulators();
             
             AddStyleSheet();
+            
+            RegisterCallback(new EventCallback<MouseLeaveEvent>(callback =>
+            {
+                CheckAndSave();
+            }));
 
             DescantGraphData data = Editor.data;
 
@@ -95,7 +100,13 @@ namespace Editor.Window
                 Port fromPort = DescantUtilities.FindAllElements<Port>(from)[fromPortIndex];
                 Port toPort = DescantUtilities.FindFirstElement<Port>(to);
 
-                Add(fromPort.ConnectTo(toPort));
+                Edge temp = fromPort.ConnectTo(toPort);
+                Add(temp);
+                
+                temp.RegisterCallback<MouseUpEvent>(callback =>
+                {
+                    CheckAndSave();
+                });
             }
         }
 

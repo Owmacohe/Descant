@@ -22,7 +22,7 @@ namespace Editor.Window
 
         public static void RemoveElement(VisualElement element)
         {
-            element.parent.Remove(element);
+            if (element != null && element.parent != null) element.parent.Remove(element);
         }
 
         public static T FindFirstElement<T>(VisualElement element) where T : VisualElement

@@ -50,7 +50,10 @@ namespace Editor.Nodes
             headerContainer.style.alignItems = Align.Center;
             headerContainer.style.justifyContent = Justify.Center;
             
-            // TODO: moving callback
+            RegisterCallback(new EventCallback<MouseLeaveEvent>(callback =>
+            {
+                graphView.CheckAndSave();
+            }));
         }
 
         void RemoveGroup()

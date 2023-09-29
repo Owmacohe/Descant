@@ -55,8 +55,15 @@ namespace Editor.Nodes
             removeNode.clicked += RemoveNode;
             titleContainer.Insert(1, removeNode);
             
-            // TODO: connection deletion callback
-            // TODO: moving callback
+            RegisterCallback(new EventCallback<MouseLeaveEvent>(callback =>
+            {
+                graphView.CheckAndSave();
+            }));
+        }
+
+        public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
+        {
+            evt.menu.AppendAction("Delete", actionEvent => { RemoveNode(); });
         }
         
         void RemoveNode()
@@ -79,6 +86,8 @@ namespace Editor.Nodes
                 i.UpdateGeometryFromContent();
             
             graphView.CheckAndSave();
+            
+            // TODO: make sure it gets removed from group in save file
         }
     }
 }

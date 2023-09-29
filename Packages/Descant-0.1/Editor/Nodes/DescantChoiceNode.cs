@@ -36,6 +36,11 @@ namespace Editor.Nodes
             input.RegisterCallback<MouseUpEvent>(callback =>
             {
                 graphView.CheckAndSave();
+                
+                input.connections.ElementAt(input.connections.Count() - 1).RegisterCallback<MouseUpEvent>(callback =>
+                {
+                    graphView.CheckAndSave();
+                });
             });
 
             Button addChoice = new Button();
@@ -57,6 +62,11 @@ namespace Editor.Nodes
             output.RegisterCallback<MouseUpEvent>(callback =>
             {
                 graphView.CheckAndSave();
+                
+                output.connections.ElementAt(output.connections.Count() - 1).RegisterCallback<MouseUpEvent>(callback =>
+                {
+                    graphView.CheckAndSave();
+                });
             });
 
             TextField outputField = new TextField();

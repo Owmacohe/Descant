@@ -1,4 +1,5 @@
-﻿using Editor.Window;
+﻿using System.Linq;
+using Editor.Window;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -35,6 +36,11 @@ namespace Editor.Nodes
             input.RegisterCallback<MouseUpEvent>(callback =>
             {
                 graphView.CheckAndSave();
+                
+                input.connections.ElementAt(input.connections.Count() - 1).RegisterCallback<MouseUpEvent>(callback =>
+                {
+                    graphView.CheckAndSave();
+                }); 
             });
         }
     }

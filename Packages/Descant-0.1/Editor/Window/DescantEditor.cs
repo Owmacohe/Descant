@@ -19,6 +19,9 @@ namespace Editor.Window
         
         DescantGraphView graphView;
         Toolbar toolbar;
+
+        string lastLoaded;
+        bool loaded;
         
         [MenuItem("Window/Descant/Descant Editor")]
         public static void Open()
@@ -28,12 +31,19 @@ namespace Editor.Window
 
         void CreateGUI()
         {
-            Load();
+            if (loaded)
+            {
+                AddGraphView();
+                AddToolbar();
             
-            AddGraphView();
-            AddToolbar();
-            
-            AddStyleSheet();
+                AddStyleSheet();   
+            }
+            else
+            {
+                Load(lastLoaded);
+            }
+
+            loaded = false;
         }
 
         void RemoveGUI()
@@ -77,12 +87,10 @@ namespace Editor.Window
 
             AutoSave.RegisterValueChangedCallback(callback =>
             {
-                if (AutoSave.value)
-                {
-                    save.visible = false;
-                    Save();
-                }
+                if (AutoSave.value) save.visible = false;
                 else save.visible = true;
+
+                Save();
             });
         }
 
@@ -254,16 +262,23 @@ namespace Editor.Window
             data.ClearConnectionDuplicates();
             data.ClearConnectionDuplicates();
             data.Save();
-            AssetDatabase.Refresh();
+            //AssetDatabase.Refresh();
         }
 
-        void Load()
+        public void Load(string fullPath)
         {
-            data = JsonUtility.FromJson<DescantGraphData>(File.ReadAllText(Application.dataPath + "/Loaded.desc"));
-            if (data == null) data = new DescantGraphData("DescantDialogue");
+            if (fullPath != null && fullPath.Trim() != "")
+            {
+                lastLoaded = fullPath;
+            
+                data = JsonUtility.FromJson<DescantGraphData>(File.ReadAllText(fullPath));
+                if (data == null) data = new DescantGraphData("DescantDialogue");
 
-            //RemoveGUI();
-            //CreateGUI();
+                loaded = true;
+
+                RemoveGUI();
+                CreateGUI();   
+            }
         }
     }
 }

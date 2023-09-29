@@ -1,4 +1,5 @@
-﻿using UnityEditor.Experimental.GraphView;
+﻿using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Editor.Window;
@@ -35,8 +36,13 @@ namespace Editor.Nodes
             input.RegisterCallback<MouseUpEvent>(callback =>
             {
                 graphView.CheckAndSave();
+                
+                input.connections.ElementAt(input.connections.Count() - 1).RegisterCallback<MouseUpEvent>(callback =>
+                {
+                    graphView.CheckAndSave();
+                });
             });
-            
+
             Port output = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(bool));
             output.portName = "";
             output.name = "Response";
@@ -45,8 +51,13 @@ namespace Editor.Nodes
             output.RegisterCallback<MouseUpEvent>(callback =>
             {
                 graphView.CheckAndSave();
+                
+                output.connections.ElementAt(output.connections.Count() - 1).RegisterCallback<MouseUpEvent>(callback =>
+                {
+                    graphView.CheckAndSave();
+                });
             });
-            
+
             TextField response = new TextField();
             response.multiline = true;
             extensionContainer.Add(response);
