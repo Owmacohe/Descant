@@ -49,16 +49,19 @@ namespace Editor.Nodes
                 
                 graphView.CheckAndSave();
             });
-            
-            Button removeNode = new Button();
-            removeNode.text = "X";
-            removeNode.clicked += RemoveNode;
-            titleContainer.Insert(1, removeNode);
-            
-            RegisterCallback(new EventCallback<MouseLeaveEvent>(callback =>
+
+            if (GetType() != typeof(DescantStartNode))
             {
-                graphView.CheckAndSave();
-            }));
+                Button removeNode = new Button();
+                removeNode.text = "X";
+                removeNode.clicked += RemoveNode;
+                titleContainer.Insert(1, removeNode);
+            
+                RegisterCallback(new EventCallback<MouseLeaveEvent>(callback =>
+                {
+                    graphView.CheckAndSave();
+                }));   
+            }
         }
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
@@ -82,12 +85,10 @@ namespace Editor.Nodes
                 graphView.AddContextMenuManipulators();
             }
             
-            foreach (var i in DescantUtilities.FindAllElements<DescantNodeGroup>(graphView))
+            foreach (var i in graphView.Groups)
                 i.UpdateGeometryFromContent();
             
             graphView.CheckAndSave();
-            
-            // TODO: make sure it gets removed from group in save file
         }
     }
 }

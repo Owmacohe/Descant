@@ -63,7 +63,7 @@ namespace Editor.Nodes
             {
                 graphView.CheckAndSave();
                 
-                output.connections.ElementAt(output.connections.Count() - 1).RegisterCallback<MouseUpEvent>(callback =>
+                output.RegisterCallback<MouseUpEvent>(callback =>
                 {
                     graphView.CheckAndSave();
                 });

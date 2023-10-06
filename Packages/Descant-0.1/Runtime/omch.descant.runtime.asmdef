@@ -1,0 +1,16 @@
+{
+    "name": "omch.descant.runtime",
+    "rootNamespace": "",
+    "references": [
+        "omch.descant.editor"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

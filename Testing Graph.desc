@@ -1,7 +1,8 @@
 {
-	"Name": "Loaded",
+	"Name": "Testing Graph",
+	"Path": "",
 	"Autosave": false,
-	"ChoiceNodeID": 2,
+	"ChoiceNodeID": 1,
 	"ResponseNodeID": 0,
 	"EndNodeID": 0,
 	"GroupID": 1,
@@ -10,8 +11,8 @@
 			"Name": "ChoiceNode",
 			"ID": 0,
 			"Position": {
-				"x": 652.0,
-				"y": 212.0
+				"x": 317.0,
+				"y": 287.5
 			},
 			"Choices": [
 				"1",
@@ -27,8 +28,8 @@
 		"Name": "StartNode",
 		"ID": 0,
 		"Position": {
-			"x": 192.0,
-			"y": 202.0
+			"x": 57.0,
+			"y": 152.0
 		}
 	},
 	"EndNodes": [
@@ -39,8 +40,8 @@
 			"Name": "NodeGroup",
 			"ID": 0,
 			"Position": {
-				"x": 167.0,
-				"y": 143.0
+				"x": 32.0,
+				"y": 93.5
 			},
 			"Nodes": [
 				"StartNode",
@@ -48,8 +49,7 @@
 			],
 			"NodeIDs": [
 				0,
-				0,
-				1
+				0
 			]
 		}
 	],

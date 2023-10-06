@@ -20,7 +20,7 @@ namespace Editor.Window
         public List<DescantChoiceNode> ChoiceNodes = new List<DescantChoiceNode>();
         public List<DescantResponseNode> ResponseNodes = new List<DescantResponseNode>();
         public DescantStartNode StartNode;
-        public List<DescantEndNode> EndNotes = new List<DescantEndNode>();
+        public List<DescantEndNode> EndNodes = new List<DescantEndNode>();
         
         public List<DescantNodeGroup> Groups = new List<DescantNodeGroup>();
 
@@ -245,7 +245,7 @@ namespace Editor.Window
             return responseNode;
         }
         
-        DescantStartNode CreateStartNode(Vector2 nodePosition, string nodeName = "", int nodeID = -1)
+        DescantStartNode CreateStartNode(Vector2 nodePosition, string nodeName = "", int nodeID = 0)
         {
             StartNode = new DescantStartNode(this, nodePosition);
             
@@ -269,7 +269,7 @@ namespace Editor.Window
 
             endNode.Draw();
             
-            EndNotes.Add(endNode);
+            EndNodes.Add(endNode);
 
             return endNode;
         }
@@ -308,33 +308,42 @@ namespace Editor.Window
                     DeleteElements(i.connections);
         }
 
-        DescantNode FindNode(string nodeName, int nodeID)
+        DescantNode FindNode(string nodeType, int nodeID)
         {
             foreach (var i in ChoiceNodes)
-                if (NodeMatches(i, nodeName, nodeID))
+                if (NodeMatches(i, nodeType, nodeID))
                     return i;
             
             foreach (var j in ResponseNodes)
-                if (NodeMatches(j, nodeName, nodeID))
+                if (NodeMatches(j, nodeType, nodeID))
                     return j;
 
-            if (NodeMatches(StartNode, nodeName, nodeID)) return StartNode;
+            if (NodeMatches(StartNode, nodeType, nodeID)) return StartNode;
             
-            foreach (var k in EndNotes)
-                if (NodeMatches(k, nodeName, nodeID))
+            foreach (var k in EndNodes)
+                if (NodeMatches(k, nodeType, nodeID))
                     return k;
 
             return null;
         }
 
-        bool NodeMatches(DescantNode node, string nodeName, int nodeID)
+        bool NodeMatches(DescantNode node, string nodeType, int nodeID)
         {
-            return node.Name == nodeName && node.ID == nodeID;
+            return node.Type.ToString() == nodeType && node.ID == nodeID;
         }
 
         public void CheckAndSave()
         {
-            if (Editor.AutoSave != null && Editor.AutoSave.value) Editor.Save();
+            if (Editor.AutoSave != null)
+            {
+                DescantGraphData data = Editor.GetData();
+                data.CleanUpConnections();
+                data.CleanUpConnections();
+                
+                if (Editor.AutoSave.value) Editor.Save();
+                else if (!Editor.data.Equals(data))
+                    Editor.MarkUnsavedChanges();
+            }
         }
     }
 }

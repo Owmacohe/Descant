@@ -1,4 +1,6 @@
-﻿using Editor.Window;
+﻿using System.IO;
+using Editor.Data;
+using Editor.Window;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -7,12 +9,17 @@ namespace Editor
 {
     public static class DescantFileHandler
     {
-        [OnOpenAsset(1)]
+        static bool IsDescantFile(int instanceID)
+        {
+            string path = DescantUtilities.GetPathFromInstanceID(instanceID);
+            return path.Substring(path.Length - 5) == ".desc";
+        }
+        
+        [OnOpenAsset]
         public static bool OpenFile(int instanceID)
         {
-            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(instanceID, out string guid, out long _);
-            string path = AssetDatabase.GUIDToAssetPath(guid);
-            bool isDescantFile = path.Substring(path.Length - 5) == ".desc";
+            string path = DescantUtilities.GetPathFromInstanceID(instanceID);
+            bool isDescantFile = IsDescantFile(instanceID);
             
             if (isDescantFile)
             {
@@ -21,6 +28,33 @@ namespace Editor
             }
 
             return false;
+        }
+        
+        [MenuItem("Assets/Edit Descant Graph")]
+        static void EditFile() {
+            EditorWindow.GetWindow<DescantEditor>().Load(
+                DescantUtilities.GetPathFromInstanceID(
+                    Selection.activeObject.GetInstanceID()));
+        }
+ 
+        [MenuItem("Assets/Edit Descant Graph", true)]
+        static bool ConfirmEditFile() {
+            return IsDescantFile(Selection.activeObject.GetInstanceID());
+        }
+
+        [MenuItem("Assets/Create/Descant Graph")]
+        static void CreateNewFile()
+        {
+            try
+            {
+                File.ReadAllText(DescantUtilities.GetCurrentDirectory() + "New Descant Graph.desc");
+            }
+            catch
+            {
+                DescantEditor temp = EditorWindow.GetWindow<DescantEditor>();
+                temp.Load(null, true);
+                AssetDatabase.Refresh();
+            }
         }
     }
 }

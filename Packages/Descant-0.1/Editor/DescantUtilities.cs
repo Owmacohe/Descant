@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Editor.Window
+namespace Editor
 {
     public static class DescantUtilities
     {
@@ -86,6 +86,64 @@ namespace Editor.Window
             }
 
             return temp;
+        }
+
+        public static string GetFileNameFromPath(string fullPath)
+        {
+            string temp = "";
+            
+            for (int i = 0; i < fullPath.Length; i++)
+            {
+                if (i > 4)
+                {
+                    char c = fullPath[fullPath.Length - 1 - i];
+                    
+                    if (c == '/') break;
+                    
+                    temp = c + temp;
+                }
+            }
+
+            return temp;
+        }
+
+        public static bool AreListsEqual<T>(List<T> a, List<T> b)
+        {
+            if (a.Count != b.Count) return false;
+            
+            for (int i = 0; i < a.Count; i++)
+                if (a[i].Equals(b[i]))
+                    return false;
+            
+            return true;
+        }
+
+        public static string GetCurrentDirectory(bool withFinalSlash = true)
+        {
+            string pathAfterAssets = AssetDatabase.GetAssetPath(Selection.activeInstanceID);
+            
+            if (pathAfterAssets.Contains("."))
+                pathAfterAssets = pathAfterAssets.Remove(pathAfterAssets.LastIndexOf('/'));
+
+            pathAfterAssets = RemoveAssetsFolderFromPath(pathAfterAssets);
+
+            return Application.dataPath + "/" + pathAfterAssets + (withFinalSlash ? "/" : "");
+        }
+
+        public static string RemoveAssetsFolderFromPath(string path)
+        {
+            string temp = path.Substring(6);
+
+            if (temp[0] == '/')
+                temp = temp.Substring(1);
+
+            return temp;
+        }
+        
+        public static string GetPathFromInstanceID(int instanceID)
+        {
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(instanceID, out string guid, out long _);
+            return AssetDatabase.GUIDToAssetPath(guid);
         }
     }
 }

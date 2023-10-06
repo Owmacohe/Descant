@@ -1,0 +1,101 @@
+{
+	"Name": "Testing Graph",
+	"Path": "/Users/ohellum/Documents/GitHub/Descant/Assets/Graphs/Testing Graph.desc",
+	"Autosave": false,
+	"ChoiceNodeID": 1,
+	"ResponseNodeID": 2,
+	"EndNodeID": 1,
+	"GroupID": 0,
+	"ChoiceNodes": [
+		{
+			"Name": "ChoiceNode",
+			"ID": 0,
+			"Position": {
+				"x": 317.0,
+				"y": 218.5
+			},
+			"Choices": [
+				"1",
+				"2"
+			]
+		}
+	],
+	"ResponseNodes": [
+		{
+			"Name": "ResponseNode",
+			"ID": 0,
+			"Position": {
+				"x": 927.0,
+				"y": 96.5
+			},
+			"Response": "a"
+		},
+		{
+			"Name": "ResponseNode",
+			"ID": 1,
+			"Position": {
+				"x": 927.0,
+				"y": 429.5
+			},
+			"Response": "b"
+		}
+	],
+	"StartNode": {
+		"Name": "StartNode",
+		"ID": 0,
+		"Position": {
+			"x": 424.0,
+			"y": 41.0
+		}
+	},
+	"EndNodes": [
+		{
+			"Name": "EndNode",
+			"ID": 0,
+			"Position": {
+				"x": 1608.0,
+				"y": 318.5
+			}
+		}
+	],
+	"Groups": [
+		
+	],
+	"Connections": [
+		{
+			"From": "Start",
+			"FromID": 0,
+			"To": "Choice",
+			"ToID": 0,
+			"ChoiceIndex": 0
+		},
+		{
+			"From": "Choice",
+			"FromID": 0,
+			"To": "Response",
+			"ToID": 0,
+			"ChoiceIndex": 1
+		},
+		{
+			"From": "Choice",
+			"FromID": 0,
+			"To": "Response",
+			"ToID": 1,
+			"ChoiceIndex": 2
+		},
+		{
+			"From": "Response",
+			"FromID": 0,
+			"To": "End",
+			"ToID": 0,
+			"ChoiceIndex": 0
+		},
+		{
+			"From": "Response",
+			"FromID": 1,
+			"To": "End",
+			"ToID": 0,
+			"ChoiceIndex": 0
+		}
+	]
+}

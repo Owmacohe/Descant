@@ -19,6 +19,7 @@ namespace Editor.Window
         
         DescantGraphView graphView;
         Toolbar toolbar;
+        TextElement unsaved;
 
         string lastLoaded;
         bool loaded;
@@ -36,7 +37,14 @@ namespace Editor.Window
                 AddGraphView();
                 AddToolbar();
             
-                AddStyleSheet();   
+                AddStyleSheet();
+                
+                /*
+                rootVisualElement.RegisterCallback<KeyDownEvent>(callback =>
+                {
+                    // TODO: ctrl + S
+                });
+                */
             }
             else
             {
@@ -65,25 +73,44 @@ namespace Editor.Window
             toolbar = new Toolbar();
             rootVisualElement.Add(toolbar);
 
+            VisualElement toolbarTitle = new VisualElement();
+            toolbarTitle.AddToClassList("toolbar-title");
+            toolbar.Add(toolbarTitle);
+
             TextElement fileName = new TextElement();
-            fileName.AddToClassList("toolbar-title");
+            fileName.AddToClassList("toolbar-filename");
             fileName.text = data.Name;
-            toolbar.Add(fileName);
+            toolbarTitle.Add(fileName);
+
+            unsaved = new TextElement();
+            unsaved.AddToClassList("toolbar-unsaved");
+            unsaved.text = "*";
+            unsaved.visible = false;
+            toolbarTitle.Add(unsaved);
 
             VisualElement saveSection = new VisualElement();
             saveSection.AddToClassList("save-section");
             toolbar.Add(saveSection);
-
-            Button save = new Button();
-            save.clicked += Save;
-            save.text = "Save";
-            saveSection.Add(save);
-
+            
             AutoSave = new Toggle("Autosave:");
             AutoSave.value = data.Autosave;
             saveSection.Add(AutoSave);
 
+            Button save = new Button();
+            save.clicked += delegate { Save(true); };
+            save.text = "Save";
+            saveSection.Add(save);
+
             if (AutoSave.value) save.visible = false;
+            
+            Button close = new Button();
+            close.clicked += delegate
+            {
+                data = null;
+                RemoveGUI();
+            };
+            close.text = "Close";
+            saveSection.Add(close);
 
             AutoSave.RegisterValueChangedCallback(callback =>
             {
@@ -100,38 +127,41 @@ namespace Editor.Window
             rootVisualElement.styleSheets.Add(styleSheet);
         }
 
-        public void Save()
+        public DescantGraphData GetData()
         {
-            data.Autosave = AutoSave.value;
+            DescantGraphData temp = new DescantGraphData(data.Name);
+
+            temp.Path = data.Path;
             
-            data.ChoiceNodeID = graphView.ChoiceNodeID;
-            data.ResponseNodeID = graphView.ResponseNodeID;
-            data.EndNodeID = graphView.EndNodeID;
-            data.GroupID = graphView.GroupID;
+            temp.Autosave = AutoSave.value;
             
-            data.ChoiceNodes = new List<ChoiceNodeData>();
-            data.ResponseNodes = new List<ResponseNodeData>();
-            data.StartNode = null;
-            data.EndNodes = new List<EndNodeData>();
+            temp.ChoiceNodeID = graphView.ChoiceNodeID;
+            temp.ResponseNodeID = graphView.ResponseNodeID;
+            temp.EndNodeID = graphView.EndNodeID;
+            temp.GroupID = graphView.GroupID;
             
-            data.Connections = new List<ConnectionData>();
+            temp.ChoiceNodes = new List<DescantChoiceNodeData>();
+            temp.ResponseNodes = new List<DescantResponseNodeData>();
+            temp.StartNode = null;
+            temp.EndNodes = new List<DescantEndNodeData>();
             
-            data.Groups = new List<GroupData>();
+            temp.Connections = new List<DescantConnectionData>();
+            
+            temp.Groups = new List<DescantGroupData>();
 
             foreach (var i in graphView.ChoiceNodes)
             {
                 var choices = new List<string>();
                 var ports = DescantUtilities.FindAllElements<Port>(i);
-                string nodeName = DescantUtilities.FindFirstElement<TextField>(i).value;
                 
                 foreach (var ii in ports[0].connections)
                 {
                     DescantNode outputNode = (DescantNode)ii.output.node;
                     
-                    data.Connections.Add(new ConnectionData(
-                        DescantUtilities.FindFirstElement<TextField>(outputNode).value,
+                    temp.Connections.Add(new DescantConnectionData(
+                        outputNode.Type.ToString(),
                         outputNode.ID,
-                        nodeName,
+                        i.Type.ToString(),
                         i.ID
                     ));
                 }
@@ -146,10 +176,10 @@ namespace Editor.Window
                         {
                             DescantNode inputNode = (DescantNode)ports[ij].connections.ElementAt(0).input.node;
                     
-                            data.Connections.Add(new ConnectionData(
-                                nodeName,
+                            temp.Connections.Add(new DescantConnectionData(
+                                i.Type.ToString(),
                                 i.ID,
-                                DescantUtilities.FindFirstElement<TextField>(inputNode).value,
+                                inputNode.Type.ToString(),
                                 inputNode.ID,
                                 ij
                             ));
@@ -157,23 +187,27 @@ namespace Editor.Window
                     }
                 }
 
-                data.ChoiceNodes.Add(new ChoiceNodeData(nodeName, i.ID, i.GetPosition().position, choices));
+                temp.ChoiceNodes.Add(new DescantChoiceNodeData(
+                    DescantUtilities.FindFirstElement<TextField>(i).value,
+                    i.ID,
+                    i.GetPosition().position,
+                    choices
+                ));
             }
 
             foreach (var j in graphView.ResponseNodes)
             {
                 List<TextField> fields = DescantUtilities.FindAllElements<TextField>(j);
                 var ports = DescantUtilities.FindAllElements<Port>(j);
-                string nodeName = fields[0].value;
 
                 foreach (var ji in ports[0].connections)
                 {
                     DescantNode outputNode = (DescantNode)ji.output.node;
                     
-                    data.Connections.Add(new ConnectionData(
-                        DescantUtilities.FindFirstElement<TextField>(outputNode).value,
+                    temp.Connections.Add(new DescantConnectionData(
+                        outputNode.Type.ToString(),
                         outputNode.ID,
-                        nodeName,
+                        j.Type.ToString(),
                         j.ID
                     ));
                 }
@@ -182,16 +216,16 @@ namespace Editor.Window
                 {
                     DescantNode inputNode = (DescantNode)ports[1].connections.ElementAt(0).input.node;
                 
-                    data.Connections.Add(new ConnectionData(
-                        nodeName,
+                    temp.Connections.Add(new DescantConnectionData(
+                        inputNode.Type.ToString(),
                         inputNode.ID,
-                        DescantUtilities.FindFirstElement<TextField>(inputNode).value,
+                        inputNode.Type.ToString(),
                         inputNode.ID
                     ));
                 }
                 
-                data.ResponseNodes.Add(new ResponseNodeData(
-                    nodeName,
+                temp.ResponseNodes.Add(new DescantResponseNodeData(
+                    fields[0].value,
                     j.ID,
                     j.GetPosition().position,
                     fields[1].value
@@ -201,41 +235,46 @@ namespace Editor.Window
             if (graphView.StartNode != null)
             {
                 var startPort = DescantUtilities.FindFirstElement<Port>(graphView.StartNode);
-                string startNodeName = DescantUtilities.FindFirstElement<TextField>(graphView.StartNode).value;
                 
                 if (startPort.connections.Any())
                 {
                     DescantNode inputNode = (DescantNode)startPort.connections.ElementAt(0).input.node;
                 
-                    data.Connections.Add(new ConnectionData(
-                        startNodeName,
+                    temp.Connections.Add(new DescantConnectionData(
+                        graphView.StartNode.Type.ToString(),
                         graphView.StartNode.ID,
-                        DescantUtilities.FindFirstElement<TextField>(inputNode).value,
+                        inputNode.Type.ToString(),
                         inputNode.ID
                     ));
                 }
                 
-                data.StartNode = new StartNodeData(startNodeName, graphView.StartNode.GetPosition().position);
+                temp.StartNode = new DescantStartNodeData(
+                    DescantUtilities.FindFirstElement<TextField>(graphView.StartNode).value,
+                    graphView.StartNode.GetPosition().position
+                );
             }
 
-            foreach (var k in graphView.EndNotes)
+            foreach (var k in graphView.EndNodes)
             {
                 var ports = DescantUtilities.FindAllElements<Port>(k);
-                string nodeName = DescantUtilities.FindFirstElement<TextField>(k).value;
                 
                 foreach (var ji in ports[0].connections)
                 {
                     DescantNode outputNode = (DescantNode)ji.output.node;
                     
-                    data.Connections.Add(new ConnectionData(
-                        DescantUtilities.FindFirstElement<TextField>(outputNode).value,
+                    temp.Connections.Add(new DescantConnectionData(
+                        outputNode.Type.ToString(),
                         outputNode.ID,
-                        nodeName,
+                        k.Type.ToString(),
                         k.ID
                     ));
                 }
                 
-                data.EndNodes.Add(new EndNodeData(nodeName, k.ID, k.GetPosition().position));
+                temp.EndNodes.Add(new DescantEndNodeData(
+                    DescantUtilities.FindFirstElement<TextField>(k).value,
+                    k.ID,
+                    k.GetPosition().position
+                ));
             }
 
             foreach (var l in graphView.Groups)
@@ -246,11 +285,17 @@ namespace Editor.Window
 
                 foreach (var li in contained)
                 {
-                    elements.Add(DescantUtilities.FindFirstElement<TextField>(li).value);
-                    elementIDs.Add(((DescantNode) li).ID);
+                    if (graphView.ChoiceNodes.Contains(li) ||
+                        graphView.ResponseNodes.Contains(li) ||
+                        graphView.StartNode.Equals(li) ||
+                        graphView.EndNodes.Contains(li))
+                    {
+                        elements.Add(DescantUtilities.FindFirstElement<TextField>(li).value);
+                        elementIDs.Add(((DescantNode) li).ID);   
+                    }
                 }
 
-                data.Groups.Add(new GroupData(
+                temp.Groups.Add(new DescantGroupData(
                     DescantUtilities.FindFirstElement<TextField>(l).value,
                     l.ID,
                     l.GetPosition().position,
@@ -258,27 +303,62 @@ namespace Editor.Window
                     elementIDs
                 ));
             }
+            
+            temp.CleanUpConnections();
+            temp.CleanUpConnections();
 
-            data.ClearConnectionDuplicates();
-            data.ClearConnectionDuplicates();
-            data.Save();
-            //AssetDatabase.Refresh();
+            return temp;
         }
 
-        public void Load(string fullPath)
+        public void Save(bool refresh = false)
         {
-            if (fullPath != null && fullPath.Trim() != "")
+            DescantUtilities.FindFirstElement<TextElement>(toolbar).text = data.Name;
+            unsaved.visible = false;
+            
+            data = GetData();
+            
+            data.Save(false);
+            if (refresh) AssetDatabase.Refresh();
+        }
+
+        public void Load(string fullPath, bool newFile = false)
+        {
+            if (newFile || (fullPath != null && fullPath.Trim() != ""))
             {
                 lastLoaded = fullPath;
-            
-                data = JsonUtility.FromJson<DescantGraphData>(File.ReadAllText(fullPath));
-                if (data == null) data = new DescantGraphData("DescantDialogue");
+
+                try
+                {
+                    data = DescantGraphData.Load(fullPath);
+                }
+                catch
+                {
+                    data = null;
+                }
+
+                if (data == null)
+                {
+                    data = new DescantGraphData("New Descant Graph");
+                }
+                else
+                {
+                    data.Name = DescantUtilities.GetFileNameFromPath(fullPath);
+                    data.Path = Application.dataPath + "/" + DescantUtilities.RemoveAssetsFolderFromPath(fullPath);
+                }
+                
+                data.Save(newFile);
 
                 loaded = true;
 
+                AutoSave = null;
                 RemoveGUI();
-                CreateGUI();   
+                CreateGUI();
             }
+        }
+
+        public void MarkUnsavedChanges()
+        {
+            unsaved.visible = true;
         }
     }
 }
