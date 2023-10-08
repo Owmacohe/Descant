@@ -1,16 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Editor.Window;
 using UnityEngine;
 
 namespace Editor.Data
 {
+    /// <summary>
+    /// Serializable class to hold the data for saving and loading Descant graphs
+    /// </summary>
     [Serializable]
     public class DescantGraphData
     {
         public string Name;
+        
+        /// <summary>
+        /// The local path to the file after the Assets folder
+        /// </summary>
         public string Path;
+        
+        /// <summary>
+        /// Whether to autosave this graph when in the Editor
+        /// </summary>
         public bool Autosave;
         
         public int ChoiceNodeID;
@@ -77,19 +87,36 @@ namespace Editor.Data
                    (temp.Length > 1 ? temp : "");
         }
 
+        /// <summary>
+        /// Saves all the data from this graph to its path
+        /// </summary>
+        /// <param name="newFile">Whether this is the first time this graph has been saved</param>
         public void Save(bool newFile)
         {
-            if (newFile) Path = DescantUtilities.GetCurrentDirectory() + Name + ".desc";
+            // Setting the local path if this is the first time
+            if (newFile) Path = DescantUtilities.GetCurrentLocalDirectory() + Name + ".desc";
             
-            File.WriteAllText(Path, DescantUtilities.FormatJSON(JsonUtility.ToJson(this)));
+            // Saving to the full path
+            File.WriteAllText(
+                Application.dataPath + "/" + Path,
+                DescantUtilities.FormatJSON(JsonUtility.ToJson(this)));
         }
 
+        /// <summary>
+        /// Loads and returns a new graph from a full disc path
+        /// </summary>
+        /// <param name="fullPath">The full disc path to the file</param>
+        /// <returns>A loaded Descant graph</returns>
         public static DescantGraphData Load(string fullPath)
         {
             return JsonUtility.FromJson<DescantGraphData>(File.ReadAllText(fullPath));
         }
 
-        public void CleanUpConnections()
+        /// <summary>
+        /// Checks through all the graph's connections, making sure none of them are redundant or connect to themselves
+        /// </summary>
+        /// <param name="checksToPerform">The number of checks that should be performed before we're satisfied that all connections are good</param>
+        public void CleanUpConnections(int checksToPerform = 2)
         {
             for (int i = 0; i < Connections.Count; i++)
                 for (int j = i + 1; j < Connections.Count; j++)
@@ -97,6 +124,9 @@ namespace Editor.Data
                         Connections[i].DirectionsEqual(Connections[j]) ||
                         Connections[j].ToItself())
                         Connections.RemoveAt(j);
+            
+            // Multiple checks are usually performed just to make sure it's all nicely cleaned up
+            if (checksToPerform > 1) CleanUpConnections(--checksToPerform);
         }
     }
 }

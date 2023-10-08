@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Editor.Data;
 using Editor.Nodes;
@@ -97,14 +96,14 @@ namespace Editor.Window
             saveSection.Add(AutoSave);
 
             Button save = new Button();
-            save.clicked += delegate { Save(true); };
+            save.clicked += () => Save(true);
             save.text = "Save";
             saveSection.Add(save);
 
             if (AutoSave.value) save.visible = false;
             
             Button close = new Button();
-            close.clicked += delegate
+            close.clicked += () =>
             {
                 data = null;
                 RemoveGUI();
@@ -189,6 +188,7 @@ namespace Editor.Window
 
                 temp.ChoiceNodes.Add(new DescantChoiceNodeData(
                     DescantUtilities.FindFirstElement<TextField>(i).value,
+                    i.Type.ToString(),
                     i.ID,
                     i.GetPosition().position,
                     choices
@@ -226,6 +226,7 @@ namespace Editor.Window
                 
                 temp.ResponseNodes.Add(new DescantResponseNodeData(
                     fields[0].value,
+                    j.Type.ToString(),
                     j.ID,
                     j.GetPosition().position,
                     fields[1].value
@@ -250,6 +251,7 @@ namespace Editor.Window
                 
                 temp.StartNode = new DescantStartNodeData(
                     DescantUtilities.FindFirstElement<TextField>(graphView.StartNode).value,
+                    graphView.StartNode.Type.ToString(),
                     graphView.StartNode.GetPosition().position
                 );
             }
@@ -272,6 +274,7 @@ namespace Editor.Window
                 
                 temp.EndNodes.Add(new DescantEndNodeData(
                     DescantUtilities.FindFirstElement<TextField>(k).value,
+                    k.Type.ToString(),
                     k.ID,
                     k.GetPosition().position
                 ));
@@ -290,8 +293,8 @@ namespace Editor.Window
                         graphView.StartNode.Equals(li) ||
                         graphView.EndNodes.Contains(li))
                     {
-                        elements.Add(DescantUtilities.FindFirstElement<TextField>(li).value);
-                        elementIDs.Add(((DescantNode) li).ID);   
+                        elements.Add(((DescantNode)li).Type.ToString());
+                        elementIDs.Add(((DescantNode)li).ID);   
                     }
                 }
 
@@ -304,7 +307,6 @@ namespace Editor.Window
                 ));
             }
             
-            temp.CleanUpConnections();
             temp.CleanUpConnections();
 
             return temp;
@@ -321,32 +323,16 @@ namespace Editor.Window
             if (refresh) AssetDatabase.Refresh();
         }
 
-        public void Load(string fullPath, bool newFile = false)
+        public void Load(string fullPath)
         {
-            if (newFile || (fullPath != null && fullPath.Trim() != ""))
+            if (fullPath != null && fullPath.Trim() != "")
             {
                 lastLoaded = fullPath;
 
-                try
-                {
-                    data = DescantGraphData.Load(fullPath);
-                }
-                catch
-                {
-                    data = null;
-                }
-
-                if (data == null)
-                {
-                    data = new DescantGraphData("New Descant Graph");
-                }
-                else
-                {
-                    data.Name = DescantUtilities.GetFileNameFromPath(fullPath);
-                    data.Path = Application.dataPath + "/" + DescantUtilities.RemoveAssetsFolderFromPath(fullPath);
-                }
-                
-                data.Save(newFile);
+                data = DescantGraphData.Load(fullPath);
+                data.Name = DescantUtilities.GetDescantFileNameFromPath(fullPath);
+                data.Path = DescantUtilities.RemoveBeforeLocalPath(fullPath);
+                data.Save(false);
 
                 loaded = true;
 
@@ -354,6 +340,18 @@ namespace Editor.Window
                 RemoveGUI();
                 CreateGUI();
             }
+        }
+
+        public void NewFile()
+        {
+            data = new DescantGraphData("New Descant Graph");
+            data.Save(true);
+
+            loaded = true;
+            
+            AutoSave = null;
+            RemoveGUI();
+            CreateGUI();
         }
 
         public void MarkUnsavedChanges()

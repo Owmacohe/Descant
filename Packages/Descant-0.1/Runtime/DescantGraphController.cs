@@ -7,73 +7,96 @@ using UnityEngine;
 
 namespace Runtime
 {
+    class RuntimeNode
+    {
+        public DescantNodeData Data;
+
+        public RuntimeNode Previous;
+        public List<RuntimeNode> Next;
+
+        public RuntimeNode(DescantNodeData data)
+        {
+            Data = data;
+            Next = new List<RuntimeNode>();
+        }
+    }
+    
     public class DescantGraphController : MonoBehaviour
     {
         [SerializeField] DefaultAsset descantGraph;
 
-        DescantGraphData data;
-        DescantNodeData current;
-
+        List<RuntimeNode> nodes = new List<RuntimeNode>();
+        RuntimeNode current;
+        
         void Start()
         {
-            data = DescantGraphData.Load(
-                DescantUtilities.GetPathFromInstanceID(
+            GenerateRuntimeNodes();
+        }
+
+        void GenerateRuntimeNodes()
+        {
+            DescantGraphData data = DescantGraphData.Load(
+                DescantUtilities.GetFullPathFromInstanceID(
                     descantGraph.GetInstanceID()));
-
-            current = data.StartNode;
-            Debug.Log(current);
             
-            InvokeRepeating(nameof(Next), 1, 1);
-        }
-
-        string IsolateType(string fullTypeName)
-        {
-            fullTypeName = fullTypeName.Substring(19);
-            fullTypeName = fullTypeName.Remove(fullTypeName.Length - 8);
+            AddToRuntimeNodes(data.ChoiceNodes);
+            AddToRuntimeNodes(data.ResponseNodes);
+            current = AddToRuntimeNodes(new List<DescantStartNodeData>() { data.StartNode });
+            AddToRuntimeNodes(data.EndNodes);
             
-            return fullTypeName;
-        }
-
-        DescantNodeData FindNext(string type, int id)
-        {
-            switch (type)
+            foreach (var i in data.Connections)
             {
-                case "Choice":
-                    foreach (var i in data.ChoiceNodes)
-                        if (i.ID == id)
-                            return i;
-                    break;
-                case "Response":
-                    foreach (var i in data.ResponseNodes)
-                        if (i.ID == id)
-                            return i;
-                    break;
-                case "End":
-                    foreach (var i in data.EndNodes)
-                        if (i.ID == id)
-                            return i;
-                    break;
+                RuntimeNode a = FindRuntimeNode(i.From, i.FromID);
+                RuntimeNode b = FindRuntimeNode(i.To, i.ToID);
+                
+                a.Next.Add(b);
+                b.Previous = a;
             }
+        }
+
+        RuntimeNode AddToRuntimeNodes<T>(List<T> lst) where T : DescantNodeData
+        {
+            RuntimeNode temp = null;
+            
+            foreach (var i in lst)
+            {
+                temp = new RuntimeNode(i);
+                nodes.Add(temp);
+            }
+
+            return temp;
+        }
+
+        RuntimeNode FindRuntimeNode(string type, int id)
+        {
+            foreach (var i in nodes)
+                if (i.Data.Type == type && i.Data.ID == id)
+                    return i;
 
             return null;
         }
 
-        public void Next()
+        public List<string> Next(int choiceIndex = 0)
         {
-            string isolatedType = IsolateType(current.GetType().ToString());
-
-            if (isolatedType == "End") return;
+            current = current.Next[choiceIndex];
             
-            foreach (var i in data.Connections)
-            {
-                if (i.From == isolatedType && i.FromID == current.ID)
-                {
-                    current = FindNext(i.To, i.ToID);
-                    break;
-                }
-            }
+            List<string> temp = new List<string>();
 
-            Debug.Log(current);
+            switch (current.Data.Type)
+            {
+                case "Choice":
+                    foreach (var i in ((DescantChoiceNodeData)current.Data).Choices)
+                        temp.Add(i);
+                    break;
+                
+                case "Response":
+                    temp.Add(((DescantResponseNodeData)current.Data).Response);
+                    break;
+                
+                case "End": return null;
+            }
+            
+            return temp.Count == 0 ? null : temp;
         }
     }
 }

@@ -61,7 +61,7 @@ namespace Editor.Window
             foreach (var j in data.ResponseNodes)
             {
                 var temp = CreateResponseNode(j.Position, j.Name, j.ID);
-                temp.SetResponse(j.Response);
+                DescantUtilities.FindAllElements<TextField>(temp)[1].value = j.Response;
                 
                 AddElement(temp);
             }
@@ -94,8 +94,8 @@ namespace Editor.Window
                 var from = FindNode(m.From, m.FromID);
                 var to = FindNode(m.To, m.ToID);
 
-                int fromPortIndex = from.Type.Equals(NodeType.Start) ? 0 : 1;
-                if (from.Type.Equals(NodeType.Choice)) fromPortIndex = m.ChoiceIndex;
+                int fromPortIndex = from.Type.Equals(DescantNodeType.Start) ? 0 : 1;
+                if (from.Type.Equals(DescantNodeType.Choice)) fromPortIndex = m.ChoiceIndex;
 
                 Port fromPort = DescantUtilities.FindAllElements<Port>(from)[fromPortIndex];
                 Port toPort = DescantUtilities.FindFirstElement<Port>(to);
@@ -147,10 +147,10 @@ namespace Editor.Window
 
         public void AddContextMenuManipulators()
         {
-            this.AddManipulator(CreateNodeContextualMenu("Add Choice Node", NodeType.Choice));
-            this.AddManipulator(CreateNodeContextualMenu("Add Response Node", NodeType.Response));
-            this.AddManipulator(CreateNodeContextualMenu("Add Start Node", NodeType.Start));
-            this.AddManipulator(CreateNodeContextualMenu("Add End Node", NodeType.End));
+            this.AddManipulator(CreateNodeContextualMenu("Add Choice Node", DescantNodeType.Choice));
+            this.AddManipulator(CreateNodeContextualMenu("Add Response Node", DescantNodeType.Response));
+            this.AddManipulator(CreateNodeContextualMenu("Add Start Node", DescantNodeType.Start));
+            this.AddManipulator(CreateNodeContextualMenu("Add End Node", DescantNodeType.End));
 
             this.AddManipulator(CreateGroupContextualMenu());
         }
@@ -165,7 +165,7 @@ namespace Editor.Window
             AddContextMenuManipulators();
         }
         
-        IManipulator CreateNodeContextualMenu(string actionTitle, NodeType type)
+        IManipulator CreateNodeContextualMenu(string actionTitle, DescantNodeType type)
         {
             ContextualMenuManipulator context = new ContextualMenuManipulator(
                 menuEvent => menuEvent.menu.AppendAction(actionTitle,
@@ -173,19 +173,19 @@ namespace Editor.Window
                     {
                         switch (type)
                         {
-                            case NodeType.Choice:
+                            case DescantNodeType.Choice:
                                 AddElement(CreateChoiceNode(actionEvent.eventInfo.localMousePosition));
                                 break;
                             
-                            case NodeType.Response:
+                            case DescantNodeType.Response:
                                 AddElement(CreateResponseNode(actionEvent.eventInfo.localMousePosition));
                                 break;
                             
-                            case NodeType.Start:
+                            case DescantNodeType.Start:
                                 AddElement(CreateStartNode(actionEvent.eventInfo.localMousePosition));
                                 break;
 
-                            case NodeType.End:
+                            case DescantNodeType.End:
                                 AddElement(CreateEndNode(actionEvent.eventInfo.localMousePosition));
                                 break;
 
@@ -195,7 +195,7 @@ namespace Editor.Window
                     })
             );
             
-            if (startNodeManipulator == null && type.Equals(NodeType.Start)) startNodeManipulator = context;
+            if (startNodeManipulator == null && type.Equals(DescantNodeType.Start)) startNodeManipulator = context;
             contextMenuManipulators.Add(context);
 
             return context;
@@ -337,7 +337,6 @@ namespace Editor.Window
             if (Editor.AutoSave != null)
             {
                 DescantGraphData data = Editor.GetData();
-                data.CleanUpConnections();
                 data.CleanUpConnections();
                 
                 if (Editor.AutoSave.value) Editor.Save();

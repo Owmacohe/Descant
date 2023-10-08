@@ -6,6 +6,9 @@ using UnityEngine.UIElements;
 
 namespace Editor.Nodes
 {
+    /// <summary>
+    /// DescantNode used to indicate the end of a DescantGraph
+    /// </summary>
     public class DescantEndNode : DescantNode
     {
         public DescantEndNode(
@@ -13,33 +16,42 @@ namespace Editor.Nodes
             Vector2 position)
             : base(graphView, position)
         {
-            Type = NodeType.End;
+            Type = DescantNodeType.End;
         }
         
+        /// <summary>
+        /// Initializes this node's VisualElements
+        /// </summary>
         public new void Draw()
         {
-            base.Draw();
+            base.Draw(); // Making sure that the parent has been drawn
             
+            // If this node is just being created, we set its ID
             if (ID < 0)
             {
-                ID = graphView.EndNodeID;
-                graphView.EndNodeID++;
+                ID = GraphView.EndNodeID;
+                GraphView.EndNodeID++;
             }
             
             style.width = 250;
             
+            // Initializing the input port
             Port input = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, typeof(bool));
             input.portName = "";
             input.name = "End";
             inputContainer.Add(input);
             
+            // Adding a callback for when the port is released
+            // (presumably after a new connection has been made)
             input.RegisterCallback<MouseUpEvent>(callback =>
             {
-                graphView.CheckAndSave();
+                GraphView.CheckAndSave(); // Check for autosave
                 
-                input.connections.ElementAt(input.connections.Count() - 1).RegisterCallback<MouseUpEvent>(callback =>
+                // Adding a callback to the new connection itself, to trigger when it is deleted
+                input.connections.ElementAt(input.connections.Count() - 1)
+                    .RegisterCallback<MouseUpEvent>(callback =>
                 {
-                    graphView.CheckAndSave();
+                    GraphView.CheckAndSave(); // Check for autosave
                 }); 
             });
         }

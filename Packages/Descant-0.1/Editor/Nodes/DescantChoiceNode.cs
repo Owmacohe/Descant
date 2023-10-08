@@ -6,6 +6,9 @@ using UnityEngine.UIElements;
 
 namespace Editor.Nodes
 {
+    /// <summary>
+    /// DescantNode used to indicate player choice/statement, with a list of possible choices to make
+    /// </summary>
     public class DescantChoiceNode : DescantNode
     {
         public DescantChoiceNode(
@@ -13,88 +16,117 @@ namespace Editor.Nodes
             Vector2 position)
             : base(graphView, position)
         {
-            Type = NodeType.Choice;
+            Type = DescantNodeType.Choice;
         }
 
+        /// <summary>
+        /// Initializes this node's VisualElements
+        /// </summary>
         public new void Draw()
         {
-            base.Draw();
+            base.Draw(); // Making sure that the parent has been drawn
             
+            // If this node is just being created, we set its ID
             if (ID < 0)
             {
-                ID = graphView.ChoiceNodeID;
-                graphView.ChoiceNodeID++;
+                ID = GraphView.ChoiceNodeID;
+                GraphView.ChoiceNodeID++;
             }
 
             style.width = 500;
             
+            // Initializing the input port
             Port input = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, typeof(bool));
             input.portName = "";
             input.name = "Choice";
             inputContainer.Add(input);
             
+            // Adding a callback for when the port is released
+            // (presumably after a new connection has been made)
             input.RegisterCallback<MouseUpEvent>(callback =>
             {
-                graphView.CheckAndSave();
+                GraphView.CheckAndSave(); // Check for autosave
                 
-                input.connections.ElementAt(input.connections.Count() - 1).RegisterCallback<MouseUpEvent>(callback =>
+                // Adding a callback to the new connection itself, to trigger when it is deleted
+                input.connections.ElementAt(input.connections.Count() - 1)
+                    .RegisterCallback<MouseUpEvent>(callback =>
                 {
-                    graphView.CheckAndSave();
+                    GraphView.CheckAndSave(); // Check for autosave
                 });
             });
 
+            // Initializing the button to add new possible choices
             Button addChoice = new Button();
             addChoice.text = "Add Choice";
-            extensionContainer.Add(addChoice);
-
             addChoice.clicked += () => AddChoice();
+            extensionContainer.Add(addChoice);
             
+            // Refreshing the extensionContainer after new elements have been added to it
             RefreshExpandedState();
         }
 
+        /// <summary>
+        /// Adds a new possible choice to the list in the node
+        /// </summary>
+        /// <param name="choice"></param>
         public void AddChoice(string choice = "")
         {
+            // Initializing the new choice's output port
             Port output = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(bool));
             output.portName = "";
             output.name = "Choice";
             outputContainer.Add(output);
             
+            // Adding a callback for when the port is released
+            // (presumably after a new connection has been made)
             output.RegisterCallback<MouseUpEvent>(callback =>
             {
-                graphView.CheckAndSave();
+                GraphView.CheckAndSave(); // Check for autosave
                 
-                output.RegisterCallback<MouseUpEvent>(callback =>
+                // Adding a callback to the new connection itself, to trigger when it is deleted
+                output.connections.ElementAt(output.connections.Count() - 1)
+                    .RegisterCallback<MouseUpEvent>(callback =>
                 {
-                    graphView.CheckAndSave();
+                    GraphView.CheckAndSave(); // Check for autosave
                 });
             });
 
+            // Initializing the new choice's text field
             TextField outputField = new TextField();
             outputField.value = choice;
             outputField.multiline = true;
             output.Add(outputField);
 
+            // Adding a callback for when the choice text is changed
             outputField.RegisterValueChangedCallback(callback =>
             {
-                graphView.CheckAndSave();
+                GraphView.CheckAndSave(); // Check for autosave
             });
 
+            // Initializing the new choice's removal button
             Button removeChoice = new Button();
             removeChoice.text = "X";
             removeChoice.clicked += () => RemoveChoice(output);
             output.Add(removeChoice);
             
+            // Refreshing the extensionContainer after new elements have been added to it
             RefreshExpandedState();
             
-            graphView.CheckAndSave();
+            GraphView.CheckAndSave(); // Check for autosave
         }
 
+        /// <summary>
+        /// Method to remove a choice from the node, and perform all the necessary checks afterwards
+        /// </summary>
+        /// <param name="output">The port for the choice to be removed</param>
         void RemoveChoice(Port output)
         {
-            graphView.DisconnectPorts(outputContainer, output);
-            outputContainer.Remove(output);
+            // Disconnecting all the connections to the port
+            GraphView.DisconnectPorts(outputContainer, output);
             
-            graphView.CheckAndSave();
+            outputContainer.Remove(output); // Actually removing the choice
+            
+            GraphView.CheckAndSave(); // Check for autosave
         }
     }
 }
