@@ -38,13 +38,13 @@ namespace Editor.Nodes
             // (presumably after a new connection has been made)
             output.RegisterCallback<MouseUpEvent>(callback =>
             {
-                GraphView.CheckAndSave(); // Check for autosave
+                GraphView.Editor.CheckAndSave(); // Check for autosave
                 
                 // Adding a callback to the new connection itself, to trigger when it is deleted
                 output.connections.ElementAt(output.connections.Count() - 1)
                     .RegisterCallback<MouseUpEvent>(callback =>
                 {
-                    GraphView.CheckAndSave(); // Check for autosave
+                    GraphView.Editor.CheckAndSave(); // Check for autosave
                 });
             });
         }

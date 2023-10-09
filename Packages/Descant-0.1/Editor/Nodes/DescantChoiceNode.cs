@@ -45,13 +45,13 @@ namespace Editor.Nodes
             // (presumably after a new connection has been made)
             input.RegisterCallback<MouseUpEvent>(callback =>
             {
-                GraphView.CheckAndSave(); // Check for autosave
+                GraphView.Editor.CheckAndSave(); // Check for autosave
                 
                 // Adding a callback to the new connection itself, to trigger when it is deleted
                 input.connections.ElementAt(input.connections.Count() - 1)
                     .RegisterCallback<MouseUpEvent>(callback =>
                 {
-                    GraphView.CheckAndSave(); // Check for autosave
+                    GraphView.Editor.CheckAndSave(); // Check for autosave
                 });
             });
 
@@ -81,13 +81,13 @@ namespace Editor.Nodes
             // (presumably after a new connection has been made)
             output.RegisterCallback<MouseUpEvent>(callback =>
             {
-                GraphView.CheckAndSave(); // Check for autosave
+                GraphView.Editor.CheckAndSave(); // Check for autosave
                 
                 // Adding a callback to the new connection itself, to trigger when it is deleted
                 output.connections.ElementAt(output.connections.Count() - 1)
                     .RegisterCallback<MouseUpEvent>(callback =>
                 {
-                    GraphView.CheckAndSave(); // Check for autosave
+                    GraphView.Editor.CheckAndSave(); // Check for autosave
                 });
             });
 
@@ -100,7 +100,7 @@ namespace Editor.Nodes
             // Adding a callback for when the choice text is changed
             outputField.RegisterValueChangedCallback(callback =>
             {
-                GraphView.CheckAndSave(); // Check for autosave
+                GraphView.Editor.CheckAndSave(); // Check for autosave
             });
 
             // Initializing the new choice's removal button
@@ -112,7 +112,7 @@ namespace Editor.Nodes
             // Refreshing the extensionContainer after new elements have been added to it
             RefreshExpandedState();
             
-            GraphView.CheckAndSave(); // Check for autosave
+            GraphView.Editor.CheckAndSave(); // Check for autosave
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace Editor.Nodes
             
             outputContainer.Remove(output); // Actually removing the choice
             
-            GraphView.CheckAndSave(); // Check for autosave
+            GraphView.Editor.CheckAndSave(); // Check for autosave
         }
     }
 }

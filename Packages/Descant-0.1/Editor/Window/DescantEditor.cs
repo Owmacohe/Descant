@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Editor.Data;
@@ -6,24 +5,54 @@ using Editor.Nodes;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Editor.Window
 {
+    /// <summary>
+    /// The custom Unity EditorWindow for loading, saving, and manipulating Descant graphs
+    /// </summary>
     public class DescantEditor : EditorWindow
     {
+        /// <summary>
+        /// The data object for the current Descant graph
+        /// </summary>
         public DescantGraphData data;
-        public Toggle AutoSave;
         
+        /// <summary>
+        /// The graph view part the editor
+        /// </summary>
         DescantGraphView graphView;
+        
+        /// <summary>
+        /// The toolbar part of the editor
+        /// </summary>
         Toolbar toolbar;
+        
+        /// <summary>
+        /// The autosave toggle button in the toolbar
+        /// </summary>
+        Toggle autoSave;
+        
+        /// <summary>
+        /// The unsaved changes marker in the toolbar
+        /// </summary>
         TextElement unsaved;
 
-        string lastLoaded;
+        /// <summary>
+        /// Whether a Descant graph is currently loaded into the editor
+        /// </summary>
         bool loaded;
         
-        [MenuItem("Window/Descant/Descant Editor")]
+        /// <summary>
+        /// The full disc path of the last loaded Descant graph
+        /// (so that it can be re-loaded when the editor is re-loaded (e.g. when there is a script change))
+        /// </summary>
+        string lastLoaded;
+        
+        // TODO: ctrl-S functionality
+        
+        [MenuItem("Window/Descant/Descant Editor"), MenuItem("Tools/Descant/Descant Editor")]
         public static void Open()
         {
             GetWindow<DescantEditor>("Descant Editor");
@@ -31,161 +60,200 @@ namespace Editor.Window
 
         void CreateGUI()
         {
+            // If the graph data has already been loaded into the editor, we simple generate the graph view and toolbar
+            // (they're dependant on the data having been previously loaded)
             if (loaded)
             {
                 AddGraphView();
                 AddToolbar();
             
                 AddStyleSheet();
-                
-                /*
-                rootVisualElement.RegisterCallback<KeyDownEvent>(callback =>
-                {
-                    // TODO: ctrl + S
-                });
-                */
             }
+            // Otherwise, we first load the data before adding the graph view and toolbar
+            // (the Load method will call CreateGUI again when it has finished)
             else
             {
                 Load(lastLoaded);
             }
 
+            // Resetting the loaded variable to indicate that the UI should be
+            // reloaded if CreateGUI is ever called again naturally
+            // (otherwise the graph view and toolbar would be added without any data to initialize them with)
             loaded = false;
         }
 
+        /// <summary>
+        /// Removes the graph view and toolbar from the hierarchy
+        /// </summary>
         void RemoveGUI()
         {
             DescantUtilities.RemoveElement(graphView);
             DescantUtilities.RemoveElement(toolbar);
         }
 
+        /// <summary>
+        /// Reloads the GUI (presumably after the DescantGraphData object has been changed)
+        /// </summary>
+        void ReloadGUI()
+        {
+            RemoveGUI();
+            CreateGUI();
+        }
+
+        /// <summary>
+        /// Initializes the graph view
+        /// (its VisualElement initializing takes place in its constructor)
+        /// </summary>
         void AddGraphView()
         {
             graphView = new DescantGraphView(this);
             
             rootVisualElement.Add(graphView);
-            graphView.StretchToParentSize();
+            graphView.StretchToParentSize(); // Making sure it's properly scaled up
         }
 
+        /// <summary>
+        /// Initializes the toolbar's VisualElements
+        /// </summary>
         void AddToolbar()
         {
             toolbar = new Toolbar();
             rootVisualElement.Add(toolbar);
 
+            // Initializing the title section
             VisualElement toolbarTitle = new VisualElement();
             toolbarTitle.AddToClassList("toolbar-title");
             toolbar.Add(toolbarTitle);
 
+            // Initializing the Descant graph's file name
             TextElement fileName = new TextElement();
             fileName.AddToClassList("toolbar-filename");
             fileName.text = data.Name;
             toolbarTitle.Add(fileName);
 
+            // Initializing the unsaved marker next to the file name
             unsaved = new TextElement();
             unsaved.AddToClassList("toolbar-unsaved");
             unsaved.text = "*";
             unsaved.visible = false;
             toolbarTitle.Add(unsaved);
 
+            // Initializing the save section
             VisualElement saveSection = new VisualElement();
             saveSection.AddToClassList("save-section");
             toolbar.Add(saveSection);
             
-            AutoSave = new Toggle("Autosave:");
-            AutoSave.value = data.Autosave;
-            saveSection.Add(AutoSave);
+            // Initializing the autosave toggle button
+            autoSave = new Toggle("Autosave:");
+            autoSave.value = data.Autosave;
+            saveSection.Add(autoSave);
 
+            // Initializing the save button
             Button save = new Button();
             save.clicked += () => Save(true);
             save.text = "Save";
             saveSection.Add(save);
 
-            if (AutoSave.value) save.visible = false;
+            if (autoSave.value) save.visible = false;
             
-            Button close = new Button();
-            close.clicked += () =>
+            // Adding a callback for when the autosave value is changed
+            autoSave.RegisterValueChangedCallback(callback =>
             {
-                data = null;
-                RemoveGUI();
-            };
-            close.text = "Close";
-            saveSection.Add(close);
-
-            AutoSave.RegisterValueChangedCallback(callback =>
-            {
-                if (AutoSave.value) save.visible = false;
+                // Setting the save button's visibility based on the autosave button's value
+                if (autoSave.value) save.visible = false;
                 else save.visible = true;
 
                 Save();
             });
+            
+            // Initializing the close button
+            Button close = new Button();
+            close.clicked += Unload;
+            close.text = "Close";
+            saveSection.Add(close);
         }
 
+        /// <summary>
+        /// Adds the stylesheet to the editor
+        /// (the DescantGraphView needs to also have the style sheet set)
+        /// </summary>
         void AddStyleSheet()
         {
             StyleSheet styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/Descant/Assets/DescantStyleSheet.uss");
             rootVisualElement.styleSheets.Add(styleSheet);
         }
 
-        public DescantGraphData GetData()
+        /// <summary>
+        /// Checks through the entire graph view and toolbar for relevant information,
+        /// and packages it into a DescantGraphData object
+        /// </summary>
+        /// <returns>A data object holding the information of the current editor</returns>
+        DescantGraphData GetData()
         {
-            DescantGraphData temp = new DescantGraphData(data.Name);
+            // Initializing the new data object
+            // (the name and path are copied from the current data,
+            // but everything else comes from the actual VisualElements)
+            DescantGraphData temp = new DescantGraphData(data.Name)
+            {
+                Path = data.Path,
+                Autosave = autoSave.value,
+                ChoiceNodeID = graphView.ChoiceNodeID,
+                ResponseNodeID = graphView.ResponseNodeID,
+                EndNodeID = graphView.EndNodeID,
+                GroupID = graphView.GroupID,
+                ChoiceNodes = new List<DescantChoiceNodeData>(),
+                ResponseNodes = new List<DescantResponseNodeData>(),
+                StartNode = null,
+                EndNodes = new List<DescantEndNodeData>(),
+                Connections = new List<DescantConnectionData>(),
+                Groups = new List<DescantGroupData>()
+            };
 
-            temp.Path = data.Path;
-            
-            temp.Autosave = AutoSave.value;
-            
-            temp.ChoiceNodeID = graphView.ChoiceNodeID;
-            temp.ResponseNodeID = graphView.ResponseNodeID;
-            temp.EndNodeID = graphView.EndNodeID;
-            temp.GroupID = graphView.GroupID;
-            
-            temp.ChoiceNodes = new List<DescantChoiceNodeData>();
-            temp.ResponseNodes = new List<DescantResponseNodeData>();
-            temp.StartNode = null;
-            temp.EndNodes = new List<DescantEndNodeData>();
-            
-            temp.Connections = new List<DescantConnectionData>();
-            
-            temp.Groups = new List<DescantGroupData>();
-
+            // Checking through the current DescantChoiceNodes
             foreach (var i in graphView.ChoiceNodes)
             {
                 var choices = new List<string>();
                 var ports = DescantUtilities.FindAllElements<Port>(i);
                 
-                foreach (var ii in ports[0].connections)
+                for (int ii = 0; ii < ports.Count; ii++)
                 {
-                    DescantNode outputNode = (DescantNode)ii.output.node;
-                    
-                    temp.Connections.Add(new DescantConnectionData(
-                        outputNode.Type.ToString(),
-                        outputNode.ID,
-                        i.Type.ToString(),
-                        i.ID
-                    ));
-                }
-
-                for (int ij = 0; ij < ports.Count; ij++)
-                {
-                    if (ij > 0)
+                    if (ii == 0)
                     {
-                        choices.Add(DescantUtilities.FindFirstElement<TextField>(ports[ij]).value);
-
-                        if (ports[ij].connections.Any())
+                        // Creating DescantConnectionData objects for each incoming connection
+                        if (ports[ii].connections.Any())
                         {
-                            DescantNode inputNode = (DescantNode)ports[ij].connections.ElementAt(0).input.node;
+                            DescantNode outputNode = (DescantNode)ports[ii].connections.ElementAt(0).output.node;
+                    
+                            temp.Connections.Add(new DescantConnectionData(
+                                outputNode.Type.ToString(),
+                                outputNode.ID,
+                                i.Type.ToString(),
+                                i.ID
+                            ));
+                        }
+                    }
+                    else
+                    {
+                        // Saving the text for each choice
+                        choices.Add(DescantUtilities.FindFirstElement<TextField>(ports[ii]).value);
+
+                        // Creating DescantConnectionData objects for each outgoing connection
+                        if (ports[ii].connections.Any())
+                        {
+                            DescantNode inputNode = (DescantNode)ports[ii].connections.ElementAt(0).input.node;
                     
                             temp.Connections.Add(new DescantConnectionData(
                                 i.Type.ToString(),
                                 i.ID,
                                 inputNode.Type.ToString(),
                                 inputNode.ID,
-                                ij
+                                ii
                             ));
                         }
                     }
                 }
 
+                // Creating the actual DescantChoiceNodeData object
                 temp.ChoiceNodes.Add(new DescantChoiceNodeData(
                     DescantUtilities.FindFirstElement<TextField>(i).value,
                     i.Type.ToString(),
@@ -195,11 +263,13 @@ namespace Editor.Window
                 ));
             }
 
+            // Checking through the current DescantResponseNodes
             foreach (var j in graphView.ResponseNodes)
             {
                 List<TextField> fields = DescantUtilities.FindAllElements<TextField>(j);
                 var ports = DescantUtilities.FindAllElements<Port>(j);
 
+                // Creating DescantConnectionData objects for each incoming connection
                 foreach (var ji in ports[0].connections)
                 {
                     DescantNode outputNode = (DescantNode)ji.output.node;
@@ -212,6 +282,7 @@ namespace Editor.Window
                     ));
                 }
 
+                // Creating a DescantConnectionData object for the outgoing connection
                 if (ports[1].connections.Any())
                 {
                     DescantNode inputNode = (DescantNode)ports[1].connections.ElementAt(0).input.node;
@@ -224,6 +295,7 @@ namespace Editor.Window
                     ));
                 }
                 
+                // Creating the actual DescantResponseNodeData object
                 temp.ResponseNodes.Add(new DescantResponseNodeData(
                     fields[0].value,
                     j.Type.ToString(),
@@ -233,10 +305,12 @@ namespace Editor.Window
                 ));
             }
 
+            // Checking the current DescantStartNode
             if (graphView.StartNode != null)
             {
                 var startPort = DescantUtilities.FindFirstElement<Port>(graphView.StartNode);
                 
+                // Creating a DescantConnectionData object for the outgoing connection
                 if (startPort.connections.Any())
                 {
                     DescantNode inputNode = (DescantNode)startPort.connections.ElementAt(0).input.node;
@@ -249,6 +323,7 @@ namespace Editor.Window
                     ));
                 }
                 
+                // Creating the actual DescantStartNodeData object
                 temp.StartNode = new DescantStartNodeData(
                     DescantUtilities.FindFirstElement<TextField>(graphView.StartNode).value,
                     graphView.StartNode.Type.ToString(),
@@ -256,10 +331,12 @@ namespace Editor.Window
                 );
             }
 
+            // Checking through the current DescantEndNodes
             foreach (var k in graphView.EndNodes)
             {
                 var ports = DescantUtilities.FindAllElements<Port>(k);
                 
+                // Creating DescantConnectionData objects for each incoming connection
                 foreach (var ji in ports[0].connections)
                 {
                     DescantNode outputNode = (DescantNode)ji.output.node;
@@ -272,6 +349,7 @@ namespace Editor.Window
                     ));
                 }
                 
+                // Creating the actual DescantEndNodeData object
                 temp.EndNodes.Add(new DescantEndNodeData(
                     DescantUtilities.FindFirstElement<TextField>(k).value,
                     k.Type.ToString(),
@@ -280,14 +358,18 @@ namespace Editor.Window
                 ));
             }
 
+            // Checking through the current DescantNodeGroups
             foreach (var l in graphView.Groups)
             {
                 var contained = l.containedElements;
                 var elements = new List<string>();
                 var elementIDs = new List<int>();
 
+                // Saving the type and IDs of each DescantNode contained within the DescantNodeGroup
                 foreach (var li in contained)
                 {
+                    // Making sure the contained element is one of the ones already saved
+                    // (we don't want any 'pointers' to non-saved nodes)
                     if (graphView.ChoiceNodes.Contains(li) ||
                         graphView.ResponseNodes.Contains(li) ||
                         graphView.StartNode.Equals(li) ||
@@ -298,6 +380,7 @@ namespace Editor.Window
                     }
                 }
 
+                // Creating the actual DescantNodeGroupData object
                 temp.Groups.Add(new DescantGroupData(
                     DescantUtilities.FindFirstElement<TextField>(l).value,
                     l.ID,
@@ -312,36 +395,79 @@ namespace Editor.Window
             return temp;
         }
 
-        public void Save(bool refresh = false)
+        /// <summary>
+        /// Saves the data if autosave is turned on, otherwise it marks that data needs to be saved
+        /// </summary>
+        public void CheckAndSave()
+        {
+            // Making sure the toolbar has actually be loaded first
+            if (autoSave != null)
+            {
+                if (autoSave.value) Save();
+                // Getting a copy of the current data to compare it with the saved data
+                else if (!data.Equals(GetData()))
+                    unsaved.visible = true;
+            }
+        }
+
+        /// <summary>
+        /// Gathers and saves the data from the current graph view and toolbar
+        /// </summary>
+        /// <param name="refresh">Whether to refresh the AssetDatabase after the data has been saved</param>
+        void Save(bool refresh = false)
         {
             DescantUtilities.FindFirstElement<TextElement>(toolbar).text = data.Name;
             unsaved.visible = false;
             
             data = GetData();
-            
             data.Save(false);
+            
             if (refresh) AssetDatabase.Refresh();
         }
 
+        /// <summary>
+        /// Loads the data from a Descant file
+        /// </summary>
+        /// <param name="fullPath">The full disc path to the Descant file to load</param>
         public void Load(string fullPath)
         {
+            // Making sure the path isn't null or empty
             if (fullPath != null && fullPath.Trim() != "")
             {
                 lastLoaded = fullPath;
 
                 data = DescantGraphData.Load(fullPath);
+                
+                // Reloading the name and path, in case they got changed after the last time this file was loaded
                 data.Name = DescantUtilities.GetDescantFileNameFromPath(fullPath);
                 data.Path = DescantUtilities.RemoveBeforeLocalPath(fullPath);
+                
                 data.Save(false);
 
                 loaded = true;
 
-                AutoSave = null;
-                RemoveGUI();
-                CreateGUI();
+                // Removing the old GUI (if it exists) and
+                // creating the new GUI (now that the data has been loaded)
+                ReloadGUI();
             }
         }
 
+        /// <summary>
+        /// Un-loads the current data and GUI
+        /// </summary>
+        void Unload()
+        {
+            data = null;
+            
+            loaded = false;
+            lastLoaded = null;
+            
+            RemoveGUI();
+        }
+
+        /// <summary>
+        /// Creates a new blank file, and reloads the GUI
+        /// </summary>
         public void NewFile()
         {
             data = new DescantGraphData("New Descant Graph");
@@ -349,14 +475,7 @@ namespace Editor.Window
 
             loaded = true;
             
-            AutoSave = null;
-            RemoveGUI();
-            CreateGUI();
-        }
-
-        public void MarkUnsavedChanges()
-        {
-            unsaved.visible = true;
+            ReloadGUI();
         }
     }
 }

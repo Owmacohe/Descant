@@ -12,8 +12,8 @@
 			"Type": "Choice",
 			"ID": 0,
 			"Position": {
-				"x": -109.0,
-				"y": -85.5
+				"x": -136.0,
+				"y": -53.5
 			},
 			"Choices": [
 				"Choice1",
@@ -23,7 +23,7 @@
 	],
 	"ResponseNodes": [
 		{
-			"Name": "1",
+			"Name": "Option1",
 			"Type": "Response",
 			"ID": 0,
 			"Position": {
@@ -33,7 +33,7 @@
 			"Response": "Response1"
 		},
 		{
-			"Name": "2",
+			"Name": "Option2",
 			"Type": "Response",
 			"ID": 1,
 			"Position": {

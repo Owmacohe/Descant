@@ -8,13 +8,38 @@ using UnityEngine.UIElements;
 
 namespace Editor.Window
 {
+    /// <summary>
+    /// The custom GraphView component of the editor, housing the nodes, groups, and connections
+    /// </summary>
     public class DescantGraphView : GraphView
     {
+        /// <summary>
+        /// The current custom Descant EditorWindow
+        /// </summary>
         public DescantEditor Editor;
         
+        /// <summary>
+        /// The number used to instantiate each new DescantChoiceNode with a unique ID
+        /// (so that it can be told apart from other nodes with the same type and name)
+        /// </summary>
         public int ChoiceNodeID { get; set; }
+        
+        /// <summary>
+        /// The number used to instantiate each new DescantResponseNode with a unique ID
+        /// (so that it can be told apart from other nodes with the same type and name)
+        /// </summary>
         public int ResponseNodeID { get; set; }
+        
+        /// <summary>
+        /// The number used to instantiate each new DescantEndNode with a unique ID
+        /// (so that it can be told apart from other nodes with the same type and name)
+        /// </summary>
         public int EndNodeID { get; set; }
+        
+        /// <summary>
+        /// The number used to instantiate each new DescantNodeGroup with a unique ID
+        /// (so that it can be told apart from other groups with the same name)
+        /// </summary>
         public int GroupID { get; set; }
 
         public List<DescantChoiceNode> ChoiceNodes = new List<DescantChoiceNode>();
@@ -24,23 +49,31 @@ namespace Editor.Window
         
         public List<DescantNodeGroup> Groups = new List<DescantNodeGroup>();
 
+        /// <summary>
+        /// The 'Add Start Node' contextual menu manipulator
+        /// </summary>
         IManipulator startNodeManipulator;
+        
+        /// <summary>
+        /// The list of contextual menu manipulators for nodes
+        /// </summary>
         List<IManipulator> contextMenuManipulators = new List<IManipulator>();
 
         public DescantGraphView(DescantEditor editor)
         {
             Editor = editor;
             
-            AddGridBackground();
-            AddManipulators();
+            AddGridBackground(); // Initializing the background
+            AddManipulators(); // Initializing the context manu manipulators
+            AddStyleSheet(); // Initializing the stylesheet
             
-            AddStyleSheet();
-            
+            // Adding a callback for when the mouse leaves the graph view
             RegisterCallback(new EventCallback<MouseLeaveEvent>(callback =>
             {
-                CheckAndSave();
+                Editor.CheckAndSave(); // Check for autosave
             }));
 
+            // Generating all the data that has been previously loaded into the editor
             DescantGraphData data = Editor.data;
 
             ChoiceNodeID = data.ChoiceNodeID;
@@ -48,6 +81,7 @@ namespace Editor.Window
             EndNodeID = data.EndNodeID;
             GroupID = data.GroupID;
 
+            // Generating the DescantChoiceNodes
             foreach (var i in data.ChoiceNodes)
             {
                 var temp = CreateChoiceNode(i.Position, i.Name, i.ID);
@@ -58,6 +92,7 @@ namespace Editor.Window
                 AddElement(temp);
             }
 
+            // Generating the DescantResponseNodes
             foreach (var j in data.ResponseNodes)
             {
                 var temp = CreateResponseNode(j.Position, j.Name, j.ID);
@@ -66,6 +101,7 @@ namespace Editor.Window
                 AddElement(temp);
             }
 
+            // Generating the DescantStartNode (creating a new one if there isn't one present in the file)
             if (data.StartNode != null)
                 AddElement(CreateStartNode(
                     data.StartNode.Position,
@@ -76,12 +112,14 @@ namespace Editor.Window
             
             this.RemoveManipulator(startNodeManipulator);
             
+            // Generating the DescantEndNodes
             foreach (var k in data.EndNodes)
                 AddElement(CreateEndNode(k.Position, k.Name, k.ID));
             
+            // Generating the DescantNodeGroups
             foreach (var l in data.Groups)
             {
-                var temp = CreateGroup(l.Position, l.Name, l.ID);
+                var temp = CreateNodeGroup(l.Position, l.Name, l.ID);
 
                 for (int li = 0; li < l.Nodes.Count; li++)
                     temp.AddElement(FindNode(l.Nodes[li], l.NodeIDs[li]));
@@ -89,6 +127,7 @@ namespace Editor.Window
                 AddElement(temp);
             }
             
+            // Generating the connections between DescantNodes
             foreach (var m in data.Connections)
             {
                 var from = FindNode(m.From, m.FromID);
@@ -105,11 +144,16 @@ namespace Editor.Window
                 
                 temp.RegisterCallback<MouseUpEvent>(callback =>
                 {
-                    CheckAndSave();
+                    Editor.CheckAndSave(); // Check for autosave
                 });
             }
         }
 
+        /// <summary>
+        /// Overridden method to make sure that connections can only be made between DescantNodes that are:
+        /// a) Not of the same type and
+        /// b) Not in the same direction
+        /// </summary>
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
             List<Port> compatiblePorts = new List<Port>();
@@ -127,6 +171,9 @@ namespace Editor.Window
             return compatiblePorts;
         }
 
+        /// <summary>
+        /// Initializes the grid background for the Descant graph
+        /// </summary>
         void AddGridBackground()
         {
             GridBackground gridBackground = new GridBackground();
@@ -135,6 +182,9 @@ namespace Editor.Window
             Insert(0, gridBackground);
         }
 
+        /// <summary>
+        /// Removes all the node and group context menu manipulators
+        /// </summary>
         public void RemoveContextMenuManipulators()
         {
             foreach (var i in contextMenuManipulators)
@@ -145,6 +195,9 @@ namespace Editor.Window
             startNodeManipulator = null;
         }
 
+        /// <summary>
+        /// Adds all the node and group context menu manipulators
+        /// </summary>
         public void AddContextMenuManipulators()
         {
             this.AddManipulator(CreateNodeContextualMenu("Add Choice Node", DescantNodeType.Choice));
@@ -152,9 +205,13 @@ namespace Editor.Window
             this.AddManipulator(CreateNodeContextualMenu("Add Start Node", DescantNodeType.Start));
             this.AddManipulator(CreateNodeContextualMenu("Add End Node", DescantNodeType.End));
 
-            this.AddManipulator(CreateGroupContextualMenu());
+            this.AddManipulator(CreateNodeGroupContextualMenu());
         }
         
+        /// <summary>
+        /// Adds all the GraphView manipulators (e.g. zooming, selection, etc.)
+        /// as well as the node and group context manu manipulators
+        /// </summary>
         void AddManipulators()
         {
             this.AddManipulator(new ContentDragger());
@@ -165,6 +222,12 @@ namespace Editor.Window
             AddContextMenuManipulators();
         }
         
+        /// <summary>
+        /// Creates a node contextual menu item for some type of DescantNode
+        /// </summary>
+        /// <param name="actionTitle">The title for the dropdown option</param>
+        /// <param name="type">The type of node to be added when clicked</param>
+        /// <returns>The new node contextual menu, ready for addition to the context-sensitive dropdown</returns>
         IManipulator CreateNodeContextualMenu(string actionTitle, DescantNodeType type)
         {
             ContextualMenuManipulator context = new ContextualMenuManipulator(
@@ -191,38 +254,54 @@ namespace Editor.Window
 
                         }
                         
-                        CheckAndSave();
+                        Editor.CheckAndSave(); // Check for autosave
                     })
             );
             
+            // If this manipulator is for the DescantStartNode, we should save it
             if (startNodeManipulator == null && type.Equals(DescantNodeType.Start)) startNodeManipulator = context;
+            
+            // Adding the contextual manipulator to the list of contextual manipulators
             contextMenuManipulators.Add(context);
 
             return context;
         }
         
-        IManipulator CreateGroupContextualMenu()
+        /// <summary>
+        /// Creates a contextual menu item for a DescantNodeGroup
+        /// </summary>
+        /// <returns></returns>
+        IManipulator CreateNodeGroupContextualMenu()
         {
             ContextualMenuManipulator context = new ContextualMenuManipulator(
                 menuEvent => menuEvent.menu.AppendAction("Add Group",
                     actionEvent =>
                     {
-                        AddElement(CreateGroup(actionEvent.eventInfo.localMousePosition));
-                        CheckAndSave();
+                        AddElement(CreateNodeGroup(actionEvent.eventInfo.localMousePosition));
+                        Editor.CheckAndSave(); // Check for autosave
                     })
             );
             
+            // Adding the contextual manipulator to the list of contextual manipulators
             contextMenuManipulators.Add(context);
 
             return context;
         }
 
+        /// <summary>
+        /// Creates a new DescantChoiceNode
+        /// </summary>
+        /// <param name="nodePosition">The position at which to create the node</param>
+        /// <param name="nodeName">The custom name of the node (default if ignored)</param>
+        /// <param name="nodeID">The ID of the node (default if ignored)</param>
+        /// <returns>The newly-created node</returns>
         DescantChoiceNode CreateChoiceNode(Vector2 nodePosition, string nodeName = "", int nodeID = -1)
         {
-            var choiceNode = new DescantChoiceNode(this, nodePosition);
-
-            choiceNode.Name = nodeName;
-            choiceNode.ID = nodeID;
+            var choiceNode = new DescantChoiceNode(this, nodePosition)
+            {
+                Name = nodeName,
+                ID = nodeID
+            };
 
             choiceNode.Draw();
             
@@ -231,12 +310,20 @@ namespace Editor.Window
             return choiceNode;
         }
         
+        /// <summary>
+        /// Creates a new DescantResponseNode
+        /// </summary>
+        /// <param name="nodePosition">The position at which to create the node</param>
+        /// <param name="nodeName">The custom name of the node (default if ignored)</param>
+        /// <param name="nodeID">The ID of the node (default if ignored)</param>
+        /// <returns>The newly-created node</returns>
         DescantResponseNode CreateResponseNode(Vector2 nodePosition, string nodeName = "", int nodeID = -1)
         {
-            var responseNode = new DescantResponseNode(this, nodePosition);
-            
-            responseNode.Name = nodeName;
-            responseNode.ID = nodeID;
+            var responseNode = new DescantResponseNode(this, nodePosition)
+            {
+                Name = nodeName,
+                ID = nodeID
+            };
 
             responseNode.Draw();
             
@@ -245,12 +332,20 @@ namespace Editor.Window
             return responseNode;
         }
         
+        /// <summary>
+        /// Creates a new DescantStartNode
+        /// </summary>
+        /// <param name="nodePosition">The position at which to create the node</param>
+        /// <param name="nodeName">The custom name of the node (default if ignored)</param>
+        /// <param name="nodeID">The ID of the node (0 if ignored)</param>
+        /// <returns>The newly-created node</returns>
         DescantStartNode CreateStartNode(Vector2 nodePosition, string nodeName = "", int nodeID = 0)
         {
-            StartNode = new DescantStartNode(this, nodePosition);
-            
-            StartNode.Name = nodeName;
-            StartNode.ID = nodeID;
+            StartNode = new DescantStartNode(this, nodePosition)
+            {
+                Name = nodeName,
+                ID = nodeID
+            };
 
             StartNode.Draw();
             
@@ -260,12 +355,20 @@ namespace Editor.Window
             return StartNode;
         }
         
+        /// <summary>
+        /// Creates a new DescantEndNode
+        /// </summary>
+        /// <param name="nodePosition">The position at which to create the node</param>
+        /// <param name="nodeName">The custom name of the node (default if ignored)</param>
+        /// <param name="nodeID">The ID of the node (default if ignored)</param>
+        /// <returns>The newly-created node</returns>
         DescantEndNode CreateEndNode(Vector2 nodePosition, string nodeName = "", int nodeID = -1)
         {
-            var endNode = new DescantEndNode(this, nodePosition);
-            
-            endNode.Name = nodeName;
-            endNode.ID = nodeID;
+            var endNode = new DescantEndNode(this, nodePosition)
+            {
+                Name = nodeName,
+                ID = nodeID
+            };
 
             endNode.Draw();
             
@@ -274,15 +377,25 @@ namespace Editor.Window
             return endNode;
         }
         
-        DescantNodeGroup CreateGroup(Vector2 groupPosition, string groupName = "", int groupID = -1)
+        /// <summary>
+        /// Creates a new DescantNodeGroup
+        /// </summary>
+        /// <param name="groupPosition">The position at which to create the group</param>
+        /// <param name="groupName">The custom name of the group (default if ignored)</param>
+        /// <param name="groupID">The ID of the group (default if ignored)</param>
+        /// <returns>The newly-created group</returns>
+        DescantNodeGroup CreateNodeGroup(Vector2 groupPosition, string groupName = "", int groupID = -1)
         {
-            var group = new DescantNodeGroup(this, groupPosition);
-
-            group.Name = groupName;
-            group.ID = groupID;
+            var group = new DescantNodeGroup(this, groupPosition)
+            {
+                Name = groupName,
+                ID = groupID
+            };
 
             group.Draw();
             
+            // If there are currently-selected nodes at the time of the group's creation,
+            // they get automatically made members of the group
             foreach (var i in selection)
                 if (i.GetType() == typeof(DescantChoiceNode) ||
                     i.GetType() == typeof(DescantResponseNode) ||
@@ -295,12 +408,21 @@ namespace Editor.Window
             return group;
         }
 
+        /// <summary>
+        /// Initializes the stylesheet for this GraphView
+        /// </summary>
         void AddStyleSheet()
         {
             StyleSheet styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/Descant/Assets/DescantStyleSheet.uss");
             styleSheets.Add(styleSheet);
         }
         
+        /// <summary>
+        /// Disconnects all the ports for some DescantNode container
+        /// </summary>
+        /// <param name="container">The input or output container of the DescantNode
+        ///                         from which the ports will be disconnected</param>
+        /// <param name="onlyThisPort">The only port that needs to be disconnected (all ports if ignored)</param>
         public void DisconnectPorts(VisualElement container, Port onlyThisPort = null)
         {
             foreach (Port i in container.Children())
@@ -308,6 +430,12 @@ namespace Editor.Window
                     DeleteElements(i.connections);
         }
 
+        /// <summary>
+        /// Searches through all the DescantNodes in the graph and finds a matching one
+        /// </summary>
+        /// <param name="nodeType">The type (as a string) of the DescantNode</param>
+        /// <param name="nodeID">The ID of the DescantNode</param>
+        /// <returns>The DescantNode in thr graph with the matching criteria (null if not found)</returns>
         DescantNode FindNode(string nodeType, int nodeID)
         {
             foreach (var i in ChoiceNodes)
@@ -327,22 +455,16 @@ namespace Editor.Window
             return null;
         }
 
+        /// <summary>
+        /// Checks to see if a given DescantNode matches a type and ID
+        /// </summary>
+        /// <param name="node">the DescantNode to check</param>
+        /// <param name="nodeType">The type (as a string) to check it against</param>
+        /// <param name="nodeID">the ID to check it against</param>
+        /// <returns></returns>
         bool NodeMatches(DescantNode node, string nodeType, int nodeID)
         {
             return node.Type.ToString() == nodeType && node.ID == nodeID;
-        }
-
-        public void CheckAndSave()
-        {
-            if (Editor.AutoSave != null)
-            {
-                DescantGraphData data = Editor.GetData();
-                data.CleanUpConnections();
-                
-                if (Editor.AutoSave.value) Editor.Save();
-                else if (!Editor.data.Equals(data))
-                    Editor.MarkUnsavedChanges();
-            }
         }
     }
 }

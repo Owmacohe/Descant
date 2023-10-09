@@ -75,7 +75,7 @@ namespace Editor.Nodes
                 TextField target = (TextField) callback.target;
                 target.value = DescantUtilities.FilterText(target.value);
                 
-                GraphView.CheckAndSave(); // Check for autosave
+                GraphView.Editor.CheckAndSave(); // Check for autosave
             });
 
             // Initializing the node removal button
@@ -90,7 +90,7 @@ namespace Editor.Nodes
                 // Adding a callback for when the node is removed
                 RegisterCallback(new EventCallback<MouseLeaveEvent>(callback =>
                 {
-                    GraphView.CheckAndSave(); // Check for autosave
+                    GraphView.Editor.CheckAndSave(); // Check for autosave
                 }));   
             }
         }
@@ -130,7 +130,7 @@ namespace Editor.Nodes
             foreach (var i in GraphView.Groups)
                 i.UpdateGeometryFromContent();
             
-            GraphView.CheckAndSave(); // Check for autosave
+            GraphView.Editor.CheckAndSave(); // Check for autosave
         }
     }
 }

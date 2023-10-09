@@ -62,7 +62,7 @@ namespace Editor.Nodes
                 TextField target = (TextField) callback.target;
                 target.value = DescantUtilities.FilterText(target.value);
                 
-                GraphView.CheckAndSave(); // Check for autosave
+                GraphView.Editor.CheckAndSave(); // Check for autosave
             });
         
             // Initializing the node removal button
@@ -74,7 +74,7 @@ namespace Editor.Nodes
             // Adding a callback for when the group is removed
             RegisterCallback(new EventCallback<MouseLeaveEvent>(callback =>
             {
-                GraphView.CheckAndSave(); // Check for autosave
+                GraphView.Editor.CheckAndSave(); // Check for autosave
             }));
 
             // Aligning the group's name to the center
@@ -93,7 +93,7 @@ namespace Editor.Nodes
             // Absolutely making sure that this group is no longer preserved in the DescantGraphView's list
             GraphView.Groups.Remove(this);
             
-            GraphView.CheckAndSave(); // Check for autosave
+            GraphView.Editor.CheckAndSave(); // Check for autosave
         }
     }
 }
