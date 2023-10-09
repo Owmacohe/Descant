@@ -19,7 +19,7 @@
 - This `README`
 - [Initial research](Documentation/interaction_research.md), [market survey](Documentation/system_review.xlsx), and [key pitfalls and successes](Documentation/pitfalls_and_sucesses.md)
 - [Features list](Documentation/features.md)
-- [Weekly process journal](Documentation/journal.md) *(currently being set up)*
+- [Weekly process journal](Documentation/journal.md)
 - [Unity Asset Store page]() *(will be created near the end of the project)*
 
 
