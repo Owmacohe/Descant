@@ -3,7 +3,7 @@
 	"Path": "/Graphs/Testing Graph.desc",
 	"Autosave": false,
 	"ChoiceNodeID": 1,
-	"ResponseNodeID": 2,
+	"ResponseNodeID": 3,
 	"EndNodeID": 1,
 	"GroupID": 2,
 	"ChoiceNodes": [
@@ -41,6 +41,16 @@
 				"y": 96.5
 			},
 			"Response": "Response2"
+		},
+		{
+			"Name": "FirstResponse",
+			"Type": "Response",
+			"ID": 2,
+			"Position": {
+				"x": -686.0,
+				"y": -222.5
+			},
+			"Response": "This is the beginning!"
 		}
 	],
 	"StartNode": {
@@ -48,8 +58,8 @@
 		"Type": "Start",
 		"ID": 0,
 		"Position": {
-			"x": -515.0,
-			"y": -229.5
+			"x": -909.0,
+			"y": -419.0
 		}
 	},
 	"EndNodes": [
@@ -84,23 +94,25 @@
 			"Name": "InitialChoice",
 			"ID": 1,
 			"Position": {
-				"x": -540.0,
-				"y": -288.0
+				"x": -934.0,
+				"y": -477.5
 			},
 			"Nodes": [
 				"Start",
-				"Choice"
+				"Choice",
+				"Response"
 			],
 			"NodeIDs": [
 				0,
-				0
+				0,
+				2
 			]
 		}
 	],
 	"Connections": [
 		{
-			"From": "Start",
-			"FromID": 0,
+			"From": "Response",
+			"FromID": 2,
 			"To": "Choice",
 			"ToID": 0,
 			"ChoiceIndex": 0
@@ -118,6 +130,13 @@
 			"To": "Response",
 			"ToID": 1,
 			"ChoiceIndex": 2
+		},
+		{
+			"From": "Start",
+			"FromID": 0,
+			"To": "Response",
+			"ToID": 2,
+			"ChoiceIndex": 0
 		},
 		{
 			"From": "Response",

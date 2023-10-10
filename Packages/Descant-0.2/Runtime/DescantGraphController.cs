@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Runtime
 {
-    class RuntimeNode
+    public class RuntimeNode
     {
         public DescantNodeData Data;
 
@@ -26,9 +26,9 @@ namespace Runtime
         [SerializeField] DefaultAsset descantGraph;
 
         List<RuntimeNode> nodes = new List<RuntimeNode>();
-        RuntimeNode current;
+        public RuntimeNode Current;
         
-        void Start()
+        void Awake()
         {
             GenerateRuntimeNodes();
         }
@@ -41,7 +41,7 @@ namespace Runtime
             
             AddToRuntimeNodes(data.ChoiceNodes);
             AddToRuntimeNodes(data.ResponseNodes);
-            current = AddToRuntimeNodes(new List<DescantStartNodeData>() { data.StartNode });
+            Current = AddToRuntimeNodes(new List<DescantStartNodeData>() { data.StartNode });
             AddToRuntimeNodes(data.EndNodes);
             
             foreach (var i in data.Connections)
@@ -78,19 +78,19 @@ namespace Runtime
 
         public List<string> Next(int choiceIndex = 0)
         {
-            current = current.Next[choiceIndex];
+            Current = Current.Next[choiceIndex];
             
             List<string> temp = new List<string>();
 
-            switch (current.Data.Type)
+            switch (Current.Data.Type)
             {
                 case "Choice":
-                    foreach (var i in ((DescantChoiceNodeData)current.Data).Choices)
+                    foreach (var i in ((DescantChoiceNodeData)Current.Data).Choices)
                         temp.Add(i);
                     break;
                 
                 case "Response":
-                    temp.Add(((DescantResponseNodeData)current.Data).Response);
+                    temp.Add(((DescantResponseNodeData)Current.Data).Response);
                     break;
                 
                 case "End": return null;
