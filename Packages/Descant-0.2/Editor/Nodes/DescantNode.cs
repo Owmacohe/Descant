@@ -8,14 +8,18 @@ namespace Editor.Nodes
     /// <summary>
     /// Enum to list all of the types of DescantNodes
     /// </summary>
-    public enum DescantNodeType { Choice, Response, Start, End }
+    public enum DescantNodeType { Choice, Response, Start, End, Any }
     
     /// <summary>
     /// Descant graph node parent class
     /// </summary>
     public abstract class DescantNode : Node
     {
-        public DescantNodeType Type { get; protected set; }
+        /// <summary>
+        /// The custom name of this node,
+        /// which is independent from its type or ID
+        /// </summary>
+        public string Name { get; set; }
         
         /// <summary>
         /// The unique identifier for this node,
@@ -23,12 +27,8 @@ namespace Editor.Nodes
         /// </summary>
         public int ID { get; set; }
         
-        /// <summary>
-        /// The custom name of this node,
-        /// which is independent from its type or ID
-        /// </summary>
-        public string Name { get; set; }
-        
+        public DescantNodeType Type { get; protected set; }
+
         /// <summary>
         /// Used by Descant graph nodes to update their IDs and save when changes have been made to them
         /// </summary>

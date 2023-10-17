@@ -19,6 +19,8 @@ namespace Editor.Window
         /// </summary>
         public DescantGraphData data;
         
+        // TODO: component IDs
+        
         /// <summary>
         /// The graph view part the editor
         /// </summary>

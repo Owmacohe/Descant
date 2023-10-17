@@ -28,6 +28,8 @@ namespace Runtime
         List<RuntimeNode> nodes = new List<RuntimeNode>();
         public RuntimeNode Current;
         
+        // TODO: add actors
+        
         void Awake()
         {
             GenerateRuntimeNodes();
@@ -96,7 +98,13 @@ namespace Runtime
                 case "End": return null;
             }
             
+            // TODO: check for timed choice
+            // TODO: check for locked choice
+            // TODO: Invoke components
+            
             return temp.Count == 0 ? null : temp;
         }
+        
+        // TODO: reveal method
     }
 }
