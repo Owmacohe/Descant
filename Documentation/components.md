@@ -10,6 +10,9 @@
 - **Statistic change**
   - *Actor*
   - *Statistic*
+- **Relationship change**
+  - *Actor*
+  - *Relationship*
 - **Statistic reveal**
   - *Actor*
   - *Statistic*
@@ -28,10 +31,12 @@
   - *Re-attempt lock?*
   - *Relationship lock?*
 - **Changeable choice**
+  - *Topic change?*
   - *Statistic change?*
   - *Timed change?*
   - *Re-attempt change?*
   - *Relationship change?*
+  
 
 
 
@@ -42,6 +47,7 @@
 - **Add known topic**
   - *Keyword*
 - **Changeable response**
+  - *Topic change?*
   - *Statistic change?*
   - *Timed change?*
   - *Re-attempt change?*
@@ -60,28 +66,16 @@
 
 ## Actor components
 
-- Player
-  - **Known topics**
-    - *Keywords*
 - NPC
   - **Limited responses**
     - *Number of responses*
     - *Number of re-attempts*
-    - *Statistic change for re-attempts?*
   - **Limited conversations**
     - *Number of conversations*
     - *Number of re-attempts*
-    - *Statistic change for re-attempts?*
 - Both
   - **Movement freedom**
     - *Does distance end conversation?*
-  - **Statistics**
-    - *Type*
-    - *Initial value*
-    - *Dependant methods*
-  - **Actor relationship**
-    - *Favourability*
-    - *High/low unsurpassably thresholds*
 
 
 

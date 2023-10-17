@@ -1,9 +1,10 @@
 ﻿using System;
+using UnityEngine;
 using Editor.Nodes;
 
 namespace Runtime.Components.Nodes
 {
-    public class TimedChoice : DescantNodeComponent
+    public class TimedChoice : DescantNodeComponent, IUpdatedDescantComponent
     {
         public float Time { get; }
         public bool TimerVisible { get; }
@@ -15,9 +16,11 @@ namespace Runtime.Components.Nodes
             TimerVisible = timerVisible;
         }
 
-        public override void Invoke()
+        public void FixedUpdate()
         {
-            throw new NotImplementedException();
+            // TODO: update timer using
+            // (UnityEngine.Time.time - Controller.CurrentStartTime) / Time
+            // TimerVisible
         }
     }
 }

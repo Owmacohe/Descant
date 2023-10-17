@@ -3,7 +3,7 @@ using Editor.Nodes;
 
 namespace Runtime.Components.Nodes
 {
-    public class Event : DescantNodeComponent, IDescantComponentInvokable
+    public class Event : DescantNodeComponent, IInvokedDescantComponent
     {
         public UnityEvent UnityEvent { get; }
         

@@ -3,7 +3,7 @@ using Editor.Nodes;
 
 namespace Runtime.Components.Nodes
 {
-    public class StatisticReveal : DescantNodeComponent, IDescantComponentInvokable
+    public class StatisticReveal : DescantNodeComponent, IInvokedDescantComponent
     {
         public DescantActor Actor { get; }
         public string Statistic { get; }
@@ -17,7 +17,8 @@ namespace Runtime.Components.Nodes
 
         public void Invoke()
         {
-            // TODO: call reveal method in controller
+            // TODO: reveal statistic using
+            // Actor.Statistics[Statistic]
         }
     }
 }

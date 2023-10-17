@@ -3,18 +3,18 @@ using Editor.Nodes;
 
 namespace Runtime.Components.Nodes
 {
-    public class StatisticChange : DescantNodeComponent, IInvokedDescantComponent
+    public class RelationshipChange : DescantNodeComponent, IInvokedDescantComponent
     {
         public DescantActor Actor { get; }
-        public string Statistic { get; }
+        public string Relationship { get; }
         public ValueChangeType Type { get; }
         public float Change { get; }
 
-        public StatisticChange(DescantGraphController controller, int id, DescantActor actor, string statistic, ValueChangeType type, float change)
+        public RelationshipChange(DescantGraphController controller, int id, DescantActor actor, string relationship, ValueChangeType type, float change)
             : base(controller, id, DescantNodeType.Any, float.PositiveInfinity)
         {
             Actor = actor;
-            Statistic = statistic;
+            Relationship = relationship;
             Type = type;
             Change = change;
         }
@@ -24,15 +24,15 @@ namespace Runtime.Components.Nodes
             switch (Type)
             {
                 case ValueChangeType.IncreaseBy:
-                    Actor.SetStatistic(Statistic, Actor.Statistics[Statistic] + Change);
+                    Actor.SetRelationship(Relationship, Actor.Statistics[Relationship] + Change);
                     break;
                 
                 case ValueChangeType.DecreaseBy:
-                    Actor.SetStatistic(Statistic, Actor.Statistics[Statistic] - Change);
+                    Actor.SetRelationship(Relationship, Actor.Statistics[Relationship] - Change);
                     break;
                 
                 case ValueChangeType.Set:
-                    Actor.SetStatistic(Statistic, Change);
+                    Actor.SetRelationship(Relationship, Change);
                     break;
             }
         }

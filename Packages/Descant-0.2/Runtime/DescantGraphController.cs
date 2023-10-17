@@ -26,13 +26,40 @@ namespace Runtime
         [SerializeField] DefaultAsset descantGraph;
 
         List<RuntimeNode> nodes = new List<RuntimeNode>();
-        public RuntimeNode Current;
         
-        // TODO: add actors
+        [HideInInspector] public RuntimeNode Current;
+        [HideInInspector] public List<string> CurrentText;
+        [HideInInspector] public float CurrentStartTime;
+        
+        [HideInInspector] public DescantActor Player;
+        [HideInInspector] public DescantActor NPC;
+
+        [HideInInspector] public string Ending;
         
         void Awake()
         {
+            GenerateActors();
             GenerateRuntimeNodes();
+        }
+
+        void Update()
+        {
+            // TODO: call Update
+        }
+        
+        void FixedUpdate()
+        {
+            // TODO: call FixedUpdate
+        }
+
+        void GenerateActors()
+        {
+            // TODO: from file
+
+            Player = new DescantActor("Player", DescantActorType.Player);
+            NPC = new DescantActor("NPC", DescantActorType.NPC);
+            
+            // TODO: subscribe to Actor change methods
         }
 
         void GenerateRuntimeNodes()
@@ -81,30 +108,26 @@ namespace Runtime
         public List<string> Next(int choiceIndex = 0)
         {
             Current = Current.Next[choiceIndex];
-            
-            List<string> temp = new List<string>();
+            CurrentText = new List<string>();
+            CurrentStartTime = Time.time;
 
             switch (Current.Data.Type)
             {
                 case "Choice":
                     foreach (var i in ((DescantChoiceNodeData)Current.Data).Choices)
-                        temp.Add(i);
+                        CurrentText.Add(i);
                     break;
                 
                 case "Response":
-                    temp.Add(((DescantResponseNodeData)Current.Data).Response);
+                    CurrentText.Add(((DescantResponseNodeData)Current.Data).Response);
                     break;
                 
                 case "End": return null;
             }
             
-            // TODO: check for timed choice
-            // TODO: check for locked choice
-            // TODO: Invoke components
-            
-            return temp.Count == 0 ? null : temp;
+            // TODO: call Invoked()
+
+            return CurrentText.Count == 0 ? null : CurrentText;
         }
-        
-        // TODO: reveal method
     }
 }

@@ -2,10 +2,12 @@
 {
     public abstract class DescantActorComponent : DescantComponent
     {
-        protected DescantActorComponent(DescantGraphController controller, int id, float max)
+        DescantActorType Type { get; }
+        
+        protected DescantActorComponent(DescantGraphController controller, int id, DescantActorType type, float max)
             : base(controller, id, max)
         {
-            
+            Type = type;
         }
     }
 }

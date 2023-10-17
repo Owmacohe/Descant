@@ -8,9 +8,9 @@
         
         protected DescantComponent(DescantGraphController controller, int id, float max)
         {
-            Controller = controller;
             ID = id;
             MaxQuantity = max;
+            Controller = controller;
         }
     }
 }
