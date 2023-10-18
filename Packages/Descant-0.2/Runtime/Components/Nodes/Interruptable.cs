@@ -7,7 +7,7 @@ namespace Runtime.Components.Nodes
     {
         public bool ResumeAfter { get; }
         
-        public Interruptable(DescantGraphController controller, int id, bool resumeAfter)
+        public Interruptable(DescantConversationController controller, int id, bool resumeAfter)
             : base(controller, id, DescantNodeType.Response, 1)
         {
             ResumeAfter = resumeAfter;

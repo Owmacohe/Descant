@@ -12,7 +12,7 @@ namespace Runtime.Components.Nodes
         public float Requirement { get; }
         public string Change { get; }
         
-        public ChangedResponse(DescantGraphController controller, int id, DescantActor actor, ComparisonType typeComparison, string name, OperationType typeOperation, float requirement, string change)
+        public ChangedResponse(DescantConversationController controller, int id, DescantActor actor, ComparisonType typeComparison, string name, OperationType typeOperation, float requirement, string change)
             : base(controller, id, DescantNodeType.Response, float.PositiveInfinity)
         {
             Actor = actor;

@@ -4,9 +4,9 @@
     {
         public int ID { get; }
         public float MaxQuantity { get; }
-        protected DescantGraphController Controller { get; }
+        protected DescantConversationController Controller { get; }
         
-        protected DescantComponent(DescantGraphController controller, int id, float max)
+        protected DescantComponent(DescantConversationController controller, int id, float max)
         {
             ID = id;
             MaxQuantity = max;

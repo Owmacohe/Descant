@@ -7,7 +7,7 @@ namespace Runtime.Components.Nodes
     {
         public string Ending { get; }
         
-        public EndingType(DescantGraphController controller, int id, string ending)
+        public EndingType(DescantConversationController controller, int id, string ending)
             : base(controller, id, DescantNodeType.End, 1)
         {
             Ending = ending;

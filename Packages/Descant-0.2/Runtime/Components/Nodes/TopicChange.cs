@@ -9,7 +9,7 @@ namespace Runtime.Components.Nodes
         public string Topic { get; }
         public ListChangeType Type { get; }
 
-        public TopicChange(DescantGraphController controller, int id, DescantActor actor, string topic, ListChangeType type)
+        public TopicChange(DescantConversationController controller, int id, DescantActor actor, string topic, ListChangeType type)
             : base(controller, id, DescantNodeType.Response, float.PositiveInfinity)
         {
             Actor = actor;

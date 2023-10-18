@@ -10,7 +10,7 @@ namespace Runtime.Components.Nodes
         public ValueChangeType Type { get; }
         public float Change { get; }
 
-        public StatisticChange(DescantGraphController controller, int id, DescantActor actor, string statistic, ValueChangeType type, float change)
+        public StatisticChange(DescantConversationController controller, int id, DescantActor actor, string statistic, ValueChangeType type, float change)
             : base(controller, id, DescantNodeType.Any, float.PositiveInfinity)
         {
             Actor = actor;

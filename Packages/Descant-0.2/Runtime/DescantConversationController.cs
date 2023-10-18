@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Editor;
 using Editor.Data;
+using Runtime.Components;
+using Runtime.Components.Nodes;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,19 +16,18 @@ namespace Runtime
         public RuntimeNode Previous;
         public List<RuntimeNode> Next;
 
+        public List<DescantNodeComponent> Components;
+
         public RuntimeNode(DescantNodeData data)
         {
             Data = data;
             Next = new List<RuntimeNode>();
+            Components = new List<DescantNodeComponent>();
         }
     }
     
-    public class DescantGraphController : MonoBehaviour
+    public class DescantConversationController : MonoBehaviour
     {
-        [SerializeField] DefaultAsset descantGraph;
-
-        List<RuntimeNode> nodes = new List<RuntimeNode>();
-        
         [HideInInspector] public RuntimeNode Current;
         [HideInInspector] public List<string> CurrentText;
         [HideInInspector] public float CurrentStartTime;
@@ -36,20 +37,23 @@ namespace Runtime
 
         [HideInInspector] public string Ending;
         
-        void Awake()
+        DefaultAsset descantGraph;
+        List<RuntimeNode> nodes = new List<RuntimeNode>();
+        
+        public void Initialize(DefaultAsset graph)
         {
+            descantGraph = graph;
+            
             GenerateActors();
             GenerateRuntimeNodes();
         }
 
-        void Update()
-        {
-            // TODO: call Update
-        }
-        
         void FixedUpdate()
         {
-            // TODO: call FixedUpdate
+            foreach (var i in nodes)
+                foreach (var j in i.Components)
+                    if (j is IUpdatedDescantComponent component)
+                        component.FixedUpdate();
         }
 
         void GenerateActors()
@@ -72,6 +76,8 @@ namespace Runtime
             AddToRuntimeNodes(data.ResponseNodes);
             Current = AddToRuntimeNodes(new List<DescantStartNodeData>() { data.StartNode });
             AddToRuntimeNodes(data.EndNodes);
+            
+            // TODO: generate components
             
             foreach (var i in data.Connections)
             {
@@ -125,7 +131,10 @@ namespace Runtime
                 case "End": return null;
             }
             
-            // TODO: call Invoked()
+            foreach (var i in nodes)
+                foreach (var j in i.Components)
+                    if (j is IInvokedDescantComponent component)
+                        component.Invoke();
 
             return CurrentText.Count == 0 ? null : CurrentText;
         }

@@ -1,29 +1,40 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEditor;
+using UnityEditor.Search;
+using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Runtime
 {
-    public class DescantGraphTester : MonoBehaviour
+    public class DescantConversationUI : MonoBehaviour
     {
+        [Header("Data")]
+        [SerializeField] DefaultAsset descantGraph;
+        
         [Header("UI")]
         [SerializeField] TMP_Text response;
         [SerializeField] Transform choices;
         [SerializeField] GameObject choice;
         
-        [Header("Scripts")]
-        [SerializeField] DescantGraphController controller;
+        DescantConversationController conversationController;
+
+        void Awake()
+        {
+            conversationController = gameObject.AddComponent<DescantConversationController>();
+            conversationController.Initialize(descantGraph);
+        }
 
         void Start()
         {
             DisplayNode();
         }
-
+        
         void DisplayNode(int choiceIndex = 0)
         {
-            List<string> temp = controller.Next(choiceIndex);
+            List<string> temp = conversationController.Next(choiceIndex);
             if (temp == null) return;
 
             for (int i = 0; i < choices.childCount; i++)

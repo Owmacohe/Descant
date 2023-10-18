@@ -5,7 +5,7 @@ namespace Runtime.Components.Nodes
 {
     public class ChangedChoice : DescantNodeComponent, IInvokedDescantComponent
     {
-        public int Choice { get; } // base 0
+        public int Choice { get; } // base 1
         public DescantActor Actor { get; }
         public ComparisonType TypeComparison { get; }
         public string Name { get; }
@@ -13,7 +13,7 @@ namespace Runtime.Components.Nodes
         public float Requirement { get; }
         public string Change { get; }
         
-        public ChangedChoice(DescantGraphController controller, int id, int choice, DescantActor actor, ComparisonType typeComparison, string name, OperationType typeOperation, float requirement, string change)
+        public ChangedChoice(DescantConversationController controller, int id, int choice, DescantActor actor, ComparisonType typeComparison, string name, OperationType typeOperation, float requirement, string change)
             : base(controller, id, DescantNodeType.Choice, float.PositiveInfinity)
         {
             Choice = choice;

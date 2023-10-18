@@ -11,7 +11,7 @@ namespace Runtime.Components.Nodes
     {
         DescantNodeType Type { get; }
         
-        protected DescantNodeComponent(DescantGraphController controller, int id, DescantNodeType type, float max)
+        protected DescantNodeComponent(DescantConversationController controller, int id, DescantNodeType type, float max)
             : base(controller, id, max)
         {
             Type = type;

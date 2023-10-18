@@ -9,7 +9,7 @@ namespace Runtime.Components.Nodes
         public float Time { get; }
         public bool TimerVisible { get; }
         
-        public TimedChoice(DescantGraphController controller, int id, float time, bool timerVisible)
+        public TimedChoice(DescantConversationController controller, int id, float time, bool timerVisible)
             : base(controller, id, DescantNodeType.Choice, 1)
         {
             Time = time;

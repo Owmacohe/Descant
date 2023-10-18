@@ -8,7 +8,7 @@ namespace Runtime.Components.Nodes
         public DescantActor Actor { get; }
         public string Statistic { get; }
 
-        public StatisticReveal(DescantGraphController controller, int id, DescantActor actor, string statistic)
+        public StatisticReveal(DescantConversationController controller, int id, DescantActor actor, string statistic)
             : base(controller, id, DescantNodeType.Any, float.PositiveInfinity)
         {
             Actor = actor;

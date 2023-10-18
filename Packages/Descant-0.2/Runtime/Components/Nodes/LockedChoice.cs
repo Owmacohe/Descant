@@ -12,7 +12,7 @@ namespace Runtime.Components.Nodes
         public OperationType TypeOperation { get; }
         public float Requirement { get; }
         
-        public LockedChoice(DescantGraphController controller, int id, int choice, DescantActor actor, ComparisonType typeComparison, string name, OperationType typeOperation, float requirement)
+        public LockedChoice(DescantConversationController controller, int id, int choice, DescantActor actor, ComparisonType typeComparison, string name, OperationType typeOperation, float requirement)
             : base(controller, id, DescantNodeType.Choice, float.PositiveInfinity)
         {
             Choice = choice;
