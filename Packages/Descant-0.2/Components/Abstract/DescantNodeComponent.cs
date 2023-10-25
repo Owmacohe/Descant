@@ -1,20 +1,32 @@
-﻿using Editor.Nodes;
+﻿using System;
+using Editor.Nodes;
+using Runtime;
 
-namespace Runtime.Components.Nodes
+namespace Components
 {
     public enum ComparisonType { Statistic, Topic, Relationship, ReAttempts }
     public enum OperationType { LessThan, LessThanOrEqualTo, EqualTo, GreaterThanOrEqualTo, GreaterThan, NotEqualTo }
     public enum ValueChangeType { IncreaseBy, DecreaseBy, Set }
     public enum ListChangeType { Add, Remove }
     
+    [Serializable]
     public abstract class DescantNodeComponent : DescantComponent
     {
-        DescantNodeType Type { get; }
+        public int NodeID;
         
-        protected DescantNodeComponent(DescantConversationController controller, int id, DescantNodeType type, float max)
+        protected DescantNodeComponent(
+            DescantConversationController controller,
+            int nodeID,
+            int id,
+            float max)
             : base(controller, id, max)
         {
-            Type = type;
+            NodeID = nodeID;
+        }
+        
+        public override string ToString()
+        {
+            return base.ToString() + " (" + ID + ")";
         }
     }
 }

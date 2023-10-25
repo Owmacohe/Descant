@@ -13,7 +13,7 @@
 			"ID": 0,
 			"Position": {
 				"x": -136.0,
-				"y": -53.5
+				"y": -35.5
 			},
 			"Choices": [
 				"Choice1",
@@ -28,7 +28,7 @@
 			"ID": 0,
 			"Position": {
 				"x": 578.0,
-				"y": -260.5
+				"y": -262.5
 			},
 			"Response": "Response1"
 		},
@@ -58,8 +58,8 @@
 		"Type": "Start",
 		"ID": 0,
 		"Position": {
-			"x": -909.0,
-			"y": -419.0
+			"x": -1021.5,
+			"y": -415.0
 		}
 	},
 	"EndNodes": [
@@ -79,7 +79,7 @@
 			"ID": 0,
 			"Position": {
 				"x": 553.0,
-				"y": -319.0
+				"y": -321.0
 			},
 			"Nodes": [
 				"Response",
@@ -94,8 +94,8 @@
 			"Name": "InitialChoice",
 			"ID": 1,
 			"Position": {
-				"x": -934.0,
-				"y": -477.5
+				"x": -1046.5,
+				"y": -473.5
 			},
 			"Nodes": [
 				"Start",
@@ -152,5 +152,14 @@
 			"ToID": 0,
 			"ChoiceIndex": 0
 		}
-	]
+	],
+	"NodeComponents": [
+		
+	],
+	"references": {
+		"version": 2,
+		"RefIds": [
+			
+		]
+	}
 }

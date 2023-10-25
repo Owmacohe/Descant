@@ -78,7 +78,8 @@ namespace Editor.Nodes
             // Initializing the big response text field
             TextField response = new TextField();
             response.multiline = true;
-            extensionContainer.Add(response);
+            response.AddToClassList("response");
+            extensionContainer.Insert(0, response);
 
             // Adding a callback for when the response text is changed
             response.RegisterValueChangedCallback(callback =>

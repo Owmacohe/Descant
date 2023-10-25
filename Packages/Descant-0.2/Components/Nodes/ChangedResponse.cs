@@ -1,19 +1,24 @@
 ﻿using System;
 using Editor.Nodes;
+using Runtime;
 
-namespace Runtime.Components.Nodes
+namespace Components
 {
-    public class ChangedResponse : DescantNodeComponent, IInvokedDescantComponent
+    [Serializable]
+    public class ChangedResponse : DescantNodeComponent, IInvokedDescantComponent, IResponseNodeComponent
     {
-        public DescantActor Actor { get; }
-        public ComparisonType TypeComparison { get; }
-        public string Name { get; }
-        public OperationType TypeOperation { get; }
-        public float Requirement { get; }
-        public string Change { get; }
+        public DescantActor Actor;
+        public ComparisonType TypeComparison;
+        public string Name;
+        public OperationType TypeOperation;
+        public float Requirement;
+        public string Change;
         
-        public ChangedResponse(DescantConversationController controller, int id, DescantActor actor, ComparisonType typeComparison, string name, OperationType typeOperation, float requirement, string change)
-            : base(controller, id, DescantNodeType.Response, float.PositiveInfinity)
+        public ChangedResponse(
+            DescantConversationController controller,
+            int nodeID,
+            int id, DescantActor actor, ComparisonType typeComparison, string name, OperationType typeOperation, float requirement, string change)
+            : base(controller, nodeID, id, float.PositiveInfinity)
         {
             Actor = actor;
             TypeComparison = typeComparison;

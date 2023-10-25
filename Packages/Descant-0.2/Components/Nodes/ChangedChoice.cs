@@ -1,19 +1,26 @@
 ﻿using System;
 using Editor.Nodes;
+using Runtime;
 
-namespace Runtime.Components.Nodes
+namespace Components
 {
-    public class LockedChoice : DescantNodeComponent, IInvokedDescantComponent
+    [Serializable]
+    public class ChangedChoice : DescantNodeComponent, IInvokedDescantComponent, IChoiceNodeComponent
     {
-        public int Choice { get; } // base 0
-        public DescantActor Actor { get; }
-        public ComparisonType TypeComparison { get; }
-        public string Name { get; }
-        public OperationType TypeOperation { get; }
-        public float Requirement { get; }
+        public int Choice; // base 1
+        public DescantActor Actor;
+        public ComparisonType TypeComparison;
+        public string Name;
+        public OperationType TypeOperation;
+        public float Requirement;
+        public string Change;
         
-        public LockedChoice(DescantConversationController controller, int id, int choice, DescantActor actor, ComparisonType typeComparison, string name, OperationType typeOperation, float requirement)
-            : base(controller, id, DescantNodeType.Choice, float.PositiveInfinity)
+        public ChangedChoice(
+            DescantConversationController controller,
+            int nodeID,
+            int id,
+            int choice, DescantActor actor, ComparisonType typeComparison, string name, OperationType typeOperation, float requirement, string change)
+            : base(controller, nodeID, id, float.PositiveInfinity)
         {
             Choice = choice;
             Actor = actor;
@@ -21,6 +28,7 @@ namespace Runtime.Components.Nodes
             Name = name;
             TypeOperation = typeOperation;
             Requirement = requirement;
+            Change = change;
         }
 
         public bool Compare(float a)
@@ -55,22 +63,22 @@ namespace Runtime.Components.Nodes
             {
                 case ComparisonType.Statistic:
                     if (Compare(Actor.Statistics[Name]))
-                        Controller.CurrentText.RemoveAt(Choice);
+                        Controller.CurrentText[Choice] = Change;
                     break;
                 
                 case ComparisonType.Topic:
                     if (Actor.Topics.Contains(Name))
-                        Controller.CurrentText.RemoveAt(Choice);
+                        Controller.CurrentText[Choice] = Change;
                     break;
                 
                 case ComparisonType.Relationship:
                     if (Compare(Actor.Relationships[Name]))
-                        Controller.CurrentText.RemoveAt(Choice);
+                        Controller.CurrentText[Choice] = Change;
                     break;
                 
                 case ComparisonType.ReAttempts:
                     if (Compare(Actor.ReAttempts))
-                        Controller.CurrentText.RemoveAt(Choice);
+                        Controller.CurrentText[Choice] = Change;
                     break;
             }
         }

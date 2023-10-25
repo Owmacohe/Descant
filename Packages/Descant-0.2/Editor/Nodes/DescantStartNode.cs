@@ -47,6 +47,9 @@ namespace Editor.Nodes
                     GraphView.Editor.CheckAndSave(); // Check for autosave
                 });
             });
+            
+            // Refreshing the extensionContainer after new elements have been added to it
+            RefreshExpandedState();
         }
     }
 }

@@ -58,8 +58,9 @@ namespace Editor.Nodes
             // Initializing the button to add new possible choices
             Button addChoice = new Button();
             addChoice.text = "Add Choice";
+            addChoice.AddToClassList("add_choice");
             addChoice.clicked += () => AddChoice();
-            extensionContainer.Add(addChoice);
+            extensionContainer.Insert(0, addChoice);
             
             // Refreshing the extensionContainer after new elements have been added to it
             RefreshExpandedState();

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Components;
+using Editor.Nodes;
 using UnityEngine;
 
 namespace Editor.Data
@@ -37,6 +39,9 @@ namespace Editor.Data
         
         public List<DescantConnectionData> Connections;
 
+        [SerializeReference]
+        public List<DescantNodeComponent> NodeComponents;
+
         public DescantGraphData(string name)
         {
             Name = name;
@@ -48,6 +53,7 @@ namespace Editor.Data
             EndNodes = new List<DescantEndNodeData>();
             Groups = new List<DescantGroupData>();
             Connections = new List<DescantConnectionData>();
+            NodeComponents = new List<DescantNodeComponent>();
         }
 
         public override bool Equals(object other)
@@ -80,6 +86,13 @@ namespace Editor.Data
             
             foreach (var m in Connections)
                 temp += "\n\t" + m;
+            
+            // TODO
+            
+            /*
+            foreach (var n in NodeComponents)
+                temp += "\n\t" + n;
+            */
             
             return GetType() + " (" + Name + " " + Autosave + " " +
                    ChoiceNodeID + " " + ResponseNodeID + " " + EndNodeID + " " + GroupID + ")" +

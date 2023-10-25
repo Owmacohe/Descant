@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Components;
 using Editor.Window;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -28,6 +32,8 @@ namespace Editor.Nodes
         public int ID { get; set; }
         
         public DescantNodeType Type { get; protected set; }
+        
+        // TODO: component IDs
 
         /// <summary>
         /// Used by Descant graph nodes to update their IDs and save when changes have been made to them
@@ -91,8 +97,42 @@ namespace Editor.Nodes
                 RegisterCallback(new EventCallback<MouseLeaveEvent>(callback =>
                 {
                     GraphView.Editor.CheckAndSave(); // Check for autosave
-                }));   
+                }));
             }
+            
+            List<string> nodeComponentNames = DescantUtilities.TrimmedNodeComponentTypes(
+                DescantUtilities.GetAllNodeComponentTypes()
+                .Where(type =>
+                    (typeof(IChoiceNodeComponent).IsAssignableFrom(type) && Type.Equals(DescantNodeType.Choice)) ||
+                    (typeof(IResponseNodeComponent).IsAssignableFrom(type) && Type.Equals(DescantNodeType.Response)) ||
+                    (typeof(IStartNodeComponent).IsAssignableFrom(type) && Type.Equals(DescantNodeType.Start)) ||
+                    (typeof(IEndNodeComponent).IsAssignableFrom(type) && Type.Equals(DescantNodeType.End))
+                )
+                .ToList());
+
+            PopupField<string> componentDropdown = new PopupField<string>(nodeComponentNames, 0);
+            componentDropdown.AddToClassList("node_component_dropdown");
+            componentDropdown.value = "Add Component";
+            extensionContainer.Add(componentDropdown);
+
+            componentDropdown.RegisterValueChangedCallback(callback =>
+            {
+                string value = callback.newValue;
+
+                if (value != "Add Component")
+                {
+                    DescantNodeComponentElement temp = new DescantNodeComponentElement(GraphView, value);
+                    
+                    extensionContainer.Add(temp);
+                    temp.Draw();
+                    
+                    RefreshExpandedState();
+                }
+                
+                componentDropdown.value = "Add Component";
+                
+                GraphView.Editor.CheckAndSave(); // Check for autosave
+            });
         }
 
         /// <summary>

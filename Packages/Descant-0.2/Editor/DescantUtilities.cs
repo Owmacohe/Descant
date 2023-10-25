@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Components;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -243,6 +246,21 @@ namespace Editor
                     return false;
             
             return true;
+        }
+
+        public static List<Type> GetAllNodeComponentTypes()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(domainAssembly => domainAssembly.GetTypes())
+                .Where(type => type.IsSubclassOf(typeof(DescantNodeComponent)))
+                .ToList();
+        }
+
+        public static List<string> TrimmedNodeComponentTypes(List<Type> types)
+        {
+            return types
+                .Select(type => type.ToString().Substring(11))
+                .ToList();
         }
 
         #endregion

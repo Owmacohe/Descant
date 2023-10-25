@@ -1,8 +1,12 @@
-﻿namespace Runtime.Components.Actors
+﻿using System;
+using Runtime;
+
+namespace Components
 {
+    [Serializable]
     public abstract class DescantActorComponent : DescantComponent
     {
-        DescantActorType Type { get; }
+        DescantActorType Type;
         
         protected DescantActorComponent(DescantConversationController controller, int id, DescantActorType type, float max)
             : base(controller, id, max)
