@@ -1,0 +1,17 @@
+{
+    "name": "omch.descant.project",
+    "rootNamespace": "",
+    "references": [
+        "Unity.TextMeshPro",
+        "omch.descant.package"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
