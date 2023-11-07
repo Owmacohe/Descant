@@ -31,6 +31,7 @@ namespace DescantEditor
             return Equals((DescantNodeData)other);
         }
 
+#if UNITY_EDITOR
         protected bool Equals(DescantNodeData other)
         {
             return
@@ -39,6 +40,7 @@ namespace DescantEditor
                 Position == other.Position &&
                 DescantEditorUtilities.AreListsEqual(NodeComponents, other.NodeComponents);
         }
+#endif
 
         public override string ToString()
         {
@@ -65,12 +67,14 @@ namespace DescantEditor
             return Equals((DescantChoiceNodeData)other);
         }
         
+#if UNITY_EDITOR
         public bool Equals(DescantChoiceNodeData other)
         {
             return
                 base.Equals(other) &&
                 DescantEditorUtilities.AreListsEqual(Choices, other.Choices);
         }
+#endif
         
         public override string ToString()
         {

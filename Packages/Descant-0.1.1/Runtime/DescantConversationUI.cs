@@ -14,7 +14,7 @@ namespace DescantRuntime
         
         [Header("UI")]
         [SerializeField] TMP_Text response;
-        [SerializeField] LayoutGroup choices;
+        [SerializeField] Transform choices;
         [SerializeField] GameObject choice;
         
         DescantConversationController conversationController;
@@ -34,8 +34,8 @@ namespace DescantRuntime
             List<string> temp = conversationController.Next(choiceIndex);
             if (temp == null) return;
             
-            for (int i = 0; i < choices.transform.childCount; i++)
-                Destroy(choices.transform.GetChild(i).gameObject);
+            for (int i = 0; i < choices.childCount; i++)
+                Destroy(choices.GetChild(i).gameObject);
     
             if (temp.Count == 1)
             {
@@ -46,7 +46,7 @@ namespace DescantRuntime
             {
                 for (int j = 0; j < temp.Count; j++)
                 {
-                    GameObject tempChoice = Instantiate(choice, choices.transform);
+                    GameObject tempChoice = Instantiate(choice, choices);
                     tempChoice.GetComponentInChildren<TMP_Text>().text = temp[j]; 
                     
                     var copy = j;

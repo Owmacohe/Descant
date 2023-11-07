@@ -1,4 +1,5 @@
-﻿using DescantEditor;
+﻿#if UNITY_EDITOR
+using DescantEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -97,3 +98,4 @@ namespace DescantEditor
         }
     }
 }
+#endif

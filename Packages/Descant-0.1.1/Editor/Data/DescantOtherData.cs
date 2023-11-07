@@ -30,6 +30,7 @@ namespace DescantEditor
             return Equals((DescantGroupData)other);
         }
         
+#if UNITY_EDITOR
         public bool Equals(DescantGroupData other)
         {
             return
@@ -39,6 +40,7 @@ namespace DescantEditor
                 DescantEditorUtilities.AreListsEqual(Nodes, other.Nodes) &&
                 DescantEditorUtilities.AreListsEqual(NodeIDs, other.NodeIDs);
         }
+#endif
         
         public override string ToString()
         {

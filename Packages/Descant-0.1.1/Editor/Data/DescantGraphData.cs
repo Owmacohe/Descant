@@ -88,6 +88,7 @@ namespace DescantEditor
                    (temp.Length > 1 ? temp : "");
         }
 
+#if UNITY_EDITOR
         /// <summary>
         /// Saves all the data from this graph to its path
         /// </summary>
@@ -102,6 +103,7 @@ namespace DescantEditor
                 Application.dataPath + "/" + Path,
                 DescantEditorUtilities.FormatJSON(JsonUtility.ToJson(this)));
         }
+#endif
 
         /// <summary>
         /// Loads and returns a new graph from a full disc path
