@@ -8,9 +8,11 @@ namespace Descant.Package.Components
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Response)]
     public class TopicChange : DescantNodeComponent, IInvokedDescantComponent
     {
-        [InlineGroup(0)] public string ActorName;
-        [InlineGroup(1)] public string TopicName;
-        [InlineGroup(1)] public ListChangeType ChangeType;
+        [Inline] public string ActorName;
+        
+        [ParameterGroup("Topic to change")] public string TopicName;
+        
+        [ParameterGroup("Change to perform")] public ListChangeType ChangeType;
 
         public TopicChange(
             DescantConversationController controller,

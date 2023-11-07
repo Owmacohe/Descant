@@ -1,7 +1,6 @@
 ﻿using System;
 using Descant.Package.Editor.Nodes;
 using Descant.Package.Runtime;
-using UnityEngine.Serialization;
 
 namespace Descant.Package.Components
 {
@@ -9,40 +8,42 @@ namespace Descant.Package.Components
     public class RelationshipChange :
         DescantNodeComponent, IInvokedDescantComponent
     {
-        [InlineGroup(1)] public string ActorName;
-        [InlineGroup(1)] public string OtherActorName;
-        [InlineGroup(2)] public OperationType OperationType;
-        [InlineGroup(2)] public float OperationValue;
+        [ParameterGroup("First actor")] public string FirstActorName;
+        
+        [ParameterGroup("Second actor")] public string SecondActorName;
+        
+        [ParameterGroup("Operation to perform")] public OperationType OperationType;
+        [ParameterGroup("Operation to perform")] public float OperationValue;
 
         public RelationshipChange(
             DescantConversationController controller,
             int nodeID,
             int id,
-            string actorName, string otherActorName, OperationType operationType, float operationValue)
+            string firstActorName, string secondActorName, OperationType operationType, float operationValue)
             : base(controller, nodeID, id)
         {
-            ActorName = actorName;
-            OtherActorName = otherActorName;
+            FirstActorName = firstActorName;
+            SecondActorName = secondActorName;
             OperationType = operationType;
             OperationValue = operationValue;
         }
 
         public void Invoke()
         {
-            DescantActor actor = Controller.GetActor(ActorName);
+            DescantActor actor = Controller.GetActor(FirstActorName);
             
             switch (OperationType)
             {
                 case OperationType.IncreaseBy:
-                    actor.SetRelationship(OtherActorName, actor.Relationships[OtherActorName] + OperationValue);
+                    actor.SetRelationship(SecondActorName, actor.Relationships[SecondActorName] + OperationValue);
                     break;
                 
                 case OperationType.DecreaseBy:
-                    actor.SetRelationship(OtherActorName, actor.Relationships[OtherActorName] - OperationValue);
+                    actor.SetRelationship(SecondActorName, actor.Relationships[SecondActorName] - OperationValue);
                     break;
                 
                 case OperationType.Set:
-                    actor.SetRelationship(OtherActorName, OperationValue);
+                    actor.SetRelationship(SecondActorName, OperationValue);
                     break;
             }
         }

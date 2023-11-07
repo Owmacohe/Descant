@@ -1,5 +1,6 @@
 ﻿using System;
 using Descant.Package.Runtime;
+using UnityEngine;
 
 namespace Descant.Package.Components
 {
@@ -14,6 +15,8 @@ namespace Descant.Package.Components
             ID = id;
             Controller = controller;
         }
+        
+        // TODO: some sort of generic Equals method?
 
         public override string ToString()
         {
@@ -28,10 +31,12 @@ namespace Descant.Package.Components
         public MaxQuantityAttribute(float quantity) => Quantity = quantity;
     }
     
-    public class InlineGroupAttribute : Attribute
+    public class ParameterGroupAttribute : Attribute
     {
-        public readonly int Line;
+        public readonly string Group;
         
-        public InlineGroupAttribute(int line) => Line = line;
+        public ParameterGroupAttribute(string group) => Group = group;
     }
+    
+    public class InlineAttribute : Attribute { }
 }

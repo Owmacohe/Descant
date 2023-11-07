@@ -7,8 +7,8 @@ namespace Descant.Package.Components
     [Serializable, MaxQuantity(1), NodeType(DescantNodeType.Choice)]
     public class TimedChoice : DescantNodeComponent, IUpdatedDescantComponent
     {
-        [InlineGroup(0)] public float Time;
-        [InlineGroup(0)] public bool TimerVisible;
+        [Inline] public float Time;
+        [Inline] public bool TimerVisible;
         
         public TimedChoice(
             DescantConversationController controller,

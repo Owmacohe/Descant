@@ -7,7 +7,7 @@ namespace Descant.Package.Components
     [Serializable, MaxQuantity(1), NodeType(DescantNodeType.End)]
     public class EndingType : DescantNodeComponent, IInvokedDescantComponent
     {
-        [InlineGroup(0)] public string Ending;
+        [Inline] public string Ending;
         
         public EndingType(
             DescantConversationController controller,

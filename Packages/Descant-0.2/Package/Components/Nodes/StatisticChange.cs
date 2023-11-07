@@ -1,7 +1,6 @@
 ﻿using System;
 using Descant.Package.Editor.Nodes;
 using Descant.Package.Runtime;
-using UnityEngine.Serialization;
 
 namespace Descant.Package.Components
 {
@@ -9,10 +8,12 @@ namespace Descant.Package.Components
     public class StatisticChange :
         DescantNodeComponent, IInvokedDescantComponent
     {
-        [InlineGroup(1)] public string ActorName;
-        [InlineGroup(1)] public string StatisticName;
-        [InlineGroup(2)] public OperationType OperationType;
-        [InlineGroup(2)] public float OperationValue;
+        [Inline] public string ActorName;
+        
+        [ParameterGroup("Statistic to change")] public string StatisticName;
+        
+        [ParameterGroup("Operation to perform")] public OperationType OperationType;
+        [ParameterGroup("Operation to perform")] public float OperationValue;
 
         public StatisticChange(
             DescantConversationController controller,

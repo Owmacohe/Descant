@@ -7,7 +7,7 @@ namespace Descant.Package.Components
     [Serializable, MaxQuantity(1), NodeType(DescantNodeType.Response)]
     public class Interruptable : DescantNodeComponent, IUpdatedDescantComponent
     {
-        [InlineGroup(0)] public bool ResumeAfter;
+        [Inline] public bool ResumeAfter;
         
         public Interruptable(
             DescantConversationController controller,

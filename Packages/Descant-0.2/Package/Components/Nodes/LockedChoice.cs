@@ -1,19 +1,21 @@
 ﻿using System;
 using Descant.Package.Editor.Nodes;
 using Descant.Package.Runtime;
-using UnityEngine.Serialization;
 
 namespace Descant.Package.Components
 {
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Choice)]
     public class LockedChoice : DescantNodeComponent, IInvokedDescantComponent
     {
-        [InlineGroup(1)] public int ChoiceNumber; // base 1
-        [InlineGroup(1)] public string ActorName;
-        [InlineGroup(2)] public VariableType VariableType;
-        [InlineGroup(2)] public string VariableName;
-        [InlineGroup(3)] public ComparisonType ComparisonType;
-        [InlineGroup(3)] public float Comparison;
+        [Inline] public string ActorName;
+        
+        [ParameterGroup("Index of the choice to change (base 1)")] public int ChoiceNumber;
+        
+        [ParameterGroup("Variable to check")] public VariableType VariableType;
+        [ParameterGroup("Variable to check")] public string VariableName;
+        
+        [ParameterGroup("Comparison to make")] public ComparisonType ComparisonType;
+        [ParameterGroup("Comparison to make")] public float Comparison;
         
         public LockedChoice(
             DescantConversationController controller,

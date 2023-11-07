@@ -8,13 +8,17 @@ namespace Descant.Package.Components
     [Serializable, MaxQuantity(float.PositiveInfinity), NodeType(DescantNodeType.Choice)]
     public class ChangedChoice : DescantNodeComponent, IInvokedDescantComponent
     {
-        [InlineGroup(1)] public int ChoiceNumber; // base 1
-        [InlineGroup(1)] public string ActorName; 
-        [InlineGroup(2)] public VariableType VariableType;
-        [InlineGroup(2)] public string VariableName;
-        [InlineGroup(3)] public ComparisonType ComparisonType;
-        [InlineGroup(3)] public float Comparison;
-        [InlineGroup(4)] public string ChangeTo;
+        [Inline] public string ActorName;
+        
+        [ParameterGroup("Index of the choice to change (base 1)")] public int ChoiceNumber;
+
+        [ParameterGroup("Variable to check")] public VariableType VariableType;
+        [ParameterGroup("Variable to check")] public string VariableName;
+        
+        [ParameterGroup("Comparison to make")] public ComparisonType ComparisonType;
+        [ParameterGroup("Comparison to make")] public float Comparison;
+        
+        [ParameterGroup("Changed value")] public string ChangeTo;
         
         public ChangedChoice(
             DescantConversationController controller,

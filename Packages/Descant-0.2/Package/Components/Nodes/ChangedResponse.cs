@@ -1,19 +1,21 @@
 ﻿using System;
 using Descant.Package.Editor.Nodes;
 using Descant.Package.Runtime;
-using UnityEngine.Serialization;
 
 namespace Descant.Package.Components
 {
     [Serializable, MaxQuantity(float.PositiveInfinity), NodeType(DescantNodeType.Response)]
     public class ChangedResponse : DescantNodeComponent, IInvokedDescantComponent
     {
-        [InlineGroup(0)] public string ActorName;
-        [InlineGroup(1)] public VariableType VariableType;
-        [InlineGroup(1)] public string VariableName;
-        [InlineGroup(2)] public ComparisonType ComparisonType;
-        [InlineGroup(2)] public float Comparison;
-        [InlineGroup(3)] public string ChangeTo;
+        [Inline] public string ActorName;
+        
+        [ParameterGroup("Variable to check")] public VariableType VariableType;
+        [ParameterGroup("Variable to check")] public string VariableName;
+        
+        [ParameterGroup("Comparison to make")] public ComparisonType ComparisonType;
+        [ParameterGroup("Comparison to make")] public float Comparison;
+        
+        [ParameterGroup("Changed value")] public string ChangeTo;
         
         public ChangedResponse(
             DescantConversationController controller,

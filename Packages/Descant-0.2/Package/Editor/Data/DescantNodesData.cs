@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Descant.Package.Components;
 using UnityEngine;
 
 namespace Descant.Package.Editor.Data
@@ -13,6 +14,8 @@ namespace Descant.Package.Editor.Data
         public string Type;
         public int ID;
         public Vector2 Position;
+        
+        [SerializeReference] public List<DescantNodeComponent> NodeComponents;
 
         protected DescantNodeData(string name, string type, int id, Vector2 position)
         {
@@ -20,6 +23,7 @@ namespace Descant.Package.Editor.Data
             Type = type;
             ID = id;
             Position = position;
+            NodeComponents = new List<DescantNodeComponent>();
         }
 
         public override bool Equals(object other)
@@ -32,7 +36,8 @@ namespace Descant.Package.Editor.Data
             return
                 Name == other.Name &&
                 ID == other.ID &&
-                Position == other.Position;
+                Position == other.Position &&
+                DescantUtilities.AreListsEqual(NodeComponents, other.NodeComponents);
         }
 
         public override string ToString()

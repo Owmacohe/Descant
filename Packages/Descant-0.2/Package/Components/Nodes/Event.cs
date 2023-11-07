@@ -9,21 +9,24 @@ namespace Descant.Package.Components
     public class Event :
         DescantNodeComponent, IInvokedDescantComponent
     {
-        public UnityEvent UnityEvent; // TODO: find a way to visualize this
+        [ParameterGroup("Event to call")] public string ScriptName;
+        [ParameterGroup("Event to call")] public string Parameter;
         
         public Event(
             DescantConversationController controller,
             int nodeID,
             int id,
-            UnityEvent unityEvent)
+            string scriptName, string parameter)
             : base(controller, nodeID, id)
         {
-            UnityEvent = unityEvent;
+            ScriptName = scriptName;
+            Parameter = parameter;
         }
 
         public void Invoke()
         {
-            UnityEvent.Invoke();
+            // TODO: call method using
+            // ScriptName and Parameter
         }
     }
 }

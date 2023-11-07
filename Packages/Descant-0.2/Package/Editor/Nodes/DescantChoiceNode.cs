@@ -83,13 +83,16 @@ namespace Descant.Package.Editor.Nodes
             output.RegisterCallback<MouseUpEvent>(callback =>
             {
                 GraphView.Editor.CheckAndSave(); // Check for autosave
-                
-                // Adding a callback to the new connection itself, to trigger when it is deleted
-                output.connections.ElementAt(output.connections.Count() - 1)
-                    .RegisterCallback<MouseUpEvent>(callback =>
+
+                if (output.connected)
                 {
-                    GraphView.Editor.CheckAndSave(); // Check for autosave
-                });
+                    // Adding a callback to the new connection itself, to trigger when it is deleted
+                    output.connections.ElementAt(output.connections.Count() - 1)
+                        .RegisterCallback<MouseUpEvent>(callback =>
+                        {
+                            GraphView.Editor.CheckAndSave(); // Check for autosave
+                        });   
+                }
             });
 
             // Initializing the new choice's text field

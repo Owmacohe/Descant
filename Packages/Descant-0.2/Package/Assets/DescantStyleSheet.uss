@@ -73,6 +73,10 @@ Toolbar Toggle VisualElement {
     margin: 2;
 }
 
+.node_component_dropdown {
+    margin-bottom: 4;
+}
+
 .node_component_dropdown .unity-text-element {
     color: var(--descant-color-background);
     font-size: 18;
@@ -248,13 +252,23 @@ DescantResponseNode #contents .response TextElement {
     margin-bottom: 15;
 }
 
-.node_component .node_component_row {
-    flex-direction: row;
-    /*overflow: scroll;*/
+.node_component .node_component_group {
+    flex-direction: column;
+    
+    margin-top: 15;
+    padding: 5;
+
+    background-color: var(--descant-color-light);
 }
 
-.node_component .node_component_row .node_component_row_label {
-    width: 30;
+.node_component .node_component_row {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.node_component .node_component_group_name {
+    background-color: var(--descant-color-background);
+    margin: 5;
 }
 
 .node_component Button {

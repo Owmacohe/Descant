@@ -5,6 +5,7 @@ using System.Reflection;
 using Descant.Package.Components;
 using Descant.Package.Editor.Nodes;
 using Descant.Package.Editor.Window;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -17,7 +18,9 @@ namespace Descant.Package.Components
         DescantGraphView GraphView;
         DescantNode Node;
         List<VisualElement> ParamRows;
-        
+        List<string> ParamRowGroups;
+        VisualElement Collabsible;
+
         public DescantNodeComponentVisualElement(DescantGraphView graphView, DescantNode node, string name)
         {
             GraphView = graphView;
@@ -30,33 +33,57 @@ namespace Descant.Package.Components
             AddToClassList("node_component");
             
             ParamRows = new List<VisualElement>();
+            ParamRowGroups = new List<string>();
 
             VisualElement top_row = new VisualElement();
             top_row.AddToClassList("node_component_row");
             Add(top_row);
-            ParamRows.Add(top_row);
+
+            VisualElement top_row_left = new VisualElement();
+            top_row_left.AddToClassList("node_component_row");
+            top_row.Add(top_row_left);
+            ParamRows.Add(top_row_left);
+            ParamRowGroups.Add("");
             
             Button removeComponent = new Button();
             removeComponent.text = "X";
             removeComponent.clicked += RemoveComponent;
-            top_row.Add(removeComponent);
+            top_row_left.Add(removeComponent);
             
             TextElement name = new TextElement();
             name.text = Name;
-            top_row.Add(name);
+            top_row_left.Add(name);
+            
+            Button collapseComponent = new Button();
+            collapseComponent.text = "v";
+            collapseComponent.clicked += delegate
+            {
+                if (Collabsible.visible)
+                {
+                    collapseComponent.text = "^";
+                    Collabsible.visible = false;
+                    Collabsible.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+                }
+                else
+                {
+                    collapseComponent.text = "v";
+                    Collabsible.visible = true;
+                    Collabsible.style.display = new StyleEnum<DisplayStyle>();
+                }
+            };
+            top_row.Add(collapseComponent);
+
+            Collabsible = new VisualElement();
+            Add(Collabsible);
 
             ScrollView paramRow1 = new ScrollView();
             paramRow1.mode = ScrollViewMode.Horizontal;
             paramRow1.horizontalScrollerVisibility = ScrollerVisibility.Auto;
             paramRow1.verticalScrollerVisibility = ScrollerVisibility.Hidden;
             paramRow1.AddToClassList("node_component_row");
-            Add(paramRow1);
+            Collabsible.Add(paramRow1);
             ParamRows.Add(paramRow1);
-
-            TextElement row1Label = new TextElement();
-            row1Label.text = "1";
-            row1Label.AddToClassList("node_component_row_label");
-            paramRow1.Add(row1Label);
+            ParamRowGroups.Add("");
 
             List<Type> types = DescantUtilities.GetAllNodeComponentTypes();
 
@@ -123,6 +150,10 @@ namespace Descant.Package.Components
                             GraphView.Editor.CheckAndSave(); // Check for autosave
                         });
                     }
+                    else if (i.FieldType == typeof(Event))
+                    {
+                        // TODO
+                    }
                 }
             }
 
@@ -138,35 +169,49 @@ namespace Descant.Package.Components
         {
             try
             {
-                int line = (((InlineGroupAttribute) info.GetCustomAttributes(
-                    typeof(InlineGroupAttribute),
+                string unused = ((InlineAttribute) info.GetCustomAttributes(
+                    typeof(InlineAttribute),
                     true
-                ).FirstOrDefault())!).Line;
+                ).FirstOrDefault())!.ToString();
                 
-                if (line >= ParamRows.Count)
+                ParamRows[0].Insert(2, elem);
+            }
+            catch
+            {
+                try
                 {
-                    for (int i = 0; i < (line + 1) - ParamRows.Count; i++)
+                    string group = ((ParameterGroupAttribute) info.GetCustomAttributes(
+                        typeof(ParameterGroupAttribute),
+                        true
+                    ).FirstOrDefault())!.Group;
+                
+                    if (!ParamRowGroups.Contains(group))
                     {
+                        VisualElement groupRow = new VisualElement();
+                        groupRow.AddToClassList("node_component_group");
+                        Collabsible.Add(groupRow);
+                        
+                        TextElement groupName = new TextElement();
+                        groupName.text = group;
+                        groupName.AddToClassList("node_component_group_name");
+                        groupRow.Add(groupName);
+                        
                         ScrollView paramRow = new ScrollView();
                         paramRow.mode = ScrollViewMode.Horizontal;
                         paramRow.horizontalScrollerVisibility = ScrollerVisibility.Auto;
                         paramRow.verticalScrollerVisibility = ScrollerVisibility.Hidden;
                         paramRow.AddToClassList("node_component_row");
-                        Add(paramRow);
+                        groupRow.Add(paramRow);
                         ParamRows.Add(paramRow);
-                        
-                        TextElement rowLabel = new TextElement();
-                        rowLabel.text = (ParamRows.Count - 1).ToString();
-                        rowLabel.AddToClassList("node_component_row_label");
-                        paramRow.Add(rowLabel);
+                        ParamRowGroups.Add(group);
                     }
-                }
             
-                ParamRows[line].Add(elem);
-            }
-            catch
-            {
-                ParamRows[1].Add(elem);
+                    ParamRows[ParamRowGroups.IndexOf(group)].Add(elem);
+                }
+                catch
+                {
+                    ParamRows[1].Add(elem);
+                }   
             }
         }
 

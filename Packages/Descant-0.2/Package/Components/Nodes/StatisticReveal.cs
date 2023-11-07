@@ -9,8 +9,9 @@ namespace Descant.Package.Components
     public class StatisticReveal :
         DescantNodeComponent, IInvokedDescantComponent
     {
-        [InlineGroup(1)] public string ActorName;
-        [InlineGroup(1)] public string StatisticName;
+        [Inline] public string ActorName;
+        
+        [ParameterGroup("Statistic to change")] public string StatisticName;
 
         public StatisticReveal(
             DescantConversationController controller,
