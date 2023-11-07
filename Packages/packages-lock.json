@@ -181,7 +181,7 @@
       "url": "https://packages.unity.com"
     },
     "descant": {
-      "version": "file:Descant-0.2",
+      "version": "file:Descant-0.1.1",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
