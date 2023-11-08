@@ -12,16 +12,17 @@ namespace DescantEditor
     public static class DescantFileHandler
     {
         /// <summary>
-        /// Checks to see whether the file with the supplied instanceID has the file type .desc
+        /// Checks to see whether the file with the supplied instanceID has the file type .desc.json
         /// </summary>
         /// <param name="instanceID">The instanceID of the file being checked</param>
         /// <returns>Whether the file is a Descant file</returns>
         static bool IsDescantFile(int instanceID)
         {
             string path = DescantEditorUtilities.GetFullPathFromInstanceID(instanceID);
-            return path.Substring(path.Length - 5) == ".desc";
+            return path.Substring(path.Length - 10) == ".desc.json";
         }
         
+        /*
         /// <summary>
         /// *[CURRENTLY NOT WORKING]*
         /// Opens a Descant file when it is double-clicked upon
@@ -41,6 +42,7 @@ namespace DescantEditor
 
             return false;
         }
+        */
         
         /// <summary>
         /// Project view contextual menu edit option for Descant files
@@ -73,7 +75,7 @@ namespace DescantEditor
                 File.ReadAllText(
                     Application.dataPath + "/" +
                     DescantEditorUtilities.GetCurrentLocalDirectory() +
-                    "New Descant Graph.desc"
+                    "New Descant Graph.desc.json"
                 );
             }
             // If it doesn't, we create a new one

@@ -96,7 +96,7 @@ namespace DescantEditor
         public void Save(bool newFile)
         {
             // Setting the local path if this is the first time
-            if (newFile) Path = DescantEditorUtilities.GetCurrentLocalDirectory() + Name + ".desc";
+            if (newFile) Path = DescantEditorUtilities.GetCurrentLocalDirectory() + Name + ".desc.json";
             
             // Saving to the full path
             File.WriteAllText(
@@ -110,9 +110,19 @@ namespace DescantEditor
         /// </summary>
         /// <param name="fullPath">The full disc path to the file</param>
         /// <returns>A loaded Descant graph</returns>
-        public static DescantGraphData Load(string fullPath)
+        public static DescantGraphData LoadFromPath(string fullPath)
         {
-            return JsonUtility.FromJson<DescantGraphData>(File.ReadAllText(fullPath));
+            return LoadFromString(File.ReadAllText(fullPath));
+        }
+        
+        /// <summary>
+        /// Loads and returns a new graph from a JSON-formatted string
+        /// </summary>
+        /// <param name="str">The string containing all the data for the graph</param>
+        /// <returns>A loaded Descant graph</returns>
+        public static DescantGraphData LoadFromString(string str)
+        {
+            return JsonUtility.FromJson<DescantGraphData>(str);
         }
 
         /// <summary>
@@ -122,12 +132,16 @@ namespace DescantEditor
         public void CleanUpConnections(int checksToPerform = 2)
         {
             for (int i = 0; i < Connections.Count; i++)
+            {
                 for (int j = i + 1; j < Connections.Count; j++)
+                {
                     if (Connections[j].Equals(Connections[i]) ||
                         Connections[j].IllegalChoiceFrom() ||
                         Connections[j].ToItself())
                         Connections.RemoveAt(j);
-            
+                }
+            }
+
             // Multiple checks are usually performed just to make sure it's all nicely cleaned up
             if (checksToPerform > 1) CleanUpConnections(--checksToPerform);
         }

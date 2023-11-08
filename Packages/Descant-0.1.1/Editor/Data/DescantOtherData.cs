@@ -88,6 +88,10 @@ namespace DescantEditor
                 ChoiceIndex == other.ChoiceIndex;
         }
 
+        /// <summary>
+        /// Checks to make sure that the connection isn't an illegal one coming from a Choice node's input port
+        /// </summary>
+        /// <returns>Whether this connection is illegally coming from a Choice node's input port</returns>
         public bool IllegalChoiceFrom()
         {
             return From.Trim() == "Choice" && ChoiceIndex == 0;

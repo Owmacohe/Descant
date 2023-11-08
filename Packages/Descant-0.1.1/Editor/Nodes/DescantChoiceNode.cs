@@ -47,13 +47,16 @@ namespace DescantEditor
             input.RegisterCallback<MouseUpEvent>(callback =>
             {
                 GraphView.Editor.CheckAndSave(); // Check for autosave
-                
-                // Adding a callback to the new connection itself, to trigger when it is deleted
-                input.connections.ElementAt(input.connections.Count() - 1)
-                    .RegisterCallback<MouseUpEvent>(callback =>
+
+                if (input.connected)
                 {
-                    GraphView.Editor.CheckAndSave(); // Check for autosave
-                });
+                    // Adding a callback to the new connection itself, to trigger when it is deleted
+                    input.connections.ElementAt(input.connections.Count() - 1)
+                        .RegisterCallback<MouseUpEvent>(callback =>
+                    {
+                        GraphView.Editor.CheckAndSave(); // Check for autosave
+                    });
+                }
             });
 
             // Initializing the button to add new possible choices
@@ -90,9 +93,9 @@ namespace DescantEditor
                     // Adding a callback to the new connection itself, to trigger when it is deleted
                     output.connections.ElementAt(output.connections.Count() - 1)
                         .RegisterCallback<MouseUpEvent>(callback =>
-                        {
-                            GraphView.Editor.CheckAndSave(); // Check for autosave
-                        });   
+                    {
+                        GraphView.Editor.CheckAndSave(); // Check for autosave
+                    });
                 }
             });
 

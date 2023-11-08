@@ -221,9 +221,9 @@ namespace DescantEditor
                     if (ii == 0)
                     {
                         // Creating DescantConnectionData objects for each incoming connection
-                        if (ports[ii].connections.Any())
+                        foreach (var iii in ports[ii].connections)
                         {
-                            DescantNode outputNode = (DescantNode)ports[ii].connections.ElementAt(0).output.node;
+                            DescantNode outputNode = (DescantNode)iii.output.node;
                     
                             temp.Connections.Add(new DescantConnectionData(
                                 outputNode.Type.ToString(),
@@ -437,7 +437,7 @@ namespace DescantEditor
             {
                 lastLoaded = fullPath;
 
-                data = DescantGraphData.Load(fullPath);
+                data = DescantGraphData.LoadFromPath(fullPath);
                 
                 // Reloading the name and path, in case they got changed after the last time this file was loaded
                 data.Name = DescantEditorUtilities.GetDescantFileNameFromPath(fullPath);

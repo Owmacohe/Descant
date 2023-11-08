@@ -184,7 +184,9 @@
       "version": "file:Descant-0.1.1",
       "depth": 0,
       "source": "embedded",
-      "dependencies": {}
+      "dependencies": {
+        "com.unity.textmeshpro": "0.0.1-security"
+      }
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

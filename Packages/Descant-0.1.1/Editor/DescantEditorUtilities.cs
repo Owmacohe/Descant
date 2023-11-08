@@ -1,7 +1,6 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -100,9 +99,12 @@ namespace DescantEditor
         {
             string temp = ""; // The string to copy sections of the original text into
             string currentIndent = ""; // The current string of indents (will shrink and grow throughout the process)
+            bool isInQuotation = false;
 
             foreach (char i in json)
             {
+                if (i is '\"') isInQuotation = !isInQuotation;
+                
                 // Indenting back after data members or objects end
                 if (i is '}' or ']')
                 {
@@ -113,7 +115,7 @@ namespace DescantEditor
                 temp += i;
  
                 // Adding a space after colons
-                if (i is ':')
+                if (i is ':' && !isInQuotation)
                     temp += ' ';
 
                 // New lines after commas
@@ -138,16 +140,16 @@ namespace DescantEditor
         /// <summary>
         /// Extracts the file name of a Descant file from its path
         /// </summary>
-        /// <param name="path">The full or local path ending in [filename].desc</param>
-        /// <returns>The name of the Descant file, without its folder structure or .desc extension</returns>
+        /// <param name="path">The full or local path ending in [filename].desc.json</param>
+        /// <returns>The name of the Descant file, without its folder structure or .desc.json extension</returns>
         public static string GetDescantFileNameFromPath(string path)
         {
             string temp = "";
             
             for (int i = 0; i < path.Length; i++)
             {
-                // Making sure we've passed the .desc at the end
-                if (i > 4)
+                // Making sure we've passed the .desc.json at the end
+                if (i > 9)
                 {
                     char c = path[path.Length - 1 - i]; // Getting the characters from the end
                     
