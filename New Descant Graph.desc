@@ -1,0 +1,32 @@
+{
+	"Name": "New Descant Graph",
+	"Path": "",
+	"Autosave": false,
+	"ChoiceNodeID": 0,
+	"ResponseNodeID": 0,
+	"EndNodeID": 0,
+	"GroupID": 0,
+	"ChoiceNodes": [
+		
+	],
+	"ResponseNodes": [
+		
+	],
+	"StartNode": {
+		"Name": "StartNode",
+		"ID": 0,
+		"Position": {
+			"x": 50.0,
+			"y": 70.0
+		}
+	},
+	"EndNodes": [
+		
+	],
+	"Groups": [
+		
+	],
+	"Connections": [
+		
+	]
+}
