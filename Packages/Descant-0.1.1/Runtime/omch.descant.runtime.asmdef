@@ -4,7 +4,8 @@
     "references": [
         "Unity.TextMeshPro",
         "omch.descant.editor",
-        "omch.descant.components"
+        "omch.descant.components",
+        "omch.descant.utilities"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -17,13 +17,18 @@ namespace DescantEditor
         
         [SerializeReference] public List<DescantNodeComponent> NodeComponents;
 
-        protected DescantNodeData(string name, string type, int id, Vector2 position)
+        protected DescantNodeData(
+            string name,
+            string type,
+            int id,
+            Vector2 position,
+            List<DescantNodeComponent> nodeComponents)
         {
             Name = name;
             Type = type;
             ID = id;
             Position = position;
-            NodeComponents = new List<DescantNodeComponent>();
+            NodeComponents = nodeComponents;
         }
 
         public override bool Equals(object other)
@@ -56,8 +61,14 @@ namespace DescantEditor
     {
         public List<string> Choices = new List<string>();
 
-        public DescantChoiceNodeData(string name, string type, int id, Vector2 position, List<string> choices)
-            : base(name, type, id, position)
+        public DescantChoiceNodeData(
+            string name,
+            string type,
+            int id,
+            Vector2 position,
+            List<string> choices,
+            List<DescantNodeComponent> nodeComponents)
+            : base(name, type, id, position, nodeComponents)
         {
             Choices = choices;
         }
@@ -95,8 +106,14 @@ namespace DescantEditor
     {
         public string Response;
         
-        public DescantResponseNodeData(string name, string type, int id, Vector2 position, string response)
-            : base(name, type, id, position)
+        public DescantResponseNodeData(
+            string name,
+            string type,
+            int id,
+            Vector2 position,
+            string response,
+            List<DescantNodeComponent> nodeComponents)
+            : base(name, type, id, position, nodeComponents)
         {
             Response = response;
         }
@@ -125,8 +142,12 @@ namespace DescantEditor
     [Serializable]
     public class DescantStartNodeData : DescantNodeData
     {
-        public DescantStartNodeData(string name, string type, Vector2 position)
-            : base(name, type, 0, position) { }
+        public DescantStartNodeData(
+            string name,
+            string type,
+            Vector2 position,
+            List<DescantNodeComponent> nodeComponents)
+            : base(name, type, 0, position, nodeComponents) { }
     }
     
     /// <summary>
@@ -135,7 +156,12 @@ namespace DescantEditor
     [Serializable]
     public class DescantEndNodeData : DescantNodeData
     {
-        public DescantEndNodeData(string name, string type, int id, Vector2 position)
-            : base(name, type, id, position) { }
+        public DescantEndNodeData(
+            string name,
+            string type,
+            int id,
+            Vector2 position,
+            List<DescantNodeComponent> nodeComponents)
+            : base(name, type, id, position, nodeComponents) { }
     }
 }

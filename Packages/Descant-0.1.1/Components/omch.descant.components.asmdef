@@ -1,7 +1,9 @@
 {
     "name": "omch.descant.components",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "omch.descant.utilities"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

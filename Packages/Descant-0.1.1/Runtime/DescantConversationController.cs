@@ -72,6 +72,8 @@ namespace DescantRuntime
         /// <param name="descantGraph"></param>
         void GenerateRuntimeNodes(TextAsset descantGraph)
         {
+            nodes = new List<RuntimeNode>();
+            
             // Creating the graph data object first
             DescantGraphData data = DescantGraphData.LoadFromString(descantGraph.text);
             

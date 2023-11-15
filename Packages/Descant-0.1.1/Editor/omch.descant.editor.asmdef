@@ -2,7 +2,8 @@
     "name": "omch.descant.editor",
     "rootNamespace": "",
     "references": [
-        "omch.descant.components"
+        "omch.descant.components",
+        "omch.descant.utilities"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -6,14 +6,10 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using DescantComponents;
+using DescantUtilities;
 
 namespace DescantEditor
 {
-    /// <summary>
-    /// Enum to list all of the types of DescantNodes
-    /// </summary>
-    public enum DescantNodeType { Choice, Response, Start, End, Any }
-    
     /// <summary>
     /// Descant graph node parent class
     /// </summary>
@@ -104,8 +100,7 @@ namespace DescantEditor
                     GraphView.Editor.CheckAndSave(); // Check for autosave
                 }));
             }
-
-            /*
+            
             List<Type> nodeComponents = DescantComponentUtilities.GetAllNodeComponentTypes();
             
             List<string> nodeComponentNames = DescantComponentUtilities.TrimmedNodeComponentTypes(nodeComponents
@@ -115,11 +110,13 @@ namespace DescantEditor
                             typeof(NodeTypeAttribute),
                             true
                         ).FirstOrDefault())!).Type;
+                        
+                        Debug.Log(tempType.GetType() + " " + DescantNodeType.Any.GetType());
 
                         return tempType.Equals(DescantNodeType.Any) || Type.Equals(tempType);
                     })
                 .ToList());
-
+            
             ComponentDropdown = new PopupField<string>(nodeComponentNames, 0);
             ComponentDropdown.AddToClassList("node_component_dropdown");
             ComponentDropdown.value = "Add Component";
@@ -153,7 +150,6 @@ namespace DescantEditor
                 
                 GraphView.Editor.CheckAndSave(); // Check for autosave
             });
-            */
         }
 
         /// <summary>

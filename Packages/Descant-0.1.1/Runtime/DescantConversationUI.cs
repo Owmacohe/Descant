@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DescantUtilities;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -47,7 +48,7 @@ namespace DescantRuntime
             if (temp == null) return; // Stopping if there are no more nodes
     
             // Displaying the ResponseNodes...
-            if (temp.Count == 1)
+            if (temp.Count == 1 && conversationController.Current.Data.Type.Equals(DescantNodeType.Response.ToString()))
             {
                 response.text = temp[0];
                 // Once the response text has been shown, we skip ahead to show the player's possible choices

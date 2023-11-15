@@ -1,8 +1,8 @@
 ﻿using System;
+using DescantUtilities;
 
 namespace DescantComponents
 {
-    public enum DescantNodeType { Choice, Response, Start, End, Any }
     public enum VariableType { Statistic, Topic, Relationship, ReAttempts }
     public enum ComparisonType { LessThan, LessThanOrEqualTo, EqualTo, GreaterThanOrEqualTo, GreaterThan, NotEqualTo }
     public enum OperationType { IncreaseBy, DecreaseBy, Set }

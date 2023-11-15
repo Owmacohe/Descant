@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace DescantComponents
 {
@@ -17,7 +18,7 @@ namespace DescantComponents
         public static List<string> TrimmedNodeComponentTypes(List<Type> types)
         {
             return types
-                .Select(type => type.ToString().Substring(27))
+                .Select(type => type.ToString().Substring(18))
                 .ToList();
         }
 

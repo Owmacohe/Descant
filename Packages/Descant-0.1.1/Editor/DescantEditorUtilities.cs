@@ -106,7 +106,7 @@ namespace DescantEditor
                 if (i is '\"') isInQuotation = !isInQuotation;
                 
                 // Indenting back after data members or objects end
-                if (i is '}' or ']')
+                if (i is '}' or ']' && !isInQuotation)
                 {
                     currentIndent = currentIndent.Substring(0, currentIndent.Length - 1);
                     temp += '\n' + currentIndent;
@@ -119,11 +119,11 @@ namespace DescantEditor
                     temp += ' ';
 
                 // New lines after commas
-                if (i is ',')
+                if (i is ',' && !isInQuotation)
                     temp += '\n' + currentIndent;
 
                 // Indenting when data members or objects begin
-                if (i is '{' or '[')
+                if (i is '{' or '[' && !isInQuotation)
                 {
                     currentIndent += "\t";
                     temp += '\n' + currentIndent;
