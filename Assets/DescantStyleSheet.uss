@@ -1,0 +1,310 @@
+:root {
+    --descant-color-background: #2b2b2b;
+    --descant-color-default: rgba(51, 51, 51, 0.4);
+    --descant-color-light: rgba(51, 51, 51, 1);
+
+    --choice-highlight: lightskyblue;
+    --choice-background: rgba(90, 137, 166, 0.4);
+
+    --response-highlight: darkgoldenrod;
+    --response-background: rgba(164, 123, 19, 0.4);
+
+    --start-highlight: mediumseagreen;
+    --start-background: rgba(46, 134, 85, 0.4);
+
+    --end-highlight: firebrick;
+    --end-background: rgba(121, 23, 23, 0.4);
+
+    --unsaved: lightcoral;
+}
+
+GridBackground {
+    --grid-background-color: var(--descant-color-background);
+
+    --line-color: var(--descant-color-default);
+    --thick-line-color: var(--descant-color-light);
+
+    --spacing: 25;
+}
+
+Toolbar {
+    height: 40;
+    padding: 8;
+
+    align-items: center;
+    justify-content: space-between;
+}
+
+Toolbar .toolbar-title {
+    flex-direction: row;
+}
+
+Toolbar .toolbar-filename {
+    font-size: 18;
+}
+
+Toolbar .toolbar-unsaved {
+    font-size: 40;
+    color: var(--unsaved);
+    margin-top: -6px;
+    margin-left: 8px;
+}
+
+Toolbar .save-section {
+    flex-direction: row;
+}
+
+Toolbar Button {
+    font-size: 13;
+}
+
+Toolbar Toggle {
+    align-items: center;
+}
+
+Toolbar Toggle Label {
+    min-width: 0;
+    margin-left: 10;
+
+    font-size: 13;
+}
+
+Toolbar Toggle VisualElement {
+    margin: 2;
+}
+
+.node_component_dropdown {
+    margin-bottom: 4;
+}
+
+.node_component_dropdown .unity-text-element {
+    color: var(--descant-color-background);
+    font-size: 18;
+}
+
+DescantChoiceNode .node_component_dropdown VisualElement {
+    background-color: var(--choice-highlight);
+}
+
+DescantResponseNode .node_component_dropdown VisualElement {
+    background-color: var(--response-highlight);
+}
+
+DescantStartNode .node_component_dropdown VisualElement {
+    background-color: var(--start-highlight);
+}
+
+DescantEndNode .node_component_dropdown VisualElement {
+    background-color: var(--end-highlight);
+}
+
+.node_component_dropdown .unity-base-popup-field__arrow {
+    background-color: var(--descant-color-light);
+}
+
+DescantChoiceNode .add_choice {
+    background-color: var(--descant-color-light);
+    color: #d2d2d2;
+}
+
+DescantResponseNode .node_component_dropdown {
+    background-color: var(--response-highlight);
+    color: var(--descant-color-background);
+}
+
+DescantStartNode .node_component_dropdown {
+    background-color: var(--start-highlight);
+    color: var(--descant-color-background);
+}
+
+DescantEndNode .node_component_dropdown {
+    background-color: var(--end-highlight);
+    color: var(--descant-color-background);
+}
+
+DescantNodeGroup TextField TextElement {
+    font-size: 20;
+}
+
+DescantNodeGroup Button {
+    height: 25;
+    width: 25;
+
+    font-size: 18;
+}
+
+DescantChoiceNode #title, DescantChoiceNode #contents {
+    background-color: var(--choice-background);
+}
+
+DescantResponseNode #title, DescantResponseNode #contents {
+    background-color: var(--response-background);
+}
+
+DescantStartNode #title, DescantStartNode #contents {
+    background-color: var(--start-background);
+}
+
+DescantEndNode #title, DescantEndNode #contents {
+    background-color: var(--end-background);
+}
+
+#title .names {
+    flex-direction: row;
+    align-items: center;
+}
+
+.names .node-name {
+    font-size: 20;
+    margin: 10;
+}
+
+#title Button {
+    align-self: center;
+    height: 25;
+    width: 25;
+
+    font-size: 18;
+}
+
+DescantChoiceNode .node-name {
+    color: var(--choice-highlight);
+}
+
+DescantResponseNode .node-name {
+    color: var(--response-highlight);
+}
+
+DescantStartNode .node-name {
+    color: var(--start-highlight);
+}
+
+DescantEndNode .node-name {
+    color: var(--end-highlight);
+}
+
+.names TextField {
+    width: 80%;
+}
+
+DescantStartNode .names TextField, DescantEndNode .names TextField {
+    width: 70%;
+}
+
+.names TextField TextElement {
+    font-size: 20;
+}
+
+DescantChoiceNode #output Label {
+    font-size: 15;
+}
+
+DescantChoiceNode #input {
+    width: 10;
+    justify-content: center;
+}
+
+DescantChoiceNode #output {
+    height: auto;
+}
+
+DescantChoiceNode #output Port {
+    height: auto;
+}
+
+DescantChoiceNode #output TextField {
+    width: 350;
+}
+
+DescantChoiceNode #output TextField TextElement {
+    font-size: 15;
+    margin: 2;
+}
+
+DescantChoiceNode #contents Button,
+DescantResponseNode #contents Button,
+DescantStartNode #contents Button,
+DescantEndNode #contents Button {
+    font-size: 18;
+}
+
+DescantChoiceNode #contents #output Button {
+    height: 25;
+    width: 25;
+
+    font-size: 18;
+}
+
+DescantResponseNode #contents .response {
+    min-height: 130;
+    padding: 5;
+    white-space: normal;
+}
+
+DescantResponseNode #contents .response TextElement {
+    font-size: 18;
+    margin: 2;
+}
+
+.node_component {
+    flex-direction: column;
+
+    margin: 5;
+    margin-bottom: 15;
+}
+
+.node_component .node_component_group {
+    flex-direction: column;
+    
+    margin-top: 15;
+    padding: 5;
+
+    background-color: var(--descant-color-light);
+}
+
+.node_component .node_component_row {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.node_component .node_component_group_name {
+    background-color: var(--descant-color-background);
+    margin: 5;
+}
+
+.node_component Button {
+    align-self: center;
+}
+
+.node_component TextField,
+.node_component PopupField, .node_component Toggle {
+    background-color: var(--descant-color-background);
+    padding: 5;
+    
+    height: 35;
+}
+
+.node_component TextElement {
+    margin: 2;
+    padding: 5;
+
+    font-size: 15;
+    -unity-text-align: middle-center;
+
+    background-color: var(--descant-color-light);
+}
+
+.node_component TextField TextElement {
+    font-size: 12;
+}
+
+.node_component Label {
+    min-width: 0;
+
+    font-size: 12;
+    -unity-text-align: middle-right;
+}
+
+.node_component TextInput {
+    min-width: 40;
+}

@@ -1,0 +1,17 @@
+{
+  "name": "descant",
+  "displayName": "Descant",
+  "version": "0.1.1",
+  "unity": "2022.3",
+  "unityRelease": "7f1",
+  "dependencies": {
+    "com.unity.textmeshpro": "0.0.1-security"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Owen Hellum",
+    "email": "omch@protonmail.com",
+    "url": "https://omch.tech"
+  },
+  "description": "Descant is a Unity dialogue system plugin that aims to hit the sweet spot between quality UI, powerful features, and easy-to-lean functionality, while also addressing many of the game-specific consequences of the standard dialogue manager setup."
+}

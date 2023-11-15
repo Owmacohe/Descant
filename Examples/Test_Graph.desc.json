@@ -1,0 +1,205 @@
+{
+	"Name": "Test_Graph",
+	"Path": "/Test_Graph.desc.json",
+	"Autosave": false,
+	"ChoiceNodeID": 3,
+	"ResponseNodeID": 4,
+	"EndNodeID": 1,
+	"GroupID": 0,
+	"ChoiceNodes": [
+		{
+			"Name": "ChoiceNode",
+			"Type": "Choice",
+			"ID": 0,
+			"Position": {
+				"x": 1055.0,
+				"y": 98.0
+			},
+			"NodeComponents": [
+				
+			],
+			"Choices": [
+				"Where do I download the package?",
+				"Where is the test scene?",
+				"Who can I contect for help?"
+			]
+		},
+		{
+			"Name": "ChoiceNode",
+			"Type": "Choice",
+			"ID": 2,
+			"Position": {
+				"x": 2314.0,
+				"y": 98.0
+			},
+			"NodeComponents": [
+				
+			],
+			"Choices": [
+				"Neat!",
+				"Cool!"
+			]
+		}
+	],
+	"ResponseNodes": [
+		{
+			"Name": "ResponseNode",
+			"Type": "Response",
+			"ID": 0,
+			"Position": {
+				"x": 479.0,
+				"y": 98.0
+			},
+			"NodeComponents": [
+				
+			],
+			"Response": "Welcome to Descant! How can I help you?"
+		},
+		{
+			"Name": "ResponseNode",
+			"Type": "Response",
+			"ID": 1,
+			"Position": {
+				"x": 1666.0,
+				"y": -187.0
+			},
+			"NodeComponents": [
+				
+			],
+			"Response": "You can download it at: https://github.com/owmacohe/Descant/releases"
+		},
+		{
+			"Name": "ResponseNode",
+			"Type": "Response",
+			"ID": 2,
+			"Position": {
+				"x": 1666.0,
+				"y": 98.0
+			},
+			"NodeComponents": [
+				
+			],
+			"Response": "The test scene is located at: Descant/Examples/Test_Scene.unity"
+		},
+		{
+			"Name": "ResponseNode",
+			"Type": "Response",
+			"ID": 3,
+			"Position": {
+				"x": 1666.0,
+				"y": 395.0
+			},
+			"NodeComponents": [
+				
+			],
+			"Response": "You can contact Owen Hellum on Discord at: omch or by email at: omch@pm.me"
+		}
+	],
+	"StartNode": {
+		"Name": "StartNode",
+		"Type": "Start",
+		"ID": 0,
+		"Position": {
+			"x": 176.0,
+			"y": 98.0
+		},
+		"NodeComponents": [
+			
+		]
+	},
+	"EndNodes": [
+		{
+			"Name": "EndNode",
+			"Type": "End",
+			"ID": 0,
+			"Position": {
+				"x": 2981.0,
+				"y": 98.0
+			},
+			"NodeComponents": [
+				
+			]
+		}
+	],
+	"Groups": [
+		
+	],
+	"Connections": [
+		{
+			"From": "Response",
+			"FromID": 0,
+			"To": "Choice",
+			"ToID": 0,
+			"ChoiceIndex": 0
+		},
+		{
+			"From": "Choice",
+			"FromID": 0,
+			"To": "Response",
+			"ToID": 1,
+			"ChoiceIndex": 1
+		},
+		{
+			"From": "Choice",
+			"FromID": 0,
+			"To": "Response",
+			"ToID": 2,
+			"ChoiceIndex": 2
+		},
+		{
+			"From": "Choice",
+			"FromID": 0,
+			"To": "Response",
+			"ToID": 3,
+			"ChoiceIndex": 3
+		},
+		{
+			"From": "Response",
+			"FromID": 1,
+			"To": "Choice",
+			"ToID": 2,
+			"ChoiceIndex": 0
+		},
+		{
+			"From": "Response",
+			"FromID": 2,
+			"To": "Choice",
+			"ToID": 2,
+			"ChoiceIndex": 0
+		},
+		{
+			"From": "Response",
+			"FromID": 3,
+			"To": "Choice",
+			"ToID": 2,
+			"ChoiceIndex": 0
+		},
+		{
+			"From": "Choice",
+			"FromID": 2,
+			"To": "End",
+			"ToID": 0,
+			"ChoiceIndex": 1
+		},
+		{
+			"From": "Choice",
+			"FromID": 2,
+			"To": "End",
+			"ToID": 0,
+			"ChoiceIndex": 2
+		},
+		{
+			"From": "Start",
+			"FromID": 0,
+			"To": "Response",
+			"ToID": 0,
+			"ChoiceIndex": 0
+		}
+	],
+	"references": {
+		"version": 2,
+		"RefIds": [
+			
+		]
+	}
+}

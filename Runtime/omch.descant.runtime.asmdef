@@ -1,0 +1,19 @@
+{
+    "name": "omch.descant.runtime",
+    "rootNamespace": "",
+    "references": [
+        "Unity.TextMeshPro",
+        "omch.descant.editor",
+        "omch.descant.components",
+        "omch.descant.utilities"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
