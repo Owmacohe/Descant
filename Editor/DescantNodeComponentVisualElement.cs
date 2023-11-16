@@ -163,7 +163,7 @@ namespace DescantEditor
             {
                 Button collapseComponent = new Button();
                 collapseComponent.text = "v";
-                collapseComponent.clicked += delegate
+                collapseComponent.clicked += () =>
                 {
                     ToggleCollapseComponent(collapseComponent);
                 };

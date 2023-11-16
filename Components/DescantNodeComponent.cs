@@ -4,7 +4,7 @@ using DescantUtilities;
 
 namespace DescantComponents
 {
-    public enum VariableType { Statistic, Topic, Relationship, ReAttempts }
+    public enum VariableType { Statistic, Topic, Relationship, ConversationAttempts }
     public enum ComparisonType { LessThan, LessThanOrEqualTo, EqualTo, GreaterThanOrEqualTo, GreaterThan, NotEqualTo }
     public enum OperationType { IncreaseBy, DecreaseBy, Set }
     public enum ListChangeType { Add, Remove }

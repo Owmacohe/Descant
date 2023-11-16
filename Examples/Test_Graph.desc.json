@@ -3,9 +3,9 @@
 	"Path": "/Test_Graph.desc.json",
 	"Autosave": false,
 	"ChoiceNodeID": 3,
-	"ResponseNodeID": 4,
+	"ResponseNodeID": 6,
 	"EndNodeID": 1,
-	"GroupID": 0,
+	"GroupID": 3,
 	"ChoiceNodes": [
 		{
 			"Name": "ChoiceNode",
@@ -21,7 +21,7 @@
 			"Choices": [
 				"Where do I download the package?",
 				"Where is the test scene?",
-				"Who can I contect for help?"
+				"Who can I contact for help?"
 			]
 		},
 		{
@@ -47,7 +47,7 @@
 			"Type": "Response",
 			"ID": 0,
 			"Position": {
-				"x": 479.0,
+				"x": 495.0,
 				"y": 98.0
 			},
 			"NodeComponents": [
@@ -93,6 +93,32 @@
 				
 			],
 			"Response": "You can contact Owen Hellum on Discord at: omch or by email at: omch@pm.me"
+		},
+		{
+			"Name": "ResponseNode",
+			"Type": "Response",
+			"ID": 4,
+			"Position": {
+				"x": 2905.0,
+				"y": 98.0
+			},
+			"NodeComponents": [
+				
+			],
+			"Response": "Okay goodbye!"
+		},
+		{
+			"Name": "ResponseNode",
+			"Type": "Response",
+			"ID": 5,
+			"Position": {
+				"x": 3553.0,
+				"y": 98.0
+			},
+			"NodeComponents": [
+				
+			],
+			"Response": "Goodbye for real!"
 		}
 	],
 	"StartNode": {
@@ -113,7 +139,7 @@
 			"Type": "End",
 			"ID": 0,
 			"Position": {
-				"x": 2981.0,
+				"x": 4198.0,
 				"y": 98.0
 			},
 			"NodeComponents": [
@@ -122,7 +148,62 @@
 		}
 	],
 	"Groups": [
-		
+		{
+			"Name": "NodeGroup",
+			"ID": 0,
+			"Position": {
+				"x": 150.99998474121095,
+				"y": 38.99998474121094
+			},
+			"Nodes": [
+				"Choice",
+				"Response",
+				"Start"
+			],
+			"NodeIDs": [
+				0,
+				0,
+				0
+			]
+		},
+		{
+			"Name": "NodeGroup",
+			"ID": 1,
+			"Position": {
+				"x": 1641.0,
+				"y": -246.0
+			},
+			"Nodes": [
+				"Response",
+				"Response",
+				"Response"
+			],
+			"NodeIDs": [
+				1,
+				2,
+				3
+			]
+		},
+		{
+			"Name": "NodeGroup",
+			"ID": 2,
+			"Position": {
+				"x": 2289.0,
+				"y": 39.0
+			},
+			"Nodes": [
+				"Choice",
+				"End",
+				"Response",
+				"Response"
+			],
+			"NodeIDs": [
+				2,
+				0,
+				4,
+				5
+			]
+		}
 	],
 	"Connections": [
 		{
@@ -177,21 +258,35 @@
 		{
 			"From": "Choice",
 			"FromID": 2,
-			"To": "End",
-			"ToID": 0,
+			"To": "Response",
+			"ToID": 4,
 			"ChoiceIndex": 1
 		},
 		{
 			"From": "Choice",
 			"FromID": 2,
-			"To": "End",
-			"ToID": 0,
+			"To": "Response",
+			"ToID": 4,
 			"ChoiceIndex": 2
 		},
 		{
 			"From": "Start",
 			"FromID": 0,
 			"To": "Response",
+			"ToID": 0,
+			"ChoiceIndex": 0
+		},
+		{
+			"From": "Response",
+			"FromID": 4,
+			"To": "Response",
+			"ToID": 5,
+			"ChoiceIndex": 0
+		},
+		{
+			"From": "Response",
+			"FromID": 5,
+			"To": "End",
 			"ToID": 0,
 			"ChoiceIndex": 0
 		}

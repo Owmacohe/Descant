@@ -16,10 +16,16 @@ namespace DescantEditor
         /// </summary>
         /// <param name="instanceID">The instanceID of the file being checked</param>
         /// <returns>Whether the file is a Descant file</returns>
-        static bool IsDescantFile(int instanceID)
+        static bool IsDescantGraphFile(int instanceID)
         {
             string path = DescantEditorUtilities.GetFullPathFromInstanceID(instanceID);
             return path.Substring(path.Length - 10) == ".desc.json";
+        }
+        
+        static bool IsDescantActorFile(int instanceID)
+        {
+            string path = DescantEditorUtilities.GetFullPathFromInstanceID(instanceID);
+            return path.Substring(path.Length - 15) == ".descactor.json";
         }
         
         /*
@@ -37,7 +43,7 @@ namespace DescantEditor
             if (isDescantFile)
             {
                 Debug.Log("<b>Descant</b> | Loading file: " + path);
-                EditorWindow.GetWindow<DescantEditor>().Load(path);
+                EditorWindow.GetWindow<DescantEditor>("Descant Graph Editor").Load(path);
             }
 
             return false;
@@ -48,8 +54,8 @@ namespace DescantEditor
         /// Project view contextual menu edit option for Descant files
         /// </summary>
         [MenuItem("Assets/Edit Descant Graph")]
-        static void EditFile() {
-            EditorWindow.GetWindow<DescantEditor>().Load(
+        static void EditGraphFile() {
+            EditorWindow.GetWindow<DescantEditor>("Descant Graph Editor").Load(
                 DescantEditorUtilities.GetFullPathFromInstanceID(
                     Selection.activeObject.GetInstanceID()));
         }
@@ -59,15 +65,27 @@ namespace DescantEditor
         /// </summary>
         /// <returns>Whether the selected file is a Descant files</returns>
         [MenuItem("Assets/Edit Descant Graph", true)]
-        static bool ConfirmEditFile() {
-            return IsDescantFile(Selection.activeObject.GetInstanceID());
+        static bool ConfirmEditGraphFile() {
+            return IsDescantGraphFile(Selection.activeObject.GetInstanceID());
+        }
+        
+        [MenuItem("Assets/Edit Descant Actor")]
+        static void EditActorFile() {
+            EditorWindow.GetWindow<DescantActorEditor>("Descant Actor Editor").Load(
+                DescantEditorUtilities.GetFullPathFromInstanceID(
+                    Selection.activeObject.GetInstanceID()));
+        }
+        
+        [MenuItem("Assets/Edit Descant Actor", true)]
+        static bool ConfirmEditActorFile() {
+            return IsDescantActorFile(Selection.activeObject.GetInstanceID());
         }
 
         /// <summary>
         /// Project view contextual menu create option for Descant files
         /// </summary>
         [MenuItem("Assets/Create/Descant Graph")]
-        static void CreateNewFile()
+        static void CreateNewGraphFile()
         {
             // First checking to see if a file with the default name already exists
             try
@@ -81,7 +99,27 @@ namespace DescantEditor
             // If it doesn't, we create a new one
             catch
             {
-                EditorWindow.GetWindow<DescantEditor>().NewFile();
+                EditorWindow.GetWindow<DescantEditor>("Descant Graph Editor").NewFile();
+                AssetDatabase.Refresh(); // Refreshing the AssetDatabase so the new file shows up immediately
+            }
+        }
+        
+        [MenuItem("Assets/Create/Descant Actor")]
+        static void CreateNewActorFile()
+        {
+            // First checking to see if a file with the default name already exists
+            try
+            {
+                File.ReadAllText(
+                    Application.dataPath + "/" +
+                    DescantEditorUtilities.GetCurrentLocalDirectory() +
+                    "New Descant Actor.descactor.json"
+                );
+            }
+            // If it doesn't, we create a new one
+            catch
+            {
+                EditorWindow.GetWindow<DescantActorEditor>("Descant Actor Editor").NewFile();
                 AssetDatabase.Refresh(); // Refreshing the AssetDatabase so the new file shows up immediately
             }
         }

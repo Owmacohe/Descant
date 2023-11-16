@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using DescantUtilities;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +10,8 @@ namespace DescantRuntime
     public class DescantConversationUI : MonoBehaviour
     {
         [Header("Data")]
-        [SerializeField, Tooltip("The Descant Graph that will be played")] TextAsset descantGraph;
+        [SerializeField, Tooltip("The Descant Graph that will be played")] TextAsset graph;
+        [SerializeField] TextAsset[] actors;
         
         [Header("UI")]
         [SerializeField, Tooltip("The NPC response text")] TMP_Text response;
@@ -19,18 +19,25 @@ namespace DescantRuntime
         [SerializeField, Tooltip("The player choice prefab to be spawned with the choice text")] GameObject choice;
         
         DescantConversationController conversationController;
+        bool waitForClick;
     
         void Awake()
         {
             conversationController = gameObject.AddComponent<DescantConversationController>();
-            conversationController.Initialize(descantGraph);
+            conversationController.Initialize(graph, actors);
         }
         
         void Start()
         {
             DisplayNode();
         }
-        
+
+        void Update()
+        {
+            if (waitForClick && Input.GetButtonDown("Fire1"))
+                DisplayNode();
+        }
+
         /// <summary>
         /// Calls the Next() method in the conversation controller, gets the data, and displays it on-screen
         /// </summary>
@@ -40,6 +47,9 @@ namespace DescantRuntime
         /// </param>
         void DisplayNode(int choiceIndex = 0)
         {
+            waitForClick = false;
+            response.transform.GetChild(0).gameObject.SetActive(false);
+            
             // Destroying all the old choices
             for (int i = 0; i < choices.childCount; i++)
                 Destroy(choices.GetChild(i).gameObject);
@@ -51,8 +61,19 @@ namespace DescantRuntime
             if (temp.Count == 1 && conversationController.Current.Data.Type.Equals(DescantNodeType.Response.ToString()))
             {
                 response.text = temp[0];
-                // Once the response text has been shown, we skip ahead to show the player's possible choices
-                DisplayNode();
+
+                string nextType = conversationController.Current.Next[0].Data.Type;
+
+                if (nextType == "Response")
+                {
+                    waitForClick = true;
+                    response.transform.GetChild(0).gameObject.SetActive(true);
+                }
+                else
+                {
+                    // Once the response text has been shown, we skip ahead to show the player's possible choices
+                    DisplayNode();
+                }
             }
             // Displaying the ChoiceNodes...
             else

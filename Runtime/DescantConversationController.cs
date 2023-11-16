@@ -38,15 +38,18 @@ namespace DescantRuntime
         [HideInInspector] public RuntimeNode Current;
         
         List<RuntimeNode> nodes = new List<RuntimeNode>();
-        
+        List<DescantActor> actors = new List<DescantActor>();
+
         /// <summary>
         /// Initializes the conversation controller
         /// </summary>
         /// <param name="graph">The JSON graph to be loaded</param>
-        public void Initialize(TextAsset graph)
+        public void Initialize(TextAsset graph, TextAsset[] actors)
         {
-            GenerateActors();
             GenerateRuntimeNodes(graph);
+            
+            foreach (var i in actors)
+                this.actors.Add(DescantActorEditor.LoadFromString(i.text));
         }
 
         void FixedUpdate()
@@ -54,12 +57,6 @@ namespace DescantRuntime
             foreach (var i in nodes)
                 foreach (var j in i.Data.NodeComponents)
                     j.FixedUpdate();
-        }
-
-        void GenerateActors()
-        {
-            // TODO: from file
-            // TODO: subscribe to Actor change methods
         }
 
         /// <summary>

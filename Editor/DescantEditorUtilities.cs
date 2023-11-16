@@ -144,14 +144,14 @@ namespace DescantEditor
         /// </summary>
         /// <param name="path">The full or local path ending in [filename].desc.json</param>
         /// <returns>The name of the Descant file, without its folder structure or .desc.json extension</returns>
-        public static string GetDescantFileNameFromPath(string path)
+        public static string GetDescantFileNameFromPath(string path, bool isDescantGraph = true)
         {
             string temp = "";
             
             for (int i = 0; i < path.Length; i++)
             {
-                // Making sure we've passed the .desc.json at the end
-                if (i > 9)
+                // Making sure we've passed the .desc.json or .descactor.json at the end
+                if (i > (isDescantGraph ? 9 : 14))
                 {
                     char c = path[path.Length - 1 - i]; // Getting the characters from the end
                     

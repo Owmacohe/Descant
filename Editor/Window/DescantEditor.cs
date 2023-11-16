@@ -18,7 +18,7 @@ namespace DescantEditor
         /// </summary>
         public DescantGraphData data;
         
-        // TODO: component IDs
+        // TODO: component IDs?
         
         /// <summary>
         /// The graph view part the editor
@@ -53,10 +53,10 @@ namespace DescantEditor
         
         // TODO: ctrl-S functionality
         
-        [MenuItem("Window/Descant/Descant Editor"), MenuItem("Tools/Descant/Descant Editor")]
+        [MenuItem("Window/Descant/Descant Graph Editor"), MenuItem("Tools/Descant/Descant Graph Editor")]
         public static void Open()
         {
-            GetWindow<DescantEditor>("Descant Editor");
+            GetWindow<DescantEditor>("Descant Graph Editor");
         }
 
         void CreateGUI()
@@ -180,7 +180,7 @@ namespace DescantEditor
         /// </summary>
         void AddStyleSheet()
         {
-            StyleSheet styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/Descant/Assets/DescantStyleSheet.uss");
+            StyleSheet styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/Descant/Assets/DescantGraphEditorStyleSheet.uss");
             rootVisualElement.styleSheets.Add(styleSheet);
         }
 
