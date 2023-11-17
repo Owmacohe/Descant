@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using DescantUtilities;
 using UnityEngine;
 
 namespace DescantComponents
@@ -10,15 +8,10 @@ namespace DescantComponents
     {
         [Inline] public string Message;
         
-        public override List<string> Invoke(List<string> choices)
+        public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
             Debug.Log(Message);
-            return choices;
-        }
-
-        public override void FixedUpdate()
-        {
-            
+            return result;
         }
     }
 }

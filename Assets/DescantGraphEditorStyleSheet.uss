@@ -236,7 +236,7 @@ DescantChoiceNode #contents #output Button {
 }
 
 DescantResponseNode #contents .response {
-    min-height: 130;
+    min-height: 90;
     padding: 5;
     white-space: normal;
 }

@@ -96,5 +96,19 @@ namespace DescantComponents
 
             return false;
         }
+
+        public static DescantActor GetActor(List<DescantActor> actors, string name)
+        {
+            foreach (var i in actors)
+                if (i.Name.Equals(name))
+                    return i;
+
+            return null;
+        }
+        
+        public static T ParseEnum<T>(string value) where T : Enum
+        {
+            return (T)Enum.Parse(typeof(T), value, true);
+        }
     }
 }

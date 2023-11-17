@@ -198,17 +198,7 @@ namespace DescantEditor
 
             return list;
         }
-        
-        static DescantActor LoadFromPath(string fullPath)
-        {
-            return LoadFromString(File.ReadAllText(fullPath));
-        }
-        
-        public static DescantActor LoadFromString(string str)
-        {
-            return JsonUtility.FromJson<DescantActor>(str);
-        }
-        
+
         public void Load(string fullPath)
         {
             // Making sure the path isn't null or empty
@@ -216,13 +206,13 @@ namespace DescantEditor
             {
                 lastLoaded = fullPath;
 
-                data = LoadFromPath(fullPath);
+                data = DescantEditorUtilities.LoadActorFromPath(fullPath);
                 
                 // Reloading the name and path, in case they got changed after the last time this file was loaded
                 data.Name = DescantEditorUtilities.GetDescantFileNameFromPath(fullPath, false);
                 data.Path = DescantEditorUtilities.RemoveBeforeLocalPath(fullPath);
                 
-                Save(false);
+                DescantEditorUtilities.SaveActor(false, data);
 
                 loaded = true;
 
@@ -266,20 +256,9 @@ namespace DescantEditor
 
             data.ConversationAttempts = int.Parse(conversationAttempts.value);
             
-            Save(false);
+            DescantEditorUtilities.SaveActor(false, data);
         }
-        
-        void Save(bool newFile)
-        {
-            // Setting the local path if this is the first time
-            if (newFile) data.Path = DescantEditorUtilities.GetCurrentLocalDirectory() + data.Name + ".descactor.json";
-            
-            // Saving to the full path
-            File.WriteAllText(
-                Application.dataPath + "/" + data.Path,
-                DescantEditorUtilities.FormatJSON(JsonUtility.ToJson(data)));
-        }
-        
+
         void Unload()
         {
             data = null;
@@ -293,7 +272,7 @@ namespace DescantEditor
         public void NewFile()
         {
             data = new DescantActor("New Descant Actor");
-            Save(true);
+            DescantEditorUtilities.SaveActor(true, data);
 
             loaded = true;
             

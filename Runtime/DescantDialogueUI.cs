@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DescantUtilities;
+using DescantComponents;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,30 +12,44 @@ namespace DescantRuntime
         [Header("Data")]
         [SerializeField, Tooltip("The Descant Graph that will be played")] TextAsset graph;
         [SerializeField] TextAsset[] actors;
-        
+
         [Header("UI")]
+        [SerializeField] bool displayOnStart;
         [SerializeField, Tooltip("The NPC response text")] TMP_Text response;
         [SerializeField, Tooltip("The parent UI object for the player's choices (ideally a LayoutGroup)")] Transform choices;
         [SerializeField, Tooltip("The player choice prefab to be spawned with the choice text")] GameObject choice;
         
-        DescantConversationController conversationController;
+        DescantDialogueController dialogueController;
+        GameObject UI;
         bool waitForClick;
     
         void Awake()
         {
-            conversationController = gameObject.AddComponent<DescantConversationController>();
-            conversationController.Initialize(graph, actors);
+            dialogueController = gameObject.AddComponent<DescantDialogueController>();
+
+            UI = transform.GetChild(0).gameObject;
+            UI.SetActive(false);
         }
         
         void Start()
         {
-            DisplayNode();
+            Initialize(graph, actors, displayOnStart);
         }
 
         void Update()
         {
             if (waitForClick && Input.GetButtonDown("Fire1"))
-                DisplayNode();
+            {
+                if (dialogueController.Current.Next.Count == 0) UI.SetActive(false);
+                else DisplayNode();
+            }
+        }
+
+        public void Initialize(TextAsset g, TextAsset[] a, bool display)
+        {
+            dialogueController.Initialize(g, a);
+            
+            if (display) DisplayNode();
         }
 
         /// <summary>
@@ -47,48 +61,53 @@ namespace DescantRuntime
         /// </param>
         void DisplayNode(int choiceIndex = 0)
         {
-            waitForClick = false;
-            response.transform.GetChild(0).gameObject.SetActive(false);
+            UI.SetActive(true);
+            
+            SetClickMessage(false);
             
             // Destroying all the old choices
             for (int i = 0; i < choices.childCount; i++)
                 Destroy(choices.GetChild(i).gameObject);
             
-            List<string> temp = conversationController.Next(choiceIndex);
-            if (temp == null) return; // Stopping if there are no more nodes
-    
+            DescantNodeInvokeResult temp = dialogueController.Next(choiceIndex);
+            
+            if (temp == null) {
+                UI.SetActive(false);
+                return; // Stopping if there are no more nodes
+            }
+            
             // Displaying the ResponseNodes...
-            if (temp.Count == 1 && conversationController.Current.Data.Type.Equals(DescantNodeType.Response.ToString()))
+            if (temp.Choices.Count == 1 && dialogueController.Current.Data.Type.Equals("Response"))
             {
-                response.text = temp[0];
-
-                string nextType = conversationController.Current.Next[0].Data.Type;
-
-                if (nextType == "Response")
+                response.text = temp.Choices[0].Value;
+                
+                switch (dialogueController.Current.Next[0].Data.Type)
                 {
-                    waitForClick = true;
-                    response.transform.GetChild(0).gameObject.SetActive(true);
-                }
-                else
-                {
-                    // Once the response text has been shown, we skip ahead to show the player's possible choices
-                    DisplayNode();
+                    case "Response":
+                    case "End":
+                        SetClickMessage(true);
+                        break;
+                    
+                    default:
+                        // Once the response text has been shown, we skip ahead to show the player's possible choices
+                        DisplayNode();
+                        break;
                 }
             }
             // Displaying the ChoiceNodes...
             else
             {
-                for (int j = 0; j < temp.Count; j++)
+                foreach (var j in temp.Choices)
                 {
-                    // Instantiating the player choices in teh player choice parent
+                    // Instantiating the player choices in the player choice parent
                     GameObject tempChoice = Instantiate(choice, choices);
                     
                     // Setting the text of the choice
-                    tempChoice.GetComponentInChildren<TMP_Text>().text = temp[j]; 
+                    tempChoice.GetComponentInChildren<TMP_Text>().text = j.Value; 
                     
                     // Copying the current index to a copy variable so that it can be used in the listener below
                     // (absolutely no idea why this must be done, but it must)
-                    var copy = j;
+                    var copy = j.Key;
                     
                     // Adding a listener to the player choice's button to display the next node when clicked
                     tempChoice.GetComponentInChildren<Button>().onClick.AddListener(() =>
@@ -97,6 +116,12 @@ namespace DescantRuntime
                     });
                 }
             }
+        }
+
+        void SetClickMessage(bool visible)
+        {
+            waitForClick = visible;
+            response.transform.GetChild(0).gameObject.SetActive(visible);
         }
     }
 }

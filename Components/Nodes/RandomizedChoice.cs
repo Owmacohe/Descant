@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DescantUtilities;
 using Random = UnityEngine.Random;
 
 namespace DescantComponents
@@ -8,25 +7,23 @@ namespace DescantComponents
     [Serializable, MaxQuantity(1), NodeType(DescantNodeType.Choice)]
     public class RandomizedChoice : DescantNodeComponent
     {
-        public override List<string> Invoke(List<string> choices)
+        public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            List<string> temp = new List<string>();
+            DescantNodeInvokeResult temp = new DescantNodeInvokeResult(
+                new List<KeyValuePair<int, string>>(),
+                result.Actors
+            );
+
+            int copy = result.Choices.Count;
             
-            for (int i = 0; i < choices.Count; i++)
+            for (int i = 0; i < copy; i++)
             {
-                string moved = choices[Random.Range(0, choices.Count)];
-                temp.Add(moved);
-                choices.Remove(moved);
+                var moved = result.Choices[Random.Range(0, result.Choices.Count)];
+                temp.Choices.Add(moved);
+                result.Choices.Remove(moved);
             }
-            
-            temp.Add(choices[0]);
 
             return temp;
-        }
-
-        public override void FixedUpdate()
-        {
-            
         }
     }
 }

@@ -102,7 +102,7 @@ namespace DescantEditor
             // Saving to the full path
             File.WriteAllText(
                 Application.dataPath + "/" + Path,
-                DescantEditorUtilities.FormatJSON(JsonUtility.ToJson(this)));
+                DescantUtilities.FormatJSON(JsonUtility.ToJson(this)));
         }
 #endif
 
@@ -111,9 +111,9 @@ namespace DescantEditor
         /// </summary>
         /// <param name="fullPath">The full disc path to the file</param>
         /// <returns>A loaded Descant graph</returns>
-        public static DescantGraphData LoadFromPath(string fullPath)
+        public static DescantGraphData LoadGraphFromPath(string fullPath)
         {
-            return LoadFromString(File.ReadAllText(fullPath));
+            return LoadGraphFromString(File.ReadAllText(fullPath));
         }
         
         /// <summary>
@@ -121,7 +121,7 @@ namespace DescantEditor
         /// </summary>
         /// <param name="str">The string containing all the data for the graph</param>
         /// <returns>A loaded Descant graph</returns>
-        public static DescantGraphData LoadFromString(string str)
+        public static DescantGraphData LoadGraphFromString(string str)
         {
             return JsonUtility.FromJson<DescantGraphData>(str);
         }

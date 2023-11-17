@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using DescantUtilities;
 
 namespace DescantComponents
 {
@@ -11,17 +9,12 @@ namespace DescantComponents
         
         [ParameterGroup("Statistic to change")] public string StatisticName;
 
-        public override List<string> Invoke(List<string> choices)
+        public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
             // TODO: reveal statistic using
             // Actor.Statistics[Statistic]
             
-            return choices;
-        }
-
-        public override void FixedUpdate()
-        {
-            
+            return result;
         }
     }
 }

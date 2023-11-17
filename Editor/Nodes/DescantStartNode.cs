@@ -1,6 +1,5 @@
 ﻿#if UNITY_EDITOR
 using System.Linq;
-using DescantUtilities;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -27,7 +26,7 @@ namespace DescantEditor
         {
             base.Draw(); // Making sure that the parent has been drawn
             
-            style.width = 250;
+            style.width = 350;
             
             // Initializing the output port
             Port output = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(bool));

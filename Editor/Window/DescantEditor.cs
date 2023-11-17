@@ -449,7 +449,7 @@ namespace DescantEditor
             {
                 lastLoaded = fullPath;
 
-                data = DescantGraphData.LoadFromPath(fullPath);
+                data = DescantGraphData.LoadGraphFromPath(fullPath);
                 
                 // Reloading the name and path, in case they got changed after the last time this file was loaded
                 data.Name = DescantEditorUtilities.GetDescantFileNameFromPath(fullPath);

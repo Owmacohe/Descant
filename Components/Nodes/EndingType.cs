@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using DescantUtilities;
 
 namespace DescantComponents
 {
@@ -9,15 +7,10 @@ namespace DescantComponents
     {
         [Inline] public string Ending;
 
-        public override List<string> Invoke(List<string> choices)
+        public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
             //Controller.Ending = Ending;
-            return choices;
-        }
-
-        public override void FixedUpdate()
-        {
-            
+            return result;
         }
     }
 }

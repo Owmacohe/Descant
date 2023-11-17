@@ -1,6 +1,5 @@
 ﻿#if UNITY_EDITOR
 using System.Linq;
-using DescantUtilities;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;

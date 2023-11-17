@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using DescantUtilities;
 
 namespace DescantComponents
 {
@@ -14,7 +12,7 @@ namespace DescantComponents
         [ParameterGroup("Operation to perform")] public OperationType OperationType;
         [ParameterGroup("Operation to perform")] public float OperationValue;
 
-        public override List<string> Invoke(List<string> choices)
+        public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
             /*
             DescantActor actor = Controller.GetActor(FirstActorName);
@@ -35,12 +33,7 @@ namespace DescantComponents
             }
             */
 
-            return choices;
-        }
-
-        public override void FixedUpdate()
-        {
-            
+            return result;
         }
     }
 }

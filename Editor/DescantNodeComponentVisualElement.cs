@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DescantComponents;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace DescantEditor
@@ -145,8 +146,27 @@ namespace DescantEditor
                         
                         temp.RegisterValueChangedCallback(callback =>
                         {
-                            i.SetValue(Component, callback.newValue);
-                            
+                            string enumName = i.FieldType.Name;
+
+                            switch (enumName.Substring(enumName.LastIndexOf('.') + 1))
+                            {
+                                case "VariableType":
+                                    i.SetValue(Component, DescantComponentUtilities.ParseEnum<VariableType>(callback.newValue));
+                                    break;
+                                
+                                case "ComparisonType":
+                                    i.SetValue(Component, DescantComponentUtilities.ParseEnum<ComparisonType>(callback.newValue));
+                                    break;
+                                
+                                case "OperationType":
+                                    i.SetValue(Component, DescantComponentUtilities.ParseEnum<OperationType>(callback.newValue));
+                                    break;
+                                
+                                case "ListChangeType":
+                                    i.SetValue(Component, DescantComponentUtilities.ParseEnum<ListChangeType>(callback.newValue));
+                                    break;
+                            }
+
                             graphView.Editor.CheckAndSave(); // Check for autosave
                         });
                     }

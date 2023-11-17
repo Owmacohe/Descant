@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using DescantUtilities;
 
 namespace DescantComponents
 {
@@ -9,11 +7,6 @@ namespace DescantComponents
     {
         [Inline] public float Time;
         [Inline] public bool TimerVisible;
-
-        public override List<string> Invoke(List<string> choices)
-        {
-            return choices;
-        }
 
         public override void FixedUpdate()
         {

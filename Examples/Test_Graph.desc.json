@@ -2,9 +2,9 @@
 	"Name": "Test_Graph",
 	"Path": "/Test_Graph.desc.json",
 	"Autosave": false,
-	"ChoiceNodeID": 3,
-	"ResponseNodeID": 6,
-	"EndNodeID": 1,
+	"ChoiceNodeID": 4,
+	"ResponseNodeID": 7,
+	"EndNodeID": 3,
 	"GroupID": 3,
 	"ChoiceNodes": [
 		{
@@ -16,12 +16,21 @@
 				"y": 98.0
 			},
 			"NodeComponents": [
-				
+				{
+					"rid": 1000
+				},
+				{
+					"rid": 1001
+				},
+				{
+					"rid": 1002
+				}
 			],
 			"Choices": [
 				"Where do I download the package?",
 				"Where is the test scene?",
-				"Who can I contact for help?"
+				"Who can I contact for help?",
+				"Nevermind, I don't want help"
 			]
 		},
 		{
@@ -33,11 +42,31 @@
 				"y": 98.0
 			},
 			"NodeComponents": [
-				
+				{
+					"rid": 1003
+				}
 			],
 			"Choices": [
 				"Neat!",
 				"Cool!"
+			]
+		},
+		{
+			"Name": "ChoiceNode",
+			"Type": "Choice",
+			"ID": 3,
+			"Position": {
+				"x": 4190.0,
+				"y": 98.0
+			},
+			"NodeComponents": [
+				{
+					"rid": 1004
+				}
+			],
+			"Choices": [
+				"Bye!",
+				"Really?"
 			]
 		}
 	],
@@ -47,8 +76,8 @@
 			"Type": "Response",
 			"ID": 0,
 			"Position": {
-				"x": 495.0,
-				"y": 98.0
+				"x": 470.0,
+				"y": 82.0
 			},
 			"NodeComponents": [
 				
@@ -61,7 +90,7 @@
 			"ID": 1,
 			"Position": {
 				"x": 1666.0,
-				"y": -187.0
+				"y": -153.0
 			},
 			"NodeComponents": [
 				
@@ -87,7 +116,7 @@
 			"ID": 3,
 			"Position": {
 				"x": 1666.0,
-				"y": 395.0
+				"y": 350.0
 			},
 			"NodeComponents": [
 				
@@ -119,6 +148,19 @@
 				
 			],
 			"Response": "Goodbye for real!"
+		},
+		{
+			"Name": "ResponseNode",
+			"Type": "Response",
+			"ID": 6,
+			"Position": {
+				"x": 4799.0,
+				"y": 479.0
+			},
+			"NodeComponents": [
+				
+			],
+			"Response": "Yeah really!"
 		}
 	],
 	"StartNode": {
@@ -126,11 +168,13 @@
 		"Type": "Start",
 		"ID": 0,
 		"Position": {
-			"x": 176.0,
-			"y": 98.0
+			"x": 29.0,
+			"y": 82.0
 		},
 		"NodeComponents": [
-			
+			{
+				"rid": 1005
+			}
 		]
 	},
 	"EndNodes": [
@@ -139,11 +183,41 @@
 			"Type": "End",
 			"ID": 0,
 			"Position": {
-				"x": 4198.0,
+				"x": 4799.0,
 				"y": 98.0
 			},
 			"NodeComponents": [
-				
+				{
+					"rid": 1006
+				}
+			]
+		},
+		{
+			"Name": "EndNode",
+			"Type": "End",
+			"ID": 1,
+			"Position": {
+				"x": 5445.0,
+				"y": 479.0
+			},
+			"NodeComponents": [
+				{
+					"rid": 1007
+				}
+			]
+		},
+		{
+			"Name": "EndNode",
+			"Type": "End",
+			"ID": 2,
+			"Position": {
+				"x": 1666.0,
+				"y": 657.0
+			},
+			"NodeComponents": [
+				{
+					"rid": 1008
+				}
 			]
 		}
 	],
@@ -152,8 +226,8 @@
 			"Name": "NodeGroup",
 			"ID": 0,
 			"Position": {
-				"x": 150.99998474121095,
-				"y": 38.99998474121094
+				"x": 4.0,
+				"y": 23.0
 			},
 			"Nodes": [
 				"Choice",
@@ -171,7 +245,7 @@
 			"ID": 1,
 			"Position": {
 				"x": 1641.0,
-				"y": -246.0
+				"y": -212.0
 			},
 			"Nodes": [
 				"Response",
@@ -195,13 +269,15 @@
 				"Choice",
 				"End",
 				"Response",
-				"Response"
+				"Response",
+				"Choice"
 			],
 			"NodeIDs": [
 				2,
 				0,
 				4,
-				5
+				5,
+				3
 			]
 		}
 	],
@@ -233,6 +309,13 @@
 			"To": "Response",
 			"ToID": 3,
 			"ChoiceIndex": 3
+		},
+		{
+			"From": "Choice",
+			"FromID": 0,
+			"To": "End",
+			"ToID": 2,
+			"ChoiceIndex": 4
 		},
 		{
 			"From": "Response",
@@ -270,6 +353,27 @@
 			"ChoiceIndex": 2
 		},
 		{
+			"From": "Response",
+			"FromID": 5,
+			"To": "Choice",
+			"ToID": 3,
+			"ChoiceIndex": 0
+		},
+		{
+			"From": "Choice",
+			"FromID": 3,
+			"To": "End",
+			"ToID": 0,
+			"ChoiceIndex": 1
+		},
+		{
+			"From": "Choice",
+			"FromID": 3,
+			"To": "Response",
+			"ToID": 6,
+			"ChoiceIndex": 2
+		},
+		{
 			"From": "Start",
 			"FromID": 0,
 			"To": "Response",
@@ -285,16 +389,127 @@
 		},
 		{
 			"From": "Response",
-			"FromID": 5,
+			"FromID": 6,
 			"To": "End",
-			"ToID": 0,
+			"ToID": 1,
 			"ChoiceIndex": 0
 		}
 	],
 	"references": {
 		"version": 2,
 		"RefIds": [
-			
+			{
+				"rid": 1000,
+				"type": {
+					"class": "Log",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": false,
+					"Message": "Major choice"
+				}
+			},
+			{
+				"rid": 1001,
+				"type": {
+					"class": "ChangedChoice",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": true,
+					"ActorName": "Test_Actor",
+					"ChoiceNumber": 4,
+					"VariableType": 0,
+					"VariableName": "Health",
+					"ComparisonType": 1,
+					"Comparison": 10.0,
+					"ChangeTo": "Oof, I gotta go. I'm low on health..."
+				}
+			},
+			{
+				"rid": 1002,
+				"type": {
+					"class": "RandomizedChoice",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": false
+				}
+			},
+			{
+				"rid": 1003,
+				"type": {
+					"class": "Log",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": false,
+					"Message": "Beginning of the end"
+				}
+			},
+			{
+				"rid": 1004,
+				"type": {
+					"class": "RandomizedChoice",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": false
+				}
+			},
+			{
+				"rid": 1005,
+				"type": {
+					"class": "Log",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": false,
+					"Message": "Start"
+				}
+			},
+			{
+				"rid": 1006,
+				"type": {
+					"class": "Log",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": false,
+					"Message": "Default ending"
+				}
+			},
+			{
+				"rid": 1007,
+				"type": {
+					"class": "Log",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": false,
+					"Message": "Special ending"
+				}
+			},
+			{
+				"rid": 1008,
+				"type": {
+					"class": "Log",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": false,
+					"Message": "Quick ending"
+				}
+			}
 		]
 	}
 }

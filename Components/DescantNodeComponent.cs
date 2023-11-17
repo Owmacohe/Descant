@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DescantUtilities;
 
 namespace DescantComponents
 {
@@ -8,14 +7,40 @@ namespace DescantComponents
     public enum ComparisonType { LessThan, LessThanOrEqualTo, EqualTo, GreaterThanOrEqualTo, GreaterThan, NotEqualTo }
     public enum OperationType { IncreaseBy, DecreaseBy, Set }
     public enum ListChangeType { Add, Remove }
+
+    public class DescantNodeInvokeResult
+    {
+        public List<KeyValuePair<int, string>> Choices;
+        public List<DescantActor> Actors;
+
+        public DescantNodeInvokeResult(List<KeyValuePair<int, string>> choices, List<DescantActor> actors)
+        {
+            Choices = choices;
+            Actors = actors;
+        }
+    }
     
     [Serializable]
     public abstract class DescantNodeComponent // TODO: find a way to have components interact with the controller at runtime
     {
         public bool Collapsed;
 
-        public abstract List<string> Invoke(List<string> choices);
-        public abstract void FixedUpdate();
+        public virtual DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
+        {
+            return result;
+        }
+
+        public virtual void FixedUpdate() { }
+
+        public override bool Equals(object other)
+        {
+            return Equals((DescantNodeComponent)other);
+        }
+        
+        public bool Equals(DescantNodeComponent other)
+        {
+            return ToString().Equals(other.ToString());
+        }
         
         public override string ToString()
         {

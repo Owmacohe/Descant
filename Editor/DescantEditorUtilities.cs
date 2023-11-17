@@ -1,6 +1,6 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using DescantComponents;
 using UnityEditor;
@@ -11,6 +11,7 @@ namespace DescantEditor
 {
     public static class DescantEditorUtilities
     {
+        #if UNITY_EDITOR
         #region VisualElements
         
         /// <summary>
@@ -70,71 +71,6 @@ namespace DescantEditor
             return lst;
         }
 
-        #endregion
-        
-        #region Text Maniplation
-        
-        /// <summary>
-        /// Filters a string to remove all special characters (and whitespace)
-        /// </summary>
-        /// <param name="text">The text to be checked through</param>
-        /// <returns>The filtered string with special characters removed</returns>
-        public static string FilterText(string text)
-        {
-            string special = "/\\`~!@#$%^*()+={}[]|;:'\",.<>?";
-            
-            text = text.Trim();
-
-            for (int i = 0; i < text.Length; i++)
-                if (special.Contains(text[i]) || text[i] == ' ')
-                    text = text.Remove(i);
-
-            return text;
-        }
-        
-        /// <summary>
-        /// Formats a single-line JSON string into something that is much more human-readable
-        /// </summary>
-        /// <param name="json">The JSON text to be formatted</param>
-        /// <returns>The formatted JSON, with indents and line breaks</returns>
-        public static string FormatJSON(string json)
-        {
-            string temp = ""; // The string to copy sections of the original text into
-            string currentIndent = ""; // The current string of indents (will shrink and grow throughout the process)
-            bool isInQuotation = false;
-
-            foreach (char i in json)
-            {
-                if (i is '\"') isInQuotation = !isInQuotation;
-                
-                // Indenting back after data members or objects end
-                if (i is '}' or ']' && !isInQuotation)
-                {
-                    currentIndent = currentIndent.Substring(0, currentIndent.Length - 1);
-                    temp += '\n' + currentIndent;
-                }
-
-                temp += i;
- 
-                // Adding a space after colons
-                if (i is ':' && !isInQuotation)
-                    temp += ' ';
-
-                // New lines after commas
-                if (i is ',' && !isInQuotation)
-                    temp += '\n' + currentIndent;
-
-                // Indenting when data members or objects begin
-                if (i is '{' or '[' && !isInQuotation)
-                {
-                    currentIndent += "\t";
-                    temp += '\n' + currentIndent;
-                }
-            }
-
-            return temp;
-        }
-        
         #endregion
 
         #region File Paths
@@ -227,10 +163,28 @@ namespace DescantEditor
             return RemoveAssetsFolderFromPath(Application.dataPath, false, false) + "/" +
                    AssetDatabase.GUIDToAssetPath(guid);
         }
-        
+
         #endregion
 
         #region Misc
+        
+        /// <summary>
+        /// Filters a string to remove all special characters (and whitespace)
+        /// </summary>
+        /// <param name="text">The text to be checked through</param>
+        /// <returns>The filtered string with special characters removed</returns>
+        public static string FilterText(string text)
+        {
+            string special = "/\\`~!@#$%^*()+={}[]|;:'\",.<>?";
+            
+            text = text.Trim();
+
+            for (int i = 0; i < text.Length; i++)
+                if (special.Contains(text[i]) || text[i] == ' ')
+                    text = text.Remove(i);
+
+            return text;
+        }
 
         /// <summary>
         /// Checks to see if two lists of some type are equal
@@ -253,6 +207,29 @@ namespace DescantEditor
         }
 
         #endregion
+        #endif
+        
+        public static void SaveActor(bool newFile, DescantActor data)
+        {
+            #if UNITY_EDITOR
+            // Setting the local path if this is the first time
+            if (newFile) data.Path = DescantEditorUtilities.GetCurrentLocalDirectory() + data.Name + ".descactor.json";
+            #endif
+            
+            // Saving to the full path
+            File.WriteAllText(
+                Application.dataPath + "/" + data.Path,
+                DescantUtilities.FormatJSON(JsonUtility.ToJson(data)));
+        }
+        
+        public static DescantActor LoadActorFromPath(string fullPath)
+        {
+            return LoadActorFromString(File.ReadAllText(fullPath));
+        }
+        
+        public static DescantActor LoadActorFromString(string str)
+        {
+            return JsonUtility.FromJson<DescantActor>(str);
+        }
     }
 }
-#endif

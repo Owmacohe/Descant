@@ -311,6 +311,7 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 960137122}
+  - {fileID: 585230543}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -330,9 +331,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e205aa21f6c4083b2a8fe358009f9d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graph: {fileID: 4900000, guid: a288d35e84aada445baf28fed9d96456, type: 3}
+  graph: {fileID: 4900000, guid: 308f2ac7a29cf44298ec2d67504079d4, type: 3}
   actors:
-  - {fileID: 4900000, guid: 65504cfea0a2aea4b8d8069f150dbe32, type: 3}
+  - {fileID: 4900000, guid: f5faf12d6bb29a547a03bbb00f62dc26, type: 3}
+  displayOnStart: 1
   response: {fileID: 1417538827}
   choices: {fileID: 1665204401}
   choice: {fileID: 5535320327982640812, guid: 975a384186ab54f8bbf0ab32f86b5472, type: 3}
@@ -397,12 +399,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 585230540}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -400, y: -243.54384, z: 0}
+  m_LocalScale: {x: 0.7540057, y: 0.7540057, z: 0.7540057}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 293410236}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &960137121
 GameObject:
@@ -858,4 +860,3 @@ SceneRoots:
   m_Roots:
   - {fileID: 272229490}
   - {fileID: 293410236}
-  - {fileID: 585230543}

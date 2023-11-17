@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DescantComponents;
 using DescantEditor;
+using UnityEditor;
 using UnityEngine;
 
 namespace DescantRuntime
@@ -30,12 +31,13 @@ namespace DescantRuntime
         }
     }
     
-    public class DescantConversationController : MonoBehaviour
+    public class DescantDialogueController : MonoBehaviour
     {
         /// <summary>
         /// The current runtime node being accessed
         /// </summary>
         [HideInInspector] public RuntimeNode Current;
+        [HideInInspector] public string CurrentType;
         
         List<RuntimeNode> nodes = new List<RuntimeNode>();
         List<DescantActor> actors = new List<DescantActor>();
@@ -43,13 +45,21 @@ namespace DescantRuntime
         /// <summary>
         /// Initializes the conversation controller
         /// </summary>
-        /// <param name="graph">The JSON graph to be loaded</param>
-        public void Initialize(TextAsset graph, TextAsset[] actors)
+        /// <param name="g">The JSON graph to be loaded</param>
+        public void Initialize(TextAsset g, TextAsset[] a)
         {
-            GenerateRuntimeNodes(graph);
+            #if UNITY_EDITOR
+            AssetDatabase.Refresh();
+            #endif
             
-            foreach (var i in actors)
-                this.actors.Add(DescantActorEditor.LoadFromString(i.text));
+            GenerateRuntimeNodes(g);
+
+            actors = new List<DescantActor>();
+            
+            foreach (var i in a)
+                actors.Add(DescantEditorUtilities.LoadActorFromString(i.text));
+            
+            Debug.Log(actors[0]);
         }
 
         void FixedUpdate()
@@ -68,13 +78,15 @@ namespace DescantRuntime
             nodes = new List<RuntimeNode>();
             
             // Creating the graph data object first
-            DescantGraphData data = DescantGraphData.LoadFromString(descantGraph.text);
+            DescantGraphData data = DescantGraphData.LoadGraphFromString(descantGraph.text);
             
             // Then synthesizing all the runtime nodes from its node list
+            AddToRuntimeNodes(new List<DescantStartNodeData>() { data.StartNode });
             AddToRuntimeNodes(data.ChoiceNodes);
             AddToRuntimeNodes(data.ResponseNodes);
-            Current = AddToRuntimeNodes(new List<DescantStartNodeData>() { data.StartNode });
             AddToRuntimeNodes(data.EndNodes);
+
+            Current = nodes[0];
 
             // Finally, checking its connections to know how to connect the runtime nodes up
             foreach (var i in data.Connections)
@@ -91,12 +103,10 @@ namespace DescantRuntime
         /// </summary>
         /// <param name="lst">The data to be synthesized</param>
         /// <returns>The last runtime node in the list</returns>
-        RuntimeNode AddToRuntimeNodes<T>(List<T> lst) where T : DescantNodeData
+        void AddToRuntimeNodes<T>(List<T> lst) where T : DescantNodeData
         {
             foreach (var i in lst)
                 nodes.Add(new RuntimeNode(i));
-
-            return nodes[^1];
         }
 
         /// <summary>
@@ -122,35 +132,55 @@ namespace DescantRuntime
         /// (default 0 if the current node is a ResponseNode)
         /// </param>
         /// <returns>
-        /// A list of all the possible choices at the next node
+        /// 
         /// (only length 1 if the current node is a ChoiceNode)
         /// </returns>
-        public List<string> Next(int choiceIndex = 0)
+        public DescantNodeInvokeResult Next(int choiceIndex = 0)
         {
-            if (Current.Next == null || Current.Next.Count == 0) return null; // Stopping if there are no more nodes
-            
-            Current = Current.Next[choiceIndex];
+            if (Current.Data.Type.Equals("Start"))
+                InvokeComponents();
 
-            List<string> currentText = new List<string>();
-            
-            switch (Current.Data.Type)
+            Current = Current.Next[choiceIndex];
+            CurrentType = Current.Data.Type;
+
+            DescantNodeInvokeResult currentResult = new DescantNodeInvokeResult(
+                new List<KeyValuePair<int, string>>(),
+                actors
+            );
+
+            switch (CurrentType)
             {
+                case "End":
+                    InvokeComponents();
+                    return null; // Stopping if there are no more nodes
+
                 case "Choice":
-                    foreach (var i in ((DescantChoiceNodeData)Current.Data).Choices)
-                        currentText.Add(i);
+                    List<string> choices = ((DescantChoiceNodeData) Current.Data).Choices;
+                    for (int i = 0; i < choices.Count; i++)
+                        currentResult.Choices.Add(new KeyValuePair<int, string>(i, choices[i]));
                     break;
                 
                 case "Response":
-                    currentText.Add(((DescantResponseNodeData)Current.Data).Response);
+                    currentResult.Choices.Add(
+                        new KeyValuePair<int, string>(0, ((DescantResponseNodeData)Current.Data).Response));
                     break;
-                
-                case "End": return null;
             }
             
-            foreach (var i in Current.Data.NodeComponents)
-                currentText = i.Invoke(currentText);
+            currentResult = InvokeComponents(currentResult);
+            actors = currentResult.Actors;
 
-            return currentText.Count == 0 ? null : currentText; // Stopping if there are no choices
+            foreach (var i in actors)
+                DescantEditorUtilities.SaveActor(false, i);
+            
+            return currentResult.Choices.Count == 0 ? null : currentResult; // Stopping if there are no choices
+        }
+
+        DescantNodeInvokeResult InvokeComponents(DescantNodeInvokeResult currentResult = null)
+        {
+            foreach (var i in Current.Data.NodeComponents)
+                currentResult = i.Invoke(currentResult);
+
+            return currentResult;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using DescantUtilities;
+using UnityEngine;
 
 namespace DescantComponents
 {
@@ -45,41 +45,42 @@ namespace DescantComponents
             }
         }
 
-        public override List<string> Invoke(List<string> choices)
+        public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            /*
-            DescantActor actor = Controller.GetActor(ActorName);
-            
+            DescantActor actor = DescantComponentUtilities.GetActor(result.Actors, ActorName);
+
             switch (VariableType)
             {
                 case VariableType.Statistic:
-                    if (Compare(actor.Statistics[VariableName]))
-                        Controller.CurrentText[ChoiceNumber] = ChangeTo;
+                    if (Compare(actor.StatisticValues[actor.StatisticKeys.IndexOf(VariableName)]))
+                        result.Choices[ChoiceNumber - 1] = new KeyValuePair<int, string>(
+                            result.Choices[ChoiceNumber - 1].Key,
+                            ChangeTo);
                     break;
                 
-                case VariableType.Topic:
+                case VariableType.Topic: // TODO: hide other options if the user selects topic in the editor
                     if (actor.Topics.Contains(VariableName))
-                        Controller.CurrentText[ChoiceNumber] = ChangeTo;
+                        result.Choices[ChoiceNumber - 1] = new KeyValuePair<int, string>(
+                            result.Choices[ChoiceNumber - 1].Key,
+                            ChangeTo);
                     break;
                 
                 case VariableType.Relationship:
-                    if (Compare(actor.Relationships[VariableName]))
-                        Controller.CurrentText[ChoiceNumber] = ChangeTo;
+                    if (Compare(actor.RelationshipValues[actor.RelationshipKeys.IndexOf(VariableName)]))
+                        result.Choices[ChoiceNumber - 1] = new KeyValuePair<int, string>(
+                            result.Choices[ChoiceNumber - 1].Key,
+                            ChangeTo);
                     break;
                 
-                case VariableType.ReAttempts:
-                    if (Compare(actor.ReAttempts))
-                        Controller.CurrentText[ChoiceNumber] = ChangeTo;
+                case VariableType.ConversationAttempts:
+                    if (Compare(actor.ConversationAttempts))
+                        result.Choices[ChoiceNumber - 1] = new KeyValuePair<int, string>(
+                            result.Choices[ChoiceNumber - 1].Key,
+                            ChangeTo);
                     break;
             }
-            */
 
-            return choices;
-        }
-
-        public override void FixedUpdate()
-        {
-            
+            return result;
         }
     }
 }

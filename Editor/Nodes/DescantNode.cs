@@ -6,7 +6,6 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using DescantComponents;
-using DescantUtilities;
 
 namespace DescantEditor
 {

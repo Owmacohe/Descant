@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using DescantUtilities;
 
 namespace DescantComponents
 {
@@ -43,7 +41,7 @@ namespace DescantComponents
             }
         }
 
-        public override List<string> Invoke(List<string> choices)
+        public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
             /*
             DescantActor actor = Controller.GetActor(ActorName);
@@ -72,12 +70,7 @@ namespace DescantComponents
             }
             */
             
-            return choices;
-        }
-
-        public override void FixedUpdate()
-        {
-            
+            return result;
         }
     }
 }

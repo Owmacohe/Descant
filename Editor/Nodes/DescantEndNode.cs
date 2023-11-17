@@ -1,6 +1,5 @@
 ﻿#if UNITY_EDITOR
 using System.Linq;
-using DescantUtilities;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -34,7 +33,7 @@ namespace DescantEditor
                 GraphView.EndNodeID++;
             }
             
-            style.width = 250;
+            style.width = 350;
             
             // Initializing the input port
             Port input = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, typeof(bool));

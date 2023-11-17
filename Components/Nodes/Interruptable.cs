@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using DescantUtilities;
 
 namespace DescantComponents
 {
@@ -8,11 +6,6 @@ namespace DescantComponents
     public class Interruptable : DescantNodeComponent
     {
         [Inline] public bool ResumeAfter;
-
-        public override List<string> Invoke(List<string> choices)
-        {
-            return choices;
-        }
 
         public override void FixedUpdate()
         {

@@ -49,7 +49,12 @@ namespace DescantEditor
 
         public override string ToString()
         {
-            return GetType() + " (" + ID + Name + " " + Position + ")";
+            string temp = "";
+
+            foreach (var i in NodeComponents)
+                temp += " " + i;
+            
+            return GetType() + " (" + ID + Name + " " + Type + " " + Position + ") (" + (temp.Length > 1 ? temp.Substring(1) : "") + ")";
         }
     }
 
