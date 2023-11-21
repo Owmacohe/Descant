@@ -2,10 +2,12 @@
 	"Name": "Test_Graph",
 	"Path": "/Test_Graph.desc.json",
 	"Autosave": false,
+	"Typewriter": true,
+	"TypewriterSpeed": 1.0,
 	"ChoiceNodeID": 4,
 	"ResponseNodeID": 7,
 	"EndNodeID": 3,
-	"GroupID": 3,
+	"GroupID": 4,
 	"ChoiceNodes": [
 		{
 			"Name": "ChoiceNode",
@@ -38,12 +40,15 @@
 			"Type": "Choice",
 			"ID": 2,
 			"Position": {
-				"x": 2314.0,
-				"y": 98.0
+				"x": 2391.5,
+				"y": 8.5
 			},
 			"NodeComponents": [
 				{
 					"rid": 1003
+				},
+				{
+					"rid": 1004
 				}
 			],
 			"Choices": [
@@ -56,12 +61,12 @@
 			"Type": "Choice",
 			"ID": 3,
 			"Position": {
-				"x": 4190.0,
-				"y": 98.0
+				"x": 4267.5,
+				"y": 8.5
 			},
 			"NodeComponents": [
 				{
-					"rid": 1004
+					"rid": 1005
 				}
 			],
 			"Choices": [
@@ -80,7 +85,9 @@
 				"y": 82.0
 			},
 			"NodeComponents": [
-				
+				{
+					"rid": 1006
+				}
 			],
 			"Response": "Welcome to Descant! How can I help you?"
 		},
@@ -128,11 +135,13 @@
 			"Type": "Response",
 			"ID": 4,
 			"Position": {
-				"x": 2905.0,
-				"y": 98.0
+				"x": 2982.5,
+				"y": 8.5
 			},
 			"NodeComponents": [
-				
+				{
+					"rid": 1007
+				}
 			],
 			"Response": "Okay goodbye!"
 		},
@@ -141,8 +150,8 @@
 			"Type": "Response",
 			"ID": 5,
 			"Position": {
-				"x": 3553.0,
-				"y": 98.0
+				"x": 3630.5,
+				"y": 8.5
 			},
 			"NodeComponents": [
 				
@@ -154,8 +163,8 @@
 			"Type": "Response",
 			"ID": 6,
 			"Position": {
-				"x": 4799.0,
-				"y": 479.0
+				"x": 4826.0,
+				"y": 731.0
 			},
 			"NodeComponents": [
 				
@@ -173,7 +182,7 @@
 		},
 		"NodeComponents": [
 			{
-				"rid": 1005
+				"rid": 1008
 			}
 		]
 	},
@@ -183,12 +192,12 @@
 			"Type": "End",
 			"ID": 0,
 			"Position": {
-				"x": 4799.0,
-				"y": 98.0
+				"x": 4876.5,
+				"y": 8.5
 			},
 			"NodeComponents": [
 				{
-					"rid": 1006
+					"rid": 1009
 				}
 			]
 		},
@@ -197,12 +206,12 @@
 			"Type": "End",
 			"ID": 1,
 			"Position": {
-				"x": 5445.0,
-				"y": 479.0
+				"x": 5468.0,
+				"y": 731.0
 			},
 			"NodeComponents": [
 				{
-					"rid": 1007
+					"rid": 1010
 				}
 			]
 		},
@@ -216,7 +225,7 @@
 			},
 			"NodeComponents": [
 				{
-					"rid": 1008
+					"rid": 1011
 				}
 			]
 		}
@@ -227,7 +236,7 @@
 			"ID": 0,
 			"Position": {
 				"x": 4.0,
-				"y": 23.0
+				"y": 23.5
 			},
 			"Nodes": [
 				"Choice",
@@ -245,7 +254,7 @@
 			"ID": 1,
 			"Position": {
 				"x": 1641.0,
-				"y": -212.0
+				"y": -211.5
 			},
 			"Nodes": [
 				"Response",
@@ -262,8 +271,8 @@
 			"Name": "NodeGroup",
 			"ID": 2,
 			"Position": {
-				"x": 2289.0,
-				"y": 39.0
+				"x": 2366.5,
+				"y": -50.0
 			},
 			"Nodes": [
 				"Choice",
@@ -278,6 +287,22 @@
 				4,
 				5,
 				3
+			]
+		},
+		{
+			"Name": "NodeGroup",
+			"ID": 3,
+			"Position": {
+				"x": 4801.0,
+				"y": 672.5
+			},
+			"Nodes": [
+				"Response",
+				"End"
+			],
+			"NodeIDs": [
+				6,
+				1
 			]
 		}
 	],
@@ -419,7 +444,7 @@
 				},
 				"data": {
 					"Collapsed": true,
-					"ActorName": "Test_Actor",
+					"ActorName": "Test_Player",
 					"ChoiceNumber": 4,
 					"VariableType": 0,
 					"VariableName": "Health",
@@ -454,6 +479,23 @@
 			{
 				"rid": 1004,
 				"type": {
+					"class": "LockedChoice",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": true,
+					"ActorName": "Test_NPC",
+					"ChoiceNumber": 2,
+					"VariableType": 3,
+					"VariableName": "",
+					"ComparisonType": 3,
+					"Comparison": 10.0
+				}
+			},
+			{
+				"rid": 1005,
+				"type": {
 					"class": "RandomizedChoice",
 					"ns": "DescantComponents",
 					"asm": "omch.descant.components"
@@ -463,7 +505,39 @@
 				}
 			},
 			{
-				"rid": 1005,
+				"rid": 1006,
+				"type": {
+					"class": "ChangedResponse",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": true,
+					"ActorName": "Test_Player",
+					"VariableType": 2,
+					"VariableName": "Friends",
+					"ComparisonType": 0,
+					"Comparison": 0.0,
+					"ChangeTo": "Wow, you don't like your friends!"
+				}
+			},
+			{
+				"rid": 1007,
+				"type": {
+					"class": "Interruptable",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": false,
+					"KeyCode": "space",
+					"ButtonName": "",
+					"ScriptName": "",
+					"MethodName": ""
+				}
+			},
+			{
+				"rid": 1008,
 				"type": {
 					"class": "Log",
 					"ns": "DescantComponents",
@@ -475,7 +549,7 @@
 				}
 			},
 			{
-				"rid": 1006,
+				"rid": 1009,
 				"type": {
 					"class": "Log",
 					"ns": "DescantComponents",
@@ -487,7 +561,7 @@
 				}
 			},
 			{
-				"rid": 1007,
+				"rid": 1010,
 				"type": {
 					"class": "Log",
 					"ns": "DescantComponents",
@@ -499,7 +573,7 @@
 				}
 			},
 			{
-				"rid": 1008,
+				"rid": 1011,
 				"type": {
 					"class": "Log",
 					"ns": "DescantComponents",

@@ -49,6 +49,7 @@ namespace DescantEditor
             else
             {
                 Load(lastLoaded);
+                AssetDatabase.Refresh();
             }
 
             loaded = false;
@@ -257,6 +258,7 @@ namespace DescantEditor
             data.ConversationAttempts = int.Parse(conversationAttempts.value);
             
             DescantEditorUtilities.SaveActor(false, data);
+            AssetDatabase.Refresh();
         }
 
         void Unload()

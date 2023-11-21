@@ -8,11 +8,13 @@ namespace DescantComponents
         [Inline] public float Time;
         [Inline] public bool TimerVisible;
 
-        public override void FixedUpdate()
+        public override bool FixedUpdate()
         {
             // TODO: update timer using
             // (UnityEngine.Time.time - Controller.CurrentStartTime) / Time
             // TimerVisible
+
+            return true;
         }
     }
 }

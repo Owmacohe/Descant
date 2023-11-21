@@ -86,7 +86,7 @@ namespace DescantComponents
 
                     method.Invoke(script, parameters.ToArray());
                 }
-                catch (AmbiguousMatchException e)
+                catch (AmbiguousMatchException)
                 {
                     Debug.Log("<b>EventScript:</b> Ambiguous method name!");
                 }
@@ -102,13 +102,39 @@ namespace DescantComponents
             foreach (var i in actors)
                 if (i.Name.Equals(name))
                     return i;
-
+            
             return null;
         }
         
         public static T ParseEnum<T>(string value) where T : Enum
         {
             return (T)Enum.Parse(typeof(T), value, true);
+        }
+        
+        public static bool CompareVariable(float variable, float comparison, ComparisonType comparisonType)
+        {
+            switch (comparisonType)
+            {
+                case ComparisonType.LessThan:
+                    return variable < comparison;
+                
+                case ComparisonType.LessThanOrEqualTo:
+                    return variable <= comparison;
+                
+                case ComparisonType.EqualTo:
+                    return variable == comparison;
+                
+                case ComparisonType.GreaterThanOrEqualTo:
+                    return variable >= comparison;
+                
+                case ComparisonType.GreaterThan:
+                    return variable > comparison;
+                
+                case ComparisonType.NotEqualTo:
+                    return variable != comparison;
+                
+                default: return false;
+            }
         }
     }
 }

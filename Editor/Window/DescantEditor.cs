@@ -30,6 +30,10 @@ namespace DescantEditor
         /// </summary>
         Toolbar toolbar;
         
+        Toggle typewriter;
+
+        TextField typewriterSpeed;
+        
         /// <summary>
         /// The autosave toggle button in the toolbar
         /// </summary>
@@ -75,6 +79,7 @@ namespace DescantEditor
             else
             {
                 Load(lastLoaded);
+                AssetDatabase.Refresh();
             }
 
             // Resetting the loaded variable to indicate that the UI should be
@@ -143,6 +148,23 @@ namespace DescantEditor
             VisualElement saveSection = new VisualElement();
             saveSection.AddToClassList("save-section");
             toolbar.Add(saveSection);
+
+            typewriter = new Toggle("Typewriter:");
+            typewriter.value = data.Typewriter;
+            saveSection.Add(typewriter);
+
+            typewriterSpeed = new TextField("Speed:");
+            typewriterSpeed.value = data.TypewriterSpeed.ToString();
+            saveSection.Add(typewriterSpeed);
+            
+            if (!typewriter.value) typewriterSpeed.visible = false;
+
+            typewriter.RegisterValueChangedCallback(callback =>
+            {
+                typewriterSpeed.visible = typewriter.value;
+                
+                Save();
+            });
             
             // Initializing the autosave toggle button
             autoSave = new Toggle("Autosave:");
@@ -161,8 +183,7 @@ namespace DescantEditor
             autoSave.RegisterValueChangedCallback(callback =>
             {
                 // Setting the save button's visibility based on the autosave button's value
-                if (autoSave.value) save.visible = false;
-                else save.visible = true;
+                save.visible = !autoSave.value;
 
                 Save();
             });
@@ -198,6 +219,8 @@ namespace DescantEditor
             {
                 Path = data.Path,
                 Autosave = autoSave.value,
+                Typewriter = typewriter.value,
+                TypewriterSpeed = float.Parse(typewriterSpeed.value),
                 ChoiceNodeID = graphView.ChoiceNodeID,
                 ResponseNodeID = graphView.ResponseNodeID,
                 EndNodeID = graphView.EndNodeID,

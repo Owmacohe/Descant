@@ -73,6 +73,18 @@ Toolbar Toggle VisualElement {
     margin: 2;
 }
 
+Toolbar TextField {
+    width: 80;
+}
+
+Toolbar TextField Label {
+    min-width: 15;
+}
+
+Toolbar TextField TextElement {
+    margin: 2;
+}
+
 .node_component_dropdown {
     margin-bottom: 4;
 }

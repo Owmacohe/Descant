@@ -56,7 +56,7 @@ TextField {
 .actor_list {
     justify-content: center;
     
-    width: 49%;
+    width: 45%;
     
     padding: 15;
     margin: 5;

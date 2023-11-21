@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 namespace DescantComponents
 {
     [Serializable, MaxQuantity(1), NodeType(DescantNodeType.Choice)]
-    public class RandomizedChoice : DescantNodeComponent
+    public class RandomizedChoice : DescantNodeComponent // TODO: make this always last
     {
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {

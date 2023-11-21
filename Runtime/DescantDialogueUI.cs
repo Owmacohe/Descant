@@ -7,11 +7,13 @@ using UnityEngine.UI;
 
 namespace DescantRuntime
 {
-    public class DescantConversationUI : MonoBehaviour
+    public class DescantDialogueUI : MonoBehaviour
     {
         [Header("Data")]
         [SerializeField, Tooltip("The Descant Graph that will be played")] TextAsset graph;
         [SerializeField] TextAsset[] actors;
+        [SerializeField] TextAsset player;
+        [SerializeField] TextAsset NPC;
 
         [Header("UI")]
         [SerializeField] bool displayOnStart;
@@ -22,6 +24,10 @@ namespace DescantRuntime
         DescantDialogueController dialogueController;
         GameObject UI;
         bool waitForClick;
+
+        bool isTyping;
+        string targetTypewriterText;
+        int typewriterIndex;
     
         void Awake()
         {
@@ -33,23 +39,31 @@ namespace DescantRuntime
         
         void Start()
         {
-            Initialize(graph, actors, displayOnStart);
+            Initialize(graph, actors, player, NPC, displayOnStart);
         }
 
         void Update()
         {
+            if (dialogueController.HasEnded) End();
+            
             if (waitForClick && Input.GetButtonDown("Fire1"))
             {
-                if (dialogueController.Current.Next.Count == 0) UI.SetActive(false);
+                if (dialogueController.Current.Next.Count == 0) End();
                 else DisplayNode();
             }
         }
 
-        public void Initialize(TextAsset g, TextAsset[] a, bool display)
+        public void Initialize(TextAsset g, TextAsset[] a, TextAsset p, TextAsset npc, bool display)
         {
-            dialogueController.Initialize(g, a);
+            dialogueController.Initialize(g, a, p, npc);
             
-            if (display) DisplayNode();
+            if (display) BeginDialogue();
+        }
+
+        public void BeginDialogue()
+        {
+            dialogueController.BeginDialogue();
+            DisplayNode();
         }
 
         /// <summary>
@@ -71,15 +85,17 @@ namespace DescantRuntime
             
             DescantNodeInvokeResult temp = dialogueController.Next(choiceIndex);
             
-            if (temp == null) {
-                UI.SetActive(false);
+            if (temp == null)
+            {
+                End();
                 return; // Stopping if there are no more nodes
             }
             
             // Displaying the ResponseNodes...
             if (temp.Choices.Count == 1 && dialogueController.Current.Data.Type.Equals("Response"))
             {
-                response.text = temp.Choices[0].Value;
+                if (dialogueController.Typewriter) StartTypewriter(temp.Choices[0].Value);
+                else response.text = temp.Choices[0].Value;
                 
                 switch (dialogueController.Current.Next[0].Data.Type)
                 {
@@ -122,6 +138,34 @@ namespace DescantRuntime
         {
             waitForClick = visible;
             response.transform.GetChild(0).gameObject.SetActive(visible);
+        }
+
+        void End()
+        {
+            UI.SetActive(false);
+            waitForClick = false;
+        }
+
+        void StartTypewriter(string text)
+        {
+            response.text = "";
+            
+            isTyping = true;
+            targetTypewriterText = text;
+            typewriterIndex = 0;
+            
+            Type();
+        }
+
+        void Type()
+        {
+            if (isTyping && response.text != targetTypewriterText && typewriterIndex < targetTypewriterText.Length)
+            {
+                response.text += targetTypewriterText[typewriterIndex];
+                typewriterIndex++;
+                
+                Invoke(nameof(Type), (1f / dialogueController.TypewriterSpeed) / 10f);
+            }
         }
     }
 }

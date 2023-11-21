@@ -38,15 +38,21 @@ namespace DescantRuntime
         /// </summary>
         [HideInInspector] public RuntimeNode Current;
         [HideInInspector] public string CurrentType;
-        
-        List<RuntimeNode> nodes = new List<RuntimeNode>();
-        List<DescantActor> actors = new List<DescantActor>();
+        [HideInInspector] public List<RuntimeNode> Nodes = new List<RuntimeNode>();
+        [HideInInspector] public List<DescantActor> Actors = new List<DescantActor>();
+
+        DescantActor player;
+        DescantActor NPC;
+
+        [HideInInspector] public bool HasEnded;
+        [HideInInspector] public bool Typewriter;
+        [HideInInspector] public float TypewriterSpeed;
 
         /// <summary>
         /// Initializes the conversation controller
         /// </summary>
         /// <param name="g">The JSON graph to be loaded</param>
-        public void Initialize(TextAsset g, TextAsset[] a)
+        public void Initialize(TextAsset g, TextAsset[] a, TextAsset p, TextAsset npc)
         {
             #if UNITY_EDITOR
             AssetDatabase.Refresh();
@@ -54,19 +60,39 @@ namespace DescantRuntime
             
             GenerateRuntimeNodes(g);
 
-            actors = new List<DescantActor>();
+            Actors = new List<DescantActor>();
             
             foreach (var i in a)
-                actors.Add(DescantEditorUtilities.LoadActorFromString(i.text));
+                Actors.Add(DescantEditorUtilities.LoadActorFromString(i.text));
+
+            player = DescantEditorUtilities.LoadActorFromString(p.text);
+            NPC = DescantEditorUtilities.LoadActorFromString(npc.text);
             
-            Debug.Log(actors[0]);
+            if (!Actors.Contains(player)) Actors.Add(player);
+            if (!Actors.Contains(NPC)) Actors.Add(NPC);
         }
 
+        public void BeginDialogue()
+        {
+            Current = Nodes[0];
+            CurrentType = "Start";
+
+            NPC.ConversationAttempts++;
+            DescantEditorUtilities.SaveActor(false, NPC);
+        }
+        
         void FixedUpdate()
         {
-            foreach (var i in nodes)
-                foreach (var j in i.Data.NodeComponents)
-                    j.FixedUpdate();
+            /*
+            foreach (var j in Current.Data.NodeComponents)
+                if (!j.FixedUpdate()) HasEnded = true;
+            */
+        }
+
+        void Update()
+        {
+            foreach (var j in Current.Data.NodeComponents)
+                if (!j.Update()) HasEnded = true;
         }
 
         /// <summary>
@@ -75,10 +101,13 @@ namespace DescantRuntime
         /// <param name="descantGraph"></param>
         void GenerateRuntimeNodes(TextAsset descantGraph)
         {
-            nodes = new List<RuntimeNode>();
+            Nodes = new List<RuntimeNode>();
             
             // Creating the graph data object first
             DescantGraphData data = DescantGraphData.LoadGraphFromString(descantGraph.text);
+            
+            Typewriter = data.Typewriter;
+            TypewriterSpeed = data.TypewriterSpeed;
             
             // Then synthesizing all the runtime nodes from its node list
             AddToRuntimeNodes(new List<DescantStartNodeData>() { data.StartNode });
@@ -86,7 +115,7 @@ namespace DescantRuntime
             AddToRuntimeNodes(data.ResponseNodes);
             AddToRuntimeNodes(data.EndNodes);
 
-            Current = nodes[0];
+            Current = Nodes[0];
 
             // Finally, checking its connections to know how to connect the runtime nodes up
             foreach (var i in data.Connections)
@@ -106,7 +135,7 @@ namespace DescantRuntime
         void AddToRuntimeNodes<T>(List<T> lst) where T : DescantNodeData
         {
             foreach (var i in lst)
-                nodes.Add(new RuntimeNode(i));
+                Nodes.Add(new RuntimeNode(i));
         }
 
         /// <summary>
@@ -117,7 +146,7 @@ namespace DescantRuntime
         /// <returns></returns>
         RuntimeNode FindRuntimeNode(string type, int id)
         {
-            foreach (var i in nodes)
+            foreach (var i in Nodes)
                 if (i.Data.Type == type && i.Data.ID == id)
                     return i;
 
@@ -137,6 +166,8 @@ namespace DescantRuntime
         /// </returns>
         public DescantNodeInvokeResult Next(int choiceIndex = 0)
         {
+            if (HasEnded) return null;
+            
             if (Current.Data.Type.Equals("Start"))
                 InvokeComponents();
 
@@ -145,7 +176,7 @@ namespace DescantRuntime
 
             DescantNodeInvokeResult currentResult = new DescantNodeInvokeResult(
                 new List<KeyValuePair<int, string>>(),
-                actors
+                Actors
             );
 
             switch (CurrentType)
@@ -167,9 +198,9 @@ namespace DescantRuntime
             }
             
             currentResult = InvokeComponents(currentResult);
-            actors = currentResult.Actors;
+            Actors = currentResult.Actors;
 
-            foreach (var i in actors)
+            foreach (var i in Actors)
                 DescantEditorUtilities.SaveActor(false, i);
             
             return currentResult.Choices.Count == 0 ? null : currentResult; // Stopping if there are no choices

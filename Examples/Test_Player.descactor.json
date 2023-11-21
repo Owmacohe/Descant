@@ -1,0 +1,22 @@
+{
+	"Name": "Test_Player",
+	"Path": "/Test_Player.descactor.json",
+	"StatisticKeys": [
+		"Health"
+	],
+	"StatisticValues": [
+		20.0
+	],
+	"Topics": [
+		"Descant"
+	],
+	"RelationshipKeys": [
+		"Friends",
+		"Enemies"
+	],
+	"RelationshipValues": [
+		1.0,
+		-1.0
+	],
+	"ConversationAttempts": 0
+}

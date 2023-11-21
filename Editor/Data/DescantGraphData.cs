@@ -24,6 +24,9 @@ namespace DescantEditor
         /// Whether to autosave this graph when in the Editor
         /// </summary>
         public bool Autosave;
+
+        public bool Typewriter;
+        public float TypewriterSpeed;
         
         public int ChoiceNodeID;
         public int ResponseNodeID;
@@ -44,6 +47,8 @@ namespace DescantEditor
             Name = name;
             Path = "";
             Autosave = false;
+            Typewriter = true;
+            TypewriterSpeed = 1;
             ChoiceNodes = new List<DescantChoiceNodeData>();
             ResponseNodes = new List<DescantResponseNodeData>();
             StartNode = null;

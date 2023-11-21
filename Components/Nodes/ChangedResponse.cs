@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace DescantComponents
 {
@@ -15,60 +17,20 @@ namespace DescantComponents
         
         [ParameterGroup("Changed value")] public string ChangeTo;
 
-        public bool Compare(float a)
-        {
-            switch (ComparisonType)
-            {
-                case ComparisonType.LessThan:
-                    return a < Comparison;
-                
-                case ComparisonType.LessThanOrEqualTo:
-                    return a <= Comparison;
-                
-                case ComparisonType.EqualTo:
-                    return a == Comparison;
-                
-                case ComparisonType.GreaterThanOrEqualTo:
-                    return a >= Comparison;
-                
-                case ComparisonType.GreaterThan:
-                    return a > Comparison;
-                
-                case ComparisonType.NotEqualTo:
-                    return a != Comparison;
-                
-                default: return false;
-            }
-        }
-
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            /*
-            DescantActor actor = Controller.GetActor(ActorName);
+            DescantActor actor = DescantComponentUtilities.GetActor(result.Actors, ActorName);
             
-            switch (VariableType)
+            if ((VariableType.Equals(VariableType.Statistic) && DescantComponentUtilities.CompareVariable(
+                    actor.StatisticValues[actor.StatisticKeys.IndexOf(VariableName)], Comparison, ComparisonType)) ||
+                (VariableType.Equals(VariableType.Topic) && actor.Topics.Contains(VariableName)) ||
+                (VariableType.Equals(VariableType.Relationship) && DescantComponentUtilities.CompareVariable(
+                    actor.RelationshipValues[actor.RelationshipKeys.IndexOf(VariableName)], Comparison, ComparisonType)) ||
+                (VariableType.Equals(VariableType.ConversationAttempts) && DescantComponentUtilities.CompareVariable(
+                    actor.ConversationAttempts, Comparison, ComparisonType)))
             {
-                case VariableType.Statistic:
-                    if (Compare(actor.Statistics[VariableName]))
-                        Controller.CurrentText[0] = ChangeTo;
-                    break;
-                
-                case VariableType.Topic:
-                    if (actor.Topics.Contains(VariableName))
-                        Controller.CurrentText[0] = ChangeTo;
-                    break;
-                
-                case VariableType.Relationship:
-                    if (Compare(actor.Relationships[VariableName]))
-                        Controller.CurrentText[0] = ChangeTo;
-                    break;
-                
-                case VariableType.ReAttempts:
-                    if (Compare(actor.ReAttempts))
-                        Controller.CurrentText[0] = ChangeTo;
-                    break;
+                result.Choices[0] = new KeyValuePair<int, string>(result.Choices[0].Key, ChangeTo);
             }
-            */
             
             return result;
         }

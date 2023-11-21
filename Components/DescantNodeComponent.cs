@@ -30,13 +30,21 @@ namespace DescantComponents
             return result;
         }
 
-        public virtual void FixedUpdate() { }
+        public virtual bool FixedUpdate()
+        {
+            return true;
+        }
+        
+        public virtual bool Update()
+        {
+            return true;
+        }
 
         public override bool Equals(object other)
         {
             return Equals((DescantNodeComponent)other);
         }
-        
+
         public bool Equals(DescantNodeComponent other)
         {
             return ToString().Equals(other.ToString());
