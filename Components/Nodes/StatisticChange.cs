@@ -14,24 +14,22 @@ namespace DescantComponents
 
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            /*
-            DescantActor actor = Controller.GetActor(ActorName);
+            DescantActor actor = DescantComponentUtilities.GetActor(result.Actors, ActorName);
             
             switch (OperationType)
             {
                 case OperationType.IncreaseBy:
-                    actor.SetStatistic(StatisticName, actor.Statistics[StatisticName] + OperationValue);
+                    actor.StatisticValues[actor.StatisticKeys.IndexOf(StatisticName)] += OperationValue;
                     break;
                 
                 case OperationType.DecreaseBy:
-                    actor.SetStatistic(StatisticName, actor.Statistics[StatisticName] - OperationValue);
+                    actor.StatisticValues[actor.StatisticKeys.IndexOf(StatisticName)] -= OperationValue;
                     break;
                 
                 case OperationType.Set:
-                    actor.SetStatistic(StatisticName, OperationValue);
+                    actor.StatisticValues[actor.StatisticKeys.IndexOf(StatisticName)] = OperationValue;
                     break;
             }
-            */
             
             return result;
         }

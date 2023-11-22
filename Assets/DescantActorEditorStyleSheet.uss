@@ -47,10 +47,12 @@ TextField {
 }
 
 .actor {
+    justify-content: center;
+    
     flex-direction: row;
     flex-wrap: wrap;
     
-    justify-content: center;
+    height: 100%;
 }
 
 .actor_list {

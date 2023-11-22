@@ -11,10 +11,10 @@
 		
 	],
 	"RelationshipKeys": [
-		"Enemies"
+		"Test_Player"
 	],
 	"RelationshipValues": [
 		-1.0
 	],
-	"ConversationAttempts": 34
+	"ConversationAttempts": 61
 }

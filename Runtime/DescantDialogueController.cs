@@ -31,7 +31,7 @@ namespace DescantRuntime
         }
     }
     
-    public class DescantDialogueController : MonoBehaviour
+    public class DescantDialogueController : MonoBehaviour // TODO: create log file
     {
         /// <summary>
         /// The current runtime node being accessed
@@ -83,10 +83,8 @@ namespace DescantRuntime
         
         void FixedUpdate()
         {
-            /*
             foreach (var j in Current.Data.NodeComponents)
                 if (!j.FixedUpdate()) HasEnded = true;
-            */
         }
 
         void Update()
@@ -168,21 +166,21 @@ namespace DescantRuntime
         {
             if (HasEnded) return null;
             
-            if (Current.Data.Type.Equals("Start"))
-                InvokeComponents();
-
-            Current = Current.Next[choiceIndex];
-            CurrentType = Current.Data.Type;
-
             DescantNodeInvokeResult currentResult = new DescantNodeInvokeResult(
                 new List<KeyValuePair<int, string>>(),
                 Actors
             );
+            
+            if (Current.Data.Type.Equals("Start"))
+                InvokeComponents(currentResult);
+
+            Current = Current.Next[choiceIndex];
+            CurrentType = Current.Data.Type;
 
             switch (CurrentType)
             {
                 case "End":
-                    InvokeComponents();
+                    InvokeComponents(currentResult);
                     return null; // Stopping if there are no more nodes
 
                 case "Choice":
@@ -206,7 +204,7 @@ namespace DescantRuntime
             return currentResult.Choices.Count == 0 ? null : currentResult; // Stopping if there are no choices
         }
 
-        DescantNodeInvokeResult InvokeComponents(DescantNodeInvokeResult currentResult = null)
+        DescantNodeInvokeResult InvokeComponents(DescantNodeInvokeResult currentResult)
         {
             foreach (var i in Current.Data.NodeComponents)
                 currentResult = i.Invoke(currentResult);

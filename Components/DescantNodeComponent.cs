@@ -50,6 +50,32 @@ namespace DescantComponents
             return ToString().Equals(other.ToString());
         }
         
+        protected static bool CompareVariable(float variable, float comparison, ComparisonType comparisonType)
+        {
+            switch (comparisonType)
+            {
+                case ComparisonType.LessThan:
+                    return variable < comparison;
+                
+                case ComparisonType.LessThanOrEqualTo:
+                    return variable <= comparison;
+                
+                case ComparisonType.EqualTo:
+                    return variable == comparison;
+                
+                case ComparisonType.GreaterThanOrEqualTo:
+                    return variable >= comparison;
+                
+                case ComparisonType.GreaterThan:
+                    return variable > comparison;
+                
+                case ComparisonType.NotEqualTo:
+                    return variable != comparison;
+                
+                default: return false;
+            }
+        }
+        
         public override string ToString()
         {
             string temp = "";

@@ -61,6 +61,8 @@ namespace DescantComponents
         
         public static bool InvokeMethod(MonoBehaviour script, string scriptName, string methodName, string parameter)
         {
+            if (scriptName == "" || methodName == "") return false;
+            
             string fullType = script.GetType().ToString();
             string type = fullType.Substring(fullType.LastIndexOf('.') + 1);
 
@@ -100,7 +102,7 @@ namespace DescantComponents
         public static DescantActor GetActor(List<DescantActor> actors, string name)
         {
             foreach (var i in actors)
-                if (i.Name.Equals(name))
+                if (i.Name.Equals(name.Trim()))
                     return i;
             
             return null;
@@ -109,32 +111,6 @@ namespace DescantComponents
         public static T ParseEnum<T>(string value) where T : Enum
         {
             return (T)Enum.Parse(typeof(T), value, true);
-        }
-        
-        public static bool CompareVariable(float variable, float comparison, ComparisonType comparisonType)
-        {
-            switch (comparisonType)
-            {
-                case ComparisonType.LessThan:
-                    return variable < comparison;
-                
-                case ComparisonType.LessThanOrEqualTo:
-                    return variable <= comparison;
-                
-                case ComparisonType.EqualTo:
-                    return variable == comparison;
-                
-                case ComparisonType.GreaterThanOrEqualTo:
-                    return variable >= comparison;
-                
-                case ComparisonType.GreaterThan:
-                    return variable > comparison;
-                
-                case ComparisonType.NotEqualTo:
-                    return variable != comparison;
-                
-                default: return false;
-            }
         }
     }
 }

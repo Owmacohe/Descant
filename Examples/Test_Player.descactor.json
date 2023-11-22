@@ -5,18 +5,17 @@
 		"Health"
 	],
 	"StatisticValues": [
-		20.0
+		-2980.0
 	],
 	"Topics": [
-		"Descant"
+		"Descant",
+		"Email"
 	],
 	"RelationshipKeys": [
-		"Friends",
-		"Enemies"
+		"Test_NPC"
 	],
 	"RelationshipValues": [
-		1.0,
-		-1.0
+		1.5000001192092896
 	],
 	"ConversationAttempts": 0
 }

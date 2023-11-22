@@ -21,12 +21,12 @@ namespace DescantComponents
         {
             DescantActor actor = DescantComponentUtilities.GetActor(result.Actors, ActorName);
             
-            if ((VariableType.Equals(VariableType.Statistic) && DescantComponentUtilities.CompareVariable(
+            if ((VariableType.Equals(VariableType.Statistic) && CompareVariable(
                     actor.StatisticValues[actor.StatisticKeys.IndexOf(VariableName)], Comparison, ComparisonType)) ||
                 (VariableType.Equals(VariableType.Topic) && actor.Topics.Contains(VariableName)) ||
-                (VariableType.Equals(VariableType.Relationship) && DescantComponentUtilities.CompareVariable(
+                (VariableType.Equals(VariableType.Relationship) && CompareVariable(
                     actor.RelationshipValues[actor.RelationshipKeys.IndexOf(VariableName)], Comparison, ComparisonType)) ||
-                (VariableType.Equals(VariableType.ConversationAttempts) && DescantComponentUtilities.CompareVariable(
+                (VariableType.Equals(VariableType.ConversationAttempts) && CompareVariable(
                     actor.ConversationAttempts, Comparison, ComparisonType)))
             {
                 result.Choices[0] = new KeyValuePair<int, string>(result.Choices[0].Key, ChangeTo);

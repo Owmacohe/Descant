@@ -30,7 +30,7 @@ namespace DescantComponents
                     }
                 }
 
-                if (!invoked) Debug.Log("<b>EventScript:</b> Unable to find or execute the given script!");   
+                if (!invoked) Debug.Log("<b>EventScript:</b> Unable to find or execute the given script!");
             }
             
             // TODO: check for resumption using

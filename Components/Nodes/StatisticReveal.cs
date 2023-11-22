@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace DescantComponents
 {
@@ -7,12 +8,23 @@ namespace DescantComponents
     {
         [Inline] public string ActorName;
         
-        [ParameterGroup("Statistic to change")] public string StatisticName;
+        [ParameterGroup("Script to find")] public string ScriptName;
+        
+        [ParameterGroup("Method to call")] public string MethodName;
+        
+        [ParameterGroup("Statistic to reveal")] public string StatisticName;
 
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            // TODO: reveal statistic using
-            // Actor.Statistics[Statistic]
+            DescantActor actor = DescantComponentUtilities.GetActor(result.Actors, ActorName);
+            
+            foreach (var i in GameObject.FindObjectsOfType<MonoBehaviour>())
+                if (DescantComponentUtilities.InvokeMethod(
+                        i, ScriptName, MethodName,
+                        actor.StatisticValues[actor.StatisticKeys.IndexOf(StatisticName)].ToString()))
+                    return result;
+            
+            Debug.Log("<b>EventScript:</b> Unable to find or execute the given script!");
             
             return result;
         }

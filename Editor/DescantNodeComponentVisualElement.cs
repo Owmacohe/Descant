@@ -68,6 +68,8 @@ namespace DescantEditor
             collabsible.Add(paramRow1);
             paramRows.Add(paramRow1);
             paramRowGroups.Add("");
+            
+            // TODO: make it scrollable
 
             string[] ignoreFields = { "Collapsed" };
             
@@ -227,7 +229,7 @@ namespace DescantEditor
                         
                         ScrollView paramRow = new ScrollView();
                         paramRow.mode = ScrollViewMode.Horizontal;
-                        paramRow.horizontalScrollerVisibility = ScrollerVisibility.Auto;
+                        paramRow.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
                         paramRow.verticalScrollerVisibility = ScrollerVisibility.Hidden;
                         paramRow.AddToClassList("node_component_row");
                         groupRow.Add(paramRow);

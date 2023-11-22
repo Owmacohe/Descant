@@ -13,20 +13,17 @@ namespace DescantComponents
 
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            /*
-            DescantActor actor = Controller.GetActor(ActorName);
-            
+            DescantActor actor = DescantComponentUtilities.GetActor(result.Actors, ActorName);
+
             switch (ChangeType)
             {
                 case ListChangeType.Add:
-                    actor.SetTopic(TopicName, true);
+                    if (!actor.Topics.Contains(TopicName)) actor.Topics.Add(TopicName);
                     break;
-                
                 case ListChangeType.Remove:
-                    actor.SetTopic(TopicName, false);
+                    if (actor.Topics.Contains(TopicName)) actor.Topics.Remove(TopicName);
                     break;
             }
-            */
             
             return result;
         }

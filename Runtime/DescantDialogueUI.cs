@@ -73,7 +73,7 @@ namespace DescantRuntime
         /// The index of the choice being made (base 0)
         /// (default 0 if the current node is a ResponseNode)
         /// </param>
-        void DisplayNode(int choiceIndex = 0)
+        public void DisplayNode(int choiceIndex = 0)
         {
             UI.SetActive(true);
             
