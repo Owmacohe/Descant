@@ -54,4 +54,4 @@
 - [Ultima Ratio Regum](https://www.markrjohnsongames.com/games/ultima-ratio-regum)
 - [Emily Short's Interactive Storytelling](https://emshort.blog/how-to-play/writing-if/my-articles/conversation)
 - [A Gossip Virtual Social Network for Non Playable Characters in Role Play Games](https://ieeexplore.ieee.org/document/6680108?part=1)
-- [NiEngine]() *(link will come when the tool ends up being published)*
+- [NiEngine](https://github.com/StephanieRct/NiEngine)
