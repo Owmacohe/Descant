@@ -6,7 +6,6 @@ namespace DescantComponents
     [Serializable, MaxQuantity(1), NodeType(DescantNodeType.Response)]
     public class Interruptable : DescantNodeComponent
     {
-        //[Inline] public bool ResumeAfter;
         [ParameterGroup("Keys/buttons to check")] public string KeyCode;
         [ParameterGroup("Keys/buttons to check")] public string ButtonName;
         [ParameterGroup("Script to find")] public string ScriptName;
@@ -30,11 +29,11 @@ namespace DescantComponents
                     }
                 }
 
-                if (!invoked) Debug.Log("<b>EventScript:</b> Unable to find or execute the given script!");
+                if (!invoked)
+                {
+                    // TODO: unable to find script error message   
+                }
             }
-            
-            // TODO: check for resumption using
-            // ResumeAfter
 
             return !interrupted;
         }

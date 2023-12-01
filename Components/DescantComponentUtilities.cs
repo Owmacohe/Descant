@@ -81,7 +81,7 @@ namespace DescantComponents
                     List<object> parameters = new List<object>();
 
                     foreach (var j in method.GetParameters())
-                        parameters.Add(DescantComponentUtilities.GetComponentParameterValue(
+                        parameters.Add(GetComponentParameterValue(
                             parameter,
                             j.ParameterType
                         ));
@@ -104,6 +104,8 @@ namespace DescantComponents
             foreach (var i in actors)
                 if (i.Name.Equals(name.Trim()))
                     return i;
+            
+            // TODO: error message for actor not found
             
             return null;
         }

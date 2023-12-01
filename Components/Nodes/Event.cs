@@ -10,13 +10,14 @@ namespace DescantComponents
         [ParameterGroup("Method to call")] public string MethodName;
         [ParameterGroup("Method to call")] public string Parameter;
 
-        public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
+        public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result) // TODO: consolidate all method calling into one utility script
         {
             foreach (var i in GameObject.FindObjectsOfType<MonoBehaviour>())
                 if (DescantComponentUtilities.InvokeMethod(i, ScriptName, MethodName, Parameter))
                     return result;
             
-            Debug.Log("<b>EventScript:</b> Unable to find or execute the given script!");
+            // TODO: unable to find script error message
+            
             return result;
         }
     }
@@ -35,7 +36,8 @@ namespace DescantComponents
                 if (DescantComponentUtilities.InvokeMethod(i, ScriptName, MethodName, Parameter))
                     return result;
             
-            Debug.Log("<b>EventScript:</b> Unable to find or execute the given script!");
+            // TODO: unable to find script error message
+            
             return result;
         }
     }

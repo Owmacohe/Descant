@@ -154,22 +154,25 @@ namespace DescantEditor
             // Generating the connections between DescantNodes
             foreach (var n in data.Connections)
             {
-                var from = FindNode(n.From, n.FromID);
-                var to = FindNode(n.To, n.ToID);
-
-                int fromPortIndex = from.Type.Equals(DescantNodeType.Start) ? 0 : 1;
-                if (from.Type.Equals(DescantNodeType.Choice)) fromPortIndex = n.ChoiceIndex;
-
-                Port fromPort = DescantEditorUtilities.FindAllElements<Port>(from)[fromPortIndex];
-                Port toPort = DescantEditorUtilities.FindFirstElement<Port>(to);
-
-                Edge temp = fromPort.ConnectTo(toPort);
-                Add(temp);
-                
-                temp.RegisterCallback<MouseUpEvent>(callback =>
+                if (n.To != "null")
                 {
-                    Editor.CheckAndSave(); // Check for autosave
-                });
+                    var from = FindNode(n.From, n.FromID);
+                    var to = FindNode(n.To, n.ToID);
+
+                    int fromPortIndex = from.Type.Equals(DescantNodeType.Start) ? 0 : 1;
+                    if (from.Type.Equals(DescantNodeType.Choice)) fromPortIndex = n.ChoiceIndex;
+
+                    Port fromPort = DescantEditorUtilities.FindAllElements<Port>(from)[fromPortIndex];
+                    Port toPort = DescantEditorUtilities.FindFirstElement<Port>(to);
+
+                    Edge temp = fromPort.ConnectTo(toPort);
+                    Add(temp);
+                
+                    temp.RegisterCallback<MouseUpEvent>(callback =>
+                    {
+                        Editor.CheckAndSave(); // Check for autosave
+                    });   
+                }
             }
         }
 

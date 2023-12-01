@@ -96,8 +96,19 @@ namespace DescantRuntime
             {
                 if (dialogueController.Typewriter) StartTypewriter(temp.Choices[0].Value);
                 else response.text = temp.Choices[0].Value;
-                
-                switch (dialogueController.Current.Next[0].Data.Type)
+
+                var next = dialogueController.Current.Next;
+
+                if (next == null || next.Count == 0)
+                {
+                    SetClickMessage(true);
+                    
+                    // TODO: error message about there being no end node
+                    
+                    return;
+                }
+
+                switch (next[0].Data.Type)
                 {
                     case "Response":
                     case "End":

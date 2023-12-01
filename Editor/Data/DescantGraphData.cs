@@ -44,14 +44,19 @@ namespace DescantEditor
 
         public DescantGraphData(string name)
         {
-            Name = name;
+            #if UNITY_EDITOR
+                Name = DescantUtilities.FilterText(name);
+            #else
+                Name = name;
+            #endif
+
             Path = "";
             Autosave = false;
             Typewriter = true;
             TypewriterSpeed = 1;
             ChoiceNodes = new List<DescantChoiceNodeData>();
             ResponseNodes = new List<DescantResponseNodeData>();
-            StartNode = null;
+            StartNode = new DescantStartNodeData("StartNode", "Start", Vector2.zero, new List<DescantNodeComponent>());
             EndNodes = new List<DescantEndNodeData>();
             Groups = new List<DescantGroupData>();
             Connections = new List<DescantConnectionData>();

@@ -29,12 +29,19 @@ namespace DescantComponents
             
             foreach (var i in GameObject.FindObjectsOfType<MonoBehaviour>())
             {
-                DescantComponentUtilities.InvokeMethod(i, ScriptName, MethodName, percentage.ToString());
-                
+                if (!DescantComponentUtilities.InvokeMethod(
+                        i, ScriptName, MethodName, percentage.ToString()))
+                {
+                    // TODO: unable to find script error message
+                }
+
                 if (percentage >= 1)
-                    DescantComponentUtilities.InvokeMethod(
-                        i, "DescantDialogueUI", "DisplayNode",
-                        (ChoiceToPick - 1).ToString());
+                    if (!DescantComponentUtilities.InvokeMethod(
+                            i, "DescantDialogueUI", "DisplayNode",
+                            (ChoiceToPick - 1).ToString()))
+                    {
+                        // TODO: unable to find script error message
+                    }
             }
 
             return true;

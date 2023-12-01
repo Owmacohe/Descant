@@ -14,6 +14,8 @@ namespace DescantComponents
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
             DescantActor actor = DescantComponentUtilities.GetActor(result.Actors, FirstActorName);
+
+            if (actor == null) return result;
             
             switch (OperationType)
             {

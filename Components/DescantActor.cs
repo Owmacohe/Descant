@@ -21,7 +21,11 @@ namespace DescantComponents
 
         public DescantActor(string name)
         {
-            Name = name;
+            #if UNITY_EDITOR
+                Name = DescantUtilities.FilterText(name);
+            #else
+                Name = name;
+            #endif
 
             StatisticKeys = new List<string>();
             StatisticValues = new List<float>();

@@ -20,6 +20,8 @@ namespace DescantComponents
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
             DescantActor actor = DescantComponentUtilities.GetActor(result.Actors, ActorName);
+
+            if (actor == null) return result;
             
             if ((VariableType.Equals(VariableType.Statistic) && CompareVariable(
                     actor.StatisticValues[actor.StatisticKeys.IndexOf(VariableName)], Comparison, ComparisonType)) ||

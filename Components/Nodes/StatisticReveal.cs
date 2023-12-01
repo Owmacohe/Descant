@@ -17,6 +17,8 @@ namespace DescantComponents
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
             DescantActor actor = DescantComponentUtilities.GetActor(result.Actors, ActorName);
+
+            if (actor == null) return result;
             
             foreach (var i in GameObject.FindObjectsOfType<MonoBehaviour>())
                 if (DescantComponentUtilities.InvokeMethod(

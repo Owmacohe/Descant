@@ -65,11 +65,19 @@ namespace DescantRuntime
             foreach (var i in a)
                 Actors.Add(DescantEditorUtilities.LoadActorFromString(i.text));
 
-            player = DescantEditorUtilities.LoadActorFromString(p.text);
-            NPC = DescantEditorUtilities.LoadActorFromString(npc.text);
+            if (p != null)
+            {
+                player = DescantEditorUtilities.LoadActorFromString(p.text);
+                
+                if (!Actors.Contains(player)) Actors.Add(player);
+            }
             
-            if (!Actors.Contains(player)) Actors.Add(player);
-            if (!Actors.Contains(NPC)) Actors.Add(NPC);
+            if (npc != null)
+            {
+                NPC = DescantEditorUtilities.LoadActorFromString(npc.text);
+                
+                if (!Actors.Contains(NPC)) Actors.Add(NPC);
+            }
         }
 
         public void BeginDialogue()
@@ -77,8 +85,11 @@ namespace DescantRuntime
             Current = Nodes[0];
             CurrentType = "Start";
 
-            NPC.ConversationAttempts++;
-            DescantEditorUtilities.SaveActor(false, NPC);
+            if (NPC != null)
+            {
+                NPC.ConversationAttempts++;
+                DescantEditorUtilities.SaveActor(false, NPC);   
+            }
         }
         
         void FixedUpdate()
@@ -117,12 +128,10 @@ namespace DescantRuntime
 
             // Finally, checking its connections to know how to connect the runtime nodes up
             foreach (var i in data.Connections)
-            {
-                RuntimeNode a = FindRuntimeNode(i.From, i.FromID);
-                RuntimeNode b = FindRuntimeNode(i.To, i.ToID);
-                
-                a.Next.Add(b);
-            }
+                FindRuntimeNode(i.From, i.FromID).Next
+                    .Add(i.To == "null"
+                        ? null
+                        : FindRuntimeNode(i.To, i.ToID));
         }
 
         /// <summary>
@@ -170,9 +179,18 @@ namespace DescantRuntime
                 new List<KeyValuePair<int, string>>(),
                 Actors
             );
-            
+
             if (Current.Data.Type.Equals("Start"))
                 InvokeComponents(currentResult);
+
+            if (Current.Next == null ||
+                Current.Next.Count == 0 ||
+                Current.Next[choiceIndex] == null)
+            {
+                // TODO: error message about there being no end node
+                
+                return null;
+            }
 
             Current = Current.Next[choiceIndex];
             CurrentType = Current.Data.Type;

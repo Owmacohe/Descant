@@ -28,28 +28,6 @@ namespace DescantEditor
             return path.Substring(path.Length - 15) == ".descactor.json";
         }
         
-        /*
-        /// <summary>
-        /// *[CURRENTLY NOT WORKING]*
-        /// Opens a Descant file when it is double-clicked upon
-        /// </summary>
-        /// <param name="instanceID">The instanceID of the file being checked</param>
-        [OnOpenAsset]
-        public static bool OpenFile(int instanceID)
-        {
-            string path = DescantEditorUtilities.GetFullPathFromInstanceID(instanceID);
-            bool isDescantFile = IsDescantFile(instanceID);
-            
-            if (isDescantFile)
-            {
-                Debug.Log("<b>Descant</b> | Loading file: " + path);
-                EditorWindow.GetWindow<DescantEditor>("Descant Graph Editor").Load(path);
-            }
-
-            return false;
-        }
-        */
-        
         /// <summary>
         /// Project view contextual menu edit option for Descant files
         /// </summary>
@@ -93,7 +71,7 @@ namespace DescantEditor
                 File.ReadAllText(
                     Application.dataPath + "/" +
                     DescantEditorUtilities.GetCurrentLocalDirectory() +
-                    "New Descant Graph.desc.json"
+                    "New_Descant_Graph.desc.json"
                 );
             }
             // If it doesn't, we create a new one
@@ -113,7 +91,7 @@ namespace DescantEditor
                 File.ReadAllText(
                     Application.dataPath + "/" +
                     DescantEditorUtilities.GetCurrentLocalDirectory() +
-                    "New Descant Actor.descactor.json"
+                    "New_Descant_Actor.descactor.json"
                 );
             }
             // If it doesn't, we create a new one

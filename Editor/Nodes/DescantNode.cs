@@ -79,7 +79,7 @@ namespace DescantEditor
             {
                 // Filtering the text for the field as it's being written
                 TextField target = (TextField) callback.target;
-                target.value = DescantEditorUtilities.FilterText(target.value);
+                target.value = DescantUtilities.FilterText(target.value);
                 
                 GraphView.Editor.CheckAndSave(); // Check for autosave
             });

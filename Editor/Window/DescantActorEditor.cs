@@ -210,7 +210,7 @@ namespace DescantEditor
                 data = DescantEditorUtilities.LoadActorFromPath(fullPath);
                 
                 // Reloading the name and path, in case they got changed after the last time this file was loaded
-                data.Name = DescantEditorUtilities.GetDescantFileNameFromPath(fullPath, false);
+                data.Name = DescantUtilities.FilterText(DescantEditorUtilities.GetDescantFileNameFromPath(fullPath, false));
                 data.Path = DescantEditorUtilities.RemoveBeforeLocalPath(fullPath);
                 
                 DescantEditorUtilities.SaveActor(false, data);
@@ -273,7 +273,7 @@ namespace DescantEditor
         
         public void NewFile()
         {
-            data = new DescantActor("New Descant Actor");
+            data = new DescantActor("New_Descant_Actor");
             DescantEditorUtilities.SaveActor(true, data);
 
             loaded = true;

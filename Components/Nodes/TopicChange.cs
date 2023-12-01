@@ -15,6 +15,8 @@ namespace DescantComponents
         {
             DescantActor actor = DescantComponentUtilities.GetActor(result.Actors, ActorName);
 
+            if (actor == null) return result;
+
             switch (ChangeType)
             {
                 case ListChangeType.Add:

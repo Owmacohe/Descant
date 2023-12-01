@@ -109,11 +109,20 @@ namespace DescantEditor
 
                         temp.RegisterValueChangedCallback(callback =>
                         {
-                            i.SetValue(Component, DescantComponentUtilities.GetComponentParameterValue(
-                                callback.newValue,
-                                i.FieldType
-                            ));
-                            
+                            temp.value = DescantUtilities.FilterText(callback.newValue, i.FieldType != typeof(string));
+
+                            try
+                            {
+                                i.SetValue(Component, DescantComponentUtilities.GetComponentParameterValue(
+                                    callback.newValue,
+                                    i.FieldType
+                                ));
+                            }
+                            catch (FormatException)
+                            {
+                                // TODO: error message for wrong format
+                            }
+
                             graphView.Editor.CheckAndSave(); // Check for autosave
                         });
                     }

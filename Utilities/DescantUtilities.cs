@@ -47,4 +47,22 @@ public static class DescantUtilities
 
         return temp;
     }
+    
+    /// <summary>
+    /// Filters a string to remove all special characters (and whitespace)
+    /// </summary>
+    /// <param name="text">The text to be checked through</param>
+    /// <returns>The filtered string with special characters removed</returns>
+    public static string FilterText(string text, bool allowPeriod = false)
+    {
+        string special = "/\\`~!@#$%^*()+={}[]|;:'\",<>?"; // allowed: & _
+            
+        text = text.Trim();
+
+        for (int i = 0; i < text.Length; i++)
+            if (special.Contains(text[i]) || text[i] == ' ' || (!allowPeriod && text[i] == '.'))
+                text = text.Remove(i);
+
+        return text;
+    }
 }

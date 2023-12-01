@@ -274,6 +274,16 @@ namespace DescantEditor
                                 ii
                             ));
                         }
+                        else
+                        {
+                            temp.Connections.Add(new DescantConnectionData(
+                                i.Type.ToString(),
+                                i.ID,
+                                "null",
+                                -1,
+                                ii
+                            ));
+                        }
                     }
                 }
 
@@ -475,7 +485,7 @@ namespace DescantEditor
                 data = DescantGraphData.LoadGraphFromPath(fullPath);
                 
                 // Reloading the name and path, in case they got changed after the last time this file was loaded
-                data.Name = DescantEditorUtilities.GetDescantFileNameFromPath(fullPath);
+                data.Name = DescantUtilities.FilterText(DescantEditorUtilities.GetDescantFileNameFromPath(fullPath));
                 data.Path = DescantEditorUtilities.RemoveBeforeLocalPath(fullPath);
                 
                 data.Save(false);
@@ -506,7 +516,7 @@ namespace DescantEditor
         /// </summary>
         public void NewFile()
         {
-            data = new DescantGraphData("New Descant Graph");
+            data = new DescantGraphData("New_Descant_Graph");
             data.Save(true);
 
             loaded = true;
