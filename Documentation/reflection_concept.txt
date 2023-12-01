@@ -1,0 +1,9 @@
+Progress-bounded reflection concept (this feels a little cobbled together and perhaps not useful, but I might try it out to see)
+
+---
+
+Every 200 lines of chode that is changed, the developer must write an in-the-moment list of what was changed and one brief message regarding progress and thoughts
+
+Then the commit just lists all the changes that were made, and a new journal log goes with each commit that recaps all the in-the-moment thoughts
+
+Then at a set interval (say, every 2 weeks) a re-reflection on the central idea is done
