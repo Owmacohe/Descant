@@ -10,7 +10,8 @@ namespace DescantComponents
         
         [ParameterGroup("Tag of object to find")] public string ObjectTag;
         [ParameterGroup("Script to find")] public string ScriptName;
-        [ParameterGroup("Method to call")] public string MethodName;
+        [ParameterGroup("Methods to call")] public string TimerMethodName;
+        [ParameterGroup("Methods to call")] public string FinishedMethodName;
         
         [ParameterGroup("When timer runs out (base 1)")] public int ChoiceToPick;
 
@@ -29,22 +30,22 @@ namespace DescantComponents
             
             foreach (var i in GameObject.FindObjectsOfType<MonoBehaviour>())
             {
-                if (!DescantComponentUtilities.InvokeFromObjectOrScript(
+                if (ScriptName != "" && TimerMethodName != "" && !DescantComponentUtilities.InvokeFromObjectOrScript(
                     this,
                     ObjectTag,
                     ScriptName,
-                    MethodName,
+                    TimerMethodName,
                     percentage.ToString()
-                )) DescantComponentUtilities.MissingMethodError(this, ScriptName, MethodName);
+                )) DescantComponentUtilities.MissingMethodError(this, ScriptName, TimerMethodName);
 
-                if (percentage >= 1)
+                if (ScriptName != "" && FinishedMethodName != "" && percentage >= 1)
                     if (!DescantComponentUtilities.InvokeFromObjectOrScript(
                         this,
                         ObjectTag,
                         ScriptName,
-                        MethodName,
+                        FinishedMethodName,
                         (ChoiceToPick - 1).ToString()
-                    )) DescantComponentUtilities.MissingMethodError(this, ScriptName, MethodName);
+                    )) DescantComponentUtilities.MissingMethodError(this, ScriptName, FinishedMethodName);
             }
 
             return true;

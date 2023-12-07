@@ -12,6 +12,7 @@ namespace DescantEditor
     public static class DescantEditorUtilities
     {
         #if UNITY_EDITOR
+        
         #region VisualElements
         
         /// <summary>
@@ -74,11 +75,15 @@ namespace DescantEditor
         #endregion
 
         #region File Paths
-        
+
         /// <summary>
         /// Extracts the file name of a Descant file from its path
         /// </summary>
         /// <param name="path">The full or local path ending in [filename].desc.json</param>
+        /// <param name="isDescantGraph">
+        /// Whether the file being pointed towards is a Descant Graph
+        /// (as opposed to a Descant Actor)
+        /// </param>
         /// <returns>The name of the Descant file, without its folder structure or .desc.json extension</returns>
         public static string GetDescantFileNameFromPath(string path, bool isDescantGraph = true)
         {
@@ -166,8 +171,6 @@ namespace DescantEditor
 
         #endregion
 
-        #region Misc
-
         /// <summary>
         /// Checks to see if two lists of some type are equal
         /// </summary>
@@ -187,15 +190,19 @@ namespace DescantEditor
             
             return true;
         }
-
-        #endregion
+        
         #endif
         
+        /// <summary>
+        /// Saves a given DescantActor
+        /// </summary>
+        /// <param name="newFile">Whether this actor should be saved to a new file</param>
+        /// <param name="data">The actor data to be saved</param>
         public static void SaveActor(bool newFile, DescantActor data)
         {
             #if UNITY_EDITOR
             // Setting the local path if this is the first time
-            if (newFile) data.Path = DescantEditorUtilities.GetCurrentLocalDirectory() + data.Name + ".descactor.json";
+            if (newFile) data.Path = GetCurrentLocalDirectory() + data.Name + ".descactor.json";
             #endif
             
             // Saving to the full path
@@ -204,11 +211,21 @@ namespace DescantEditor
                 DescantUtilities.FormatJSON(JsonUtility.ToJson(data)));
         }
         
+        /// <summary>
+        /// Loads a DescantActor from the file at the given path
+        /// </summary>
+        /// <param name="fullPath">The full disc path to the file</param>
+        /// <returns>A generated actor</returns>
         public static DescantActor LoadActorFromPath(string fullPath)
         {
             return LoadActorFromString(File.ReadAllText(fullPath));
         }
         
+        /// <summary>
+        /// Loads a DescantActor from the given data string
+        /// </summary>
+        /// <param name="str">The JSON-formatted string of the actor</param>
+        /// <returns>A generated actor</returns>
         public static DescantActor LoadActorFromString(string str)
         {
             return JsonUtility.FromJson<DescantActor>(str);

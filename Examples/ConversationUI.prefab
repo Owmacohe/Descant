@@ -556,8 +556,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   graph: {fileID: 4900000, guid: 308f2ac7a29cf44298ec2d67504079d4, type: 3}
+  player: {fileID: 0}
+  NPC: {fileID: 0}
   actors: []
-  displayOnStart: 1
+  displayOnStart: 0
   response: {fileID: 2309141401438911275}
   choices: {fileID: 8548063041029733740}
   choice: {fileID: 5535320327982640812, guid: 975a384186ab54f8bbf0ab32f86b5472, type: 3}

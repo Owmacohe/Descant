@@ -49,10 +49,10 @@ namespace DescantRuntime
         /// Initializes the conversation controller
         /// </summary>
         /// <param name="g">The JSON graph to be loaded</param>
-        /// <param name="a">The dialogue's extra actors to be loaded</param>
         /// <param name="p">The dialogue's player to be loaded</param>
         /// <param name="npc">The dialogue's NPC to be loaded</param>
-        public void Initialize(TextAsset g, TextAsset[] a, TextAsset p, TextAsset npc)
+        /// <param name="a">The dialogue's extra actors to be loaded</param>
+        public void Initialize(TextAsset g, TextAsset p, TextAsset npc, TextAsset[] a)
         {
             #if UNITY_EDITOR
             AssetDatabase.Refresh();
@@ -102,12 +102,14 @@ namespace DescantRuntime
         
         void FixedUpdate()
         {
+            // Calling each of the current Components' FixedUpdates, then ending the dialogue if any return false
             foreach (var j in Current.Data.NodeComponents)
                 if (!j.FixedUpdate()) HasEnded = true;
         }
 
         void Update()
         {
+            // Calling each of the current Components' Updates, then ending the dialogue if any return false
             foreach (var j in Current.Data.NodeComponents)
                 if (!j.Update()) HasEnded = true;
         }
@@ -181,58 +183,70 @@ namespace DescantRuntime
         /// </returns>
         public DescantNodeInvokeResult Next(int choiceIndex = 0)
         {
-            if (HasEnded) return null;
+            if (HasEnded) return null; // Not allowing the dialogue to proceed if it has ended
             
+            // Creating a new results object to be passed in and out of the Components
             DescantNodeInvokeResult currentResult = new DescantNodeInvokeResult(
-                new List<KeyValuePair<int, string>>(),
-                Actors
-            );
+                new List<KeyValuePair<int, string>>(), Actors);
 
+            // Invoking the StartNode's components if we're at the beginning of the dialogue
             if (Current.Data.Type.Equals("Start"))
                 InvokeComponents(currentResult);
 
+            // If there's no next node in the path, stop and throw an error
             if (Current.Next == null ||
                 Current.Next.Count == 0 ||
                 Current.Next[choiceIndex] == null)
             {
                 DescantUtilities.ErrorMessage(
                     GetType(),
-                    "Dialogue path contains no end node!"
+                    "No next node in path!"
                 );
                 
                 return null;
             }
 
+            // Getting the next node
             Current = Current.Next[choiceIndex];
             CurrentType = Current.Data.Type;
 
             switch (CurrentType)
             {
+                // If we're at the end, we invoke the final Components and stop
                 case "End":
                     InvokeComponents(currentResult);
-                    return null; // Stopping if there are no more nodes
+                    return null;
 
+                // Add the ChoiceNode's choices to the result object
                 case "Choice":
                     List<string> choices = ((DescantChoiceNodeData) Current.Data).Choices;
+                    
                     for (int i = 0; i < choices.Count; i++)
                         currentResult.Choices.Add(new KeyValuePair<int, string>(i, choices[i]));
                     break;
                 
+                // Add the ResponseNode's response to the result object
                 case "Response":
                     currentResult.Choices.Add(
                         new KeyValuePair<int, string>(0, ((DescantResponseNodeData)Current.Data).Response));
                     break;
             }
             
+            // Invoking the Components for the new node, and setting the actors accordingly
             currentResult = InvokeComponents(currentResult);
             Actors = currentResult.Actors;
 
+            // Saving the changes to the actors
             foreach (var i in Actors)
                 DescantEditorUtilities.SaveActor(false, i);
             
             return currentResult.Choices.Count == 0 ? null : currentResult; // Stopping if there are no choices
         }
 
+        /// <summary>
+        /// Invokes all of the Components of the current node, passing a result object through them
+        /// </summary>
+        /// <param name="currentResult">The current text and actor result data</param>
         DescantNodeInvokeResult InvokeComponents(DescantNodeInvokeResult currentResult)
         {
             foreach (var i in Current.Data.NodeComponents)

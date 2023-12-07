@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using DescantComponents;
 using TMPro;
 using UnityEngine;
@@ -10,61 +9,87 @@ namespace DescantRuntime
     public class DescantDialogueUI : MonoBehaviour
     {
         [Header("Data")]
-        [SerializeField, Tooltip("The Descant Graph that will be played")] TextAsset graph;
-        [SerializeField] TextAsset[] actors;
-        [SerializeField] TextAsset player;
-        [SerializeField] TextAsset NPC;
+        [SerializeField, Tooltip("The Descant Graph that will be converted into dialogue")] TextAsset graph;
+        [SerializeField, Tooltip("The player's DescantActor")] TextAsset player;
+        [SerializeField, Tooltip("The NPC DescantActor being interacted with")] TextAsset NPC;
+        [SerializeField, Tooltip("Any more extra NPCs that the Descant Graph references")] TextAsset[] actors;
 
         [Header("UI")]
-        [SerializeField] bool displayOnStart;
+        [SerializeField, Tooltip("Whether to start the dialogue when the scene starts")] bool displayOnStart;
         [SerializeField, Tooltip("The NPC response text")] TMP_Text response;
         [SerializeField, Tooltip("The parent UI object for the player's choices (ideally a LayoutGroup)")] Transform choices;
         [SerializeField, Tooltip("The player choice prefab to be spawned with the choice text")] GameObject choice;
         
-        DescantDialogueController dialogueController;
-        GameObject UI;
+        DescantDialogueController dialogueController; // The controller for the dialogue backend
+        GameObject background; // The parent of all the UI members
+        
+        // Whether the UI is waiting for the player to click on the screen for the dialogue to continue
+        // (rather than continuing automatically)
         bool waitForClick;
 
-        bool isTyping;
-        string targetTypewriterText;
-        int typewriterIndex;
-        List<string> tags = new List<string>();
-
+        string targetTypewriterText; // The full text that the typewriter is typing out
+        int typewriterIndex; // The index in the target text that the typewriter is currently at
+        
         void Awake()
         {
             dialogueController = gameObject.AddComponent<DescantDialogueController>();
 
-            UI = transform.GetChild(0).gameObject;
-            UI.SetActive(false);
+            // Hiding the UI to start
+            background = transform.GetChild(0).gameObject;
+            background.SetActive(false);
         }
         
         void Start()
         {
-            Initialize(graph, actors, player, NPC, displayOnStart);
+            // Initializing the dialogue (so that it doesn't have to be in Initialized when the interaction begins)
+            Initialize(graph, player, NPC, actors, displayOnStart);
         }
 
         void Update()
         {
-            if (dialogueController.HasEnded) End();
+            if (dialogueController.HasEnded) HideUI(); // Constantly checking to see if the dialogue has ended
             
+            // Advancing the dialogue when the player clicks (if it's waiting for that)
             if (waitForClick && Input.GetButtonDown("Fire1"))
             {
-                if (dialogueController.Current.Next.Count == 0) End();
+                if (dialogueController.Current.Next.Count == 0) HideUI();
                 else DisplayNode();
             }
         }
 
-        public void Initialize(TextAsset g, TextAsset[] a, TextAsset p, TextAsset npc, bool display)
+        /// <summary>
+        /// Initializes the DescantDialogueController's data
+        /// (to be called before a dialogue is displayed)
+        /// (generally called at the beginning of a scene or right before a new dialogue is about to begin)
+        /// </summary>
+        /// <param name="g">The JSON graph to be loaded</param>
+        /// <param name="p">The dialogue's player to be loaded</param>
+        /// <param name="npc">The dialogue's NPC to be loaded</param>
+        /// <param name="a">The dialogue's extra actors to be loaded</param>
+        /// <param name="display">Whether to immediately display the UI after its been Initialized</param>
+        public void Initialize(TextAsset g, TextAsset p, TextAsset npc, TextAsset[] a, bool display)
         {
-            dialogueController.Initialize(g, a, p, npc);
+            dialogueController.Initialize(g, p, npc, a);
             
             if (display) BeginDialogue();
         }
 
+        /// <summary>
+        /// Displays the UI (to be called only after the dialogue has been Initialized)
+        /// </summary>
         public void BeginDialogue()
         {
             dialogueController.BeginDialogue();
             DisplayNode();
+        }
+        
+        /// <summary>
+        /// Hiding the UI (to be called after the dialogue has ended)
+        /// </summary>
+        void HideUI()
+        {
+            background.SetActive(false);
+            waitForClick = false;
         }
 
         /// <summary>
@@ -76,30 +101,35 @@ namespace DescantRuntime
         /// </param>
         public void DisplayNode(int choiceIndex = 0)
         {
-            UI.SetActive(true);
-            
+            // Hiding the UI and click message by default (will be turned on later if there is a next node)
+            background.SetActive(true);
             SetClickMessage(false);
             
-            // Destroying all the old choices
+            // Destroying all the old choices (if there are any)
             for (int i = 0; i < choices.childCount; i++)
                 Destroy(choices.GetChild(i).gameObject);
             
+            // Getting the next node in the path from the DescantDialogueController
             DescantNodeInvokeResult temp = dialogueController.Next(choiceIndex);
             
+            // Stopping if there are no more nodes
             if (temp == null)
             {
-                End();
-                return; // Stopping if there are no more nodes
+                HideUI();
+                return;
             }
             
             // Displaying the ResponseNodes...
             if (temp.Choices.Count == 1 && dialogueController.Current.Data.Type.Equals("Response"))
             {
+                // Either starting the typewriter or just sticking the text right in
                 if (dialogueController.Typewriter) StartTypewriter(temp.Choices[0].Value);
                 else response.text = temp.Choices[0].Value;
 
+                // Quickly checking to see what the next node is
                 var next = dialogueController.Current.Next;
 
+                // If there is no next, we show the click message and print an error
                 if (next == null || next.Count == 0)
                 {
                     SetClickMessage(true);
@@ -111,14 +141,16 @@ namespace DescantRuntime
                     
                     return;
                 }
-
+                
                 switch (next[0].Data.Type)
                 {
+                    // If the next is an End or Response node, we show the click message
                     case "Response":
                     case "End":
                         SetClickMessage(true);
                         break;
                     
+                    // Otherwise, we display the next node (which will be a ChoiceNode)
                     default:
                         // Once the response text has been shown, we skip ahead to show the player's possible choices
                         DisplayNode();
@@ -149,57 +181,71 @@ namespace DescantRuntime
             }
         }
 
+        /// <summary>
+        /// Shows/hides the click message to indicate that the player has to click to advance the dialogue
+        /// </summary>
+        /// <param name="visible">Whether to show or hide it</param>
         void SetClickMessage(bool visible)
         {
             waitForClick = visible;
             response.transform.GetChild(0).gameObject.SetActive(visible);
         }
 
-        void End()
-        {
-            UI.SetActive(false);
-            waitForClick = false;
-        }
-
+        /// <summary>
+        /// Starts the typewriter process to display text one character at a time into the Response section of the UI
+        /// </summary>
+        /// <param name="text">The text to be typed out</param>
         void StartTypewriter(string text)
         {
             response.text = "";
             
-            isTyping = true;
             targetTypewriterText = text;
             typewriterIndex = 0;
             
             Type();
         }
 
+        /// <summary>
+        /// A recursively-called method to display one character at a time into the Response section of the UI
+        /// (skipping over TMP styling tags)
+        /// </summary>
         void Type()
         {
-            if (isTyping && response.text != targetTypewriterText && typewriterIndex < targetTypewriterText.Length)
+            // Making sure we haven't reached the end yet
+            if (response.text != targetTypewriterText)
             {
-                char temp = targetTypewriterText[typewriterIndex];
+                char temp = targetTypewriterText[typewriterIndex]; // The next character to be typed
 
+                // Skipping a tag when we find it (provided it has a closing bracket)
                 if (temp == '<' && targetTypewriterText.Substring(typewriterIndex).Contains('>'))
                 {
                     int skipLength = 0;
                     
+                    // Creating a small inner loop that goes until we find the end of the tag
                     for (int i = typewriterIndex; i < targetTypewriterText.Length; i++)
                     {
-                        skipLength++;
+                        skipLength++; // Upping the length of the skip
+                        
+                        // We still want to put the text into the UI
+                        // (TMP's inherent styling will hide it once it gets typed out entirely)
                         response.text += targetTypewriterText[i];
                         
                         if (targetTypewriterText[i] == '>')
                         {
+                            // Skipping over the tag for future Type() calls once it's done
                             typewriterIndex += skipLength;
                             break;
                         }
                     }
                 }
+                // Otherwise just typing out the character
                 else
                 {
                     response.text += temp;
                     typewriterIndex++;   
                 }
 
+                // Calling itself again after some amount of time (dependant on the typewriterSpeed)
                 Invoke(nameof(Type), (1f / dialogueController.TypewriterSpeed) / 10f);
             }
         }

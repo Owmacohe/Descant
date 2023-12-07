@@ -18,7 +18,7 @@ namespace DescantComponents
         {
             DescantActor actor = DescantComponentUtilities.GetActor(this, result.Actors, ActorName);
 
-            if (actor == null) return result;
+            if (actor == null || ScriptName == "" || MethodName == "") return result;
 
             if (DescantComponentUtilities.InvokeFromObjectOrScript(
                 this,

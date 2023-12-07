@@ -5,7 +5,7 @@
 		"Health"
 	],
 	"StatisticValues": [
-		-2980.0
+		-8980.0
 	],
 	"Topics": [
 		"Descant",
@@ -15,7 +15,7 @@
 		"Test_NPC"
 	],
 	"RelationshipValues": [
-		1.5000001192092896
+		2.0999999046325685
 	],
-	"ConversationAttempts": 0
+	"DialogueAttempts": 0
 }

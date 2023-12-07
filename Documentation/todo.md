@@ -22,3 +22,4 @@
 - Add `DescantIfNode`
 - ~~Make script calling easier~~
 - Make autosave better
+- Create log system

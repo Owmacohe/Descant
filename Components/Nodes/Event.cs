@@ -13,6 +13,8 @@ namespace DescantComponents
 
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
+            if (ScriptName == "" || MethodName == "") return result;
+            
             if (DescantComponentUtilities.InvokeFromObjectOrScript(
                 this,
                 ObjectTag,

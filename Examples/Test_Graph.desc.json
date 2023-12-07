@@ -26,9 +26,6 @@
 				},
 				{
 					"rid": 1002
-				},
-				{
-					"rid": 1003
 				}
 			],
 			"Choices": [
@@ -43,15 +40,15 @@
 			"Type": "Choice",
 			"ID": 2,
 			"Position": {
-				"x": 2391.5,
-				"y": 8.5
+				"x": 2392.0,
+				"y": 9.0
 			},
 			"NodeComponents": [
 				{
-					"rid": 1004
+					"rid": 1003
 				},
 				{
-					"rid": 1005
+					"rid": 1004
 				}
 			],
 			"Choices": [
@@ -64,10 +61,13 @@
 			"Type": "Choice",
 			"ID": 3,
 			"Position": {
-				"x": 4267.5,
-				"y": 8.5
+				"x": 4268.0,
+				"y": 9.0
 			},
 			"NodeComponents": [
+				{
+					"rid": 1005
+				},
 				{
 					"rid": 1006
 				}
@@ -92,7 +92,7 @@
 					"rid": 1007
 				}
 			],
-			"Response": "Welcome to Descant! How can I help you?"
+			"Response": "<b><i>Welcome</b></i> to <color=\"blue\">Descant</color>! How can I help you?"
 		},
 		{
 			"Name": "ResponseNode",
@@ -140,8 +140,8 @@
 			"Type": "Response",
 			"ID": 4,
 			"Position": {
-				"x": 2982.5,
-				"y": 8.5
+				"x": 2983.0,
+				"y": 9.0
 			},
 			"NodeComponents": [
 				{
@@ -155,8 +155,8 @@
 			"Type": "Response",
 			"ID": 5,
 			"Position": {
-				"x": 3630.5,
-				"y": 8.5
+				"x": 3631.0,
+				"y": 9.0
 			},
 			"NodeComponents": [
 				{
@@ -202,8 +202,8 @@
 			"Type": "End",
 			"ID": 0,
 			"Position": {
-				"x": 4876.5,
-				"y": 8.5
+				"x": 4877.0,
+				"y": 9.0
 			},
 			"NodeComponents": [
 				{
@@ -246,7 +246,7 @@
 			"ID": 0,
 			"Position": {
 				"x": 4.0,
-				"y": 23.5
+				"y": 23.0
 			},
 			"Nodes": [
 				"Choice",
@@ -264,7 +264,7 @@
 			"ID": 1,
 			"Position": {
 				"x": 1641.0,
-				"y": -211.5
+				"y": -212.0
 			},
 			"Nodes": [
 				"Response",
@@ -281,7 +281,7 @@
 			"Name": "NodeGroup",
 			"ID": 2,
 			"Position": {
-				"x": 2366.5,
+				"x": 2367.0,
 				"y": -50.0
 			},
 			"Nodes": [
@@ -304,7 +304,7 @@
 			"ID": 3,
 			"Position": {
 				"x": 4801.0,
-				"y": 483.5
+				"y": 483.0
 			},
 			"Nodes": [
 				"Response",
@@ -477,21 +477,6 @@
 			{
 				"rid": 1003,
 				"type": {
-					"class": "TimedChoice",
-					"ns": "DescantComponents",
-					"asm": "omch.descant.components"
-				},
-				"data": {
-					"Collapsed": true,
-					"Time": 5.0,
-					"ChoiceToPick": 1,
-					"ScriptName": "",
-					"MethodName": ""
-				}
-			},
-			{
-				"rid": 1004,
-				"type": {
 					"class": "Log",
 					"ns": "DescantComponents",
 					"asm": "omch.descant.components"
@@ -502,7 +487,7 @@
 				}
 			},
 			{
-				"rid": 1005,
+				"rid": 1004,
 				"type": {
 					"class": "LockedChoice",
 					"ns": "DescantComponents",
@@ -516,6 +501,23 @@
 					"VariableName": "",
 					"ComparisonType": 3,
 					"Comparison": 10.0
+				}
+			},
+			{
+				"rid": 1005,
+				"type": {
+					"class": "TimedChoice",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": true,
+					"Time": 5.0,
+					"ObjectTag": "",
+					"ScriptName": "",
+					"TimerMethodName": "",
+					"FinishedMethodName": "",
+					"ChoiceToPick": 1
 				}
 			},
 			{
@@ -571,8 +573,10 @@
 					"Collapsed": true,
 					"KeyCode": "space",
 					"ButtonName": "",
+					"ObjectTag": "",
 					"ScriptName": "",
-					"MethodName": ""
+					"MethodName": "",
+					"Parameter": ""
 				}
 			},
 			{
