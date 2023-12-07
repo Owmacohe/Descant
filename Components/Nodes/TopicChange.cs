@@ -13,7 +13,7 @@ namespace DescantComponents
 
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            DescantActor actor = DescantComponentUtilities.GetActor(result.Actors, ActorName);
+            DescantActor actor = DescantComponentUtilities.GetActor(this, result.Actors, ActorName);
 
             if (actor == null) return result;
 

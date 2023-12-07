@@ -1,3 +1,6 @@
+using System;
+using UnityEngine;
+
 /// <summary>
 /// Enum to list all of the types of DescantNodes
 /// </summary>
@@ -47,15 +50,16 @@ public static class DescantUtilities
 
         return temp;
     }
-    
+
     /// <summary>
     /// Filters a string to remove all special characters (and whitespace)
     /// </summary>
     /// <param name="text">The text to be checked through</param>
+    /// <param name="allowPeriod">Whether to allow the filtering to ignore periods</param>
     /// <returns>The filtered string with special characters removed</returns>
     public static string FilterText(string text, bool allowPeriod = false)
     {
-        string special = "/\\`~!@#$%^*()+={}[]|;:'\",<>?"; // allowed: & _
+        string special = "/\\`~!@#$%^*()+={}[]|;:'\",<>?"; // allowed: &_
             
         text = text.Trim();
 
@@ -64,5 +68,15 @@ public static class DescantUtilities
                 text = text.Remove(i);
 
         return text;
+    }
+
+    /// <summary>
+    /// Prints an error message to the console, formatted in red with a bold source name
+    /// </summary>
+    /// <param name="source">The type of the script this is being called from</param>
+    /// <param name="message">The error message to display</param>
+    public static void ErrorMessage(Type source, string message)
+    {
+        Debug.Log("<color='#f08080'><b>" + source.Name + ":</b> " + message + "</color>");
     }
 }

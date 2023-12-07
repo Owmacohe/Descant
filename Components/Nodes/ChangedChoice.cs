@@ -17,11 +17,11 @@ namespace DescantComponents
         [ParameterGroup("Comparison to make")] public ComparisonType ComparisonType;
         [ParameterGroup("Comparison to make")] public float Comparison;
         
-        [ParameterGroup("Changed value")] public string ChangeTo;
+        [ParameterGroup("Changed value"), NoFiltering] public string ChangeTo;
 
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            DescantActor actor = DescantComponentUtilities.GetActor(result.Actors, ActorName);
+            DescantActor actor = DescantComponentUtilities.GetActor(this, result.Actors, ActorName);
 
             if (actor == null) return result;
 
@@ -30,8 +30,8 @@ namespace DescantComponents
                 (VariableType.Equals(VariableType.Topic) && actor.Topics.Contains(VariableName)) ||
                 (VariableType.Equals(VariableType.Relationship) && CompareVariable(
                     actor.RelationshipValues[actor.RelationshipKeys.IndexOf(VariableName)], Comparison, ComparisonType)) ||
-                (VariableType.Equals(VariableType.ConversationAttempts) && CompareVariable(
-                    actor.ConversationAttempts, Comparison, ComparisonType)))
+                (VariableType.Equals(VariableType.DialogueAttempts) && CompareVariable(
+                    actor.DialogueAttempts, Comparison, ComparisonType)))
             {
                 result.Choices[ChoiceNumber - 1] = new KeyValuePair<int, string>(
                     result.Choices[ChoiceNumber - 1].Key,

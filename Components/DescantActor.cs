@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 namespace DescantComponents
 {
@@ -17,7 +18,7 @@ namespace DescantComponents
         public List<string> RelationshipKeys;
         public List<float> RelationshipValues;
         
-        public int ConversationAttempts;
+        public int DialogueAttempts;
 
         public DescantActor(string name)
         {
@@ -57,7 +58,7 @@ namespace DescantComponents
                " (" + (statistics.Length > 0 ? statistics.Substring(1) : "") + ")" +
                " (" + (topics.Length > 0 ? topics.Substring(1) : "") + ")" +
                " (" + (relationships.Length > 0 ? relationships.Substring(1) : "") + ")" +
-               " (" + ConversationAttempts + ")";
+               " (" + DialogueAttempts + ")";
         }
     }
 }

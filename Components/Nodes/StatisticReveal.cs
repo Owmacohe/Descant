@@ -8,25 +8,27 @@ namespace DescantComponents
     {
         [Inline] public string ActorName;
         
+        [ParameterGroup("Tag of object to find")] public string ObjectTag;
         [ParameterGroup("Script to find")] public string ScriptName;
-        
         [ParameterGroup("Method to call")] public string MethodName;
         
         [ParameterGroup("Statistic to reveal")] public string StatisticName;
 
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            DescantActor actor = DescantComponentUtilities.GetActor(result.Actors, ActorName);
+            DescantActor actor = DescantComponentUtilities.GetActor(this, result.Actors, ActorName);
 
             if (actor == null) return result;
+
+            if (DescantComponentUtilities.InvokeFromObjectOrScript(
+                this,
+                ObjectTag,
+                ScriptName,
+                MethodName,
+                actor.StatisticValues[actor.StatisticKeys.IndexOf(StatisticName)].ToString()
+            )) return result;
             
-            foreach (var i in GameObject.FindObjectsOfType<MonoBehaviour>())
-                if (DescantComponentUtilities.InvokeMethod(
-                        i, ScriptName, MethodName,
-                        actor.StatisticValues[actor.StatisticKeys.IndexOf(StatisticName)].ToString()))
-                    return result;
-            
-            Debug.Log("<b>EventScript:</b> Unable to find or execute the given script!");
+            DescantComponentUtilities.MissingMethodError(this, ScriptName, MethodName);
             
             return result;
         }

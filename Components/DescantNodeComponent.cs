@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DescantComponents
 {
-    public enum VariableType { Statistic, Topic, Relationship, ConversationAttempts }
+    public enum VariableType { Statistic, Topic, Relationship, DialogueAttempts }
     public enum ComparisonType { LessThan, LessThanOrEqualTo, EqualTo, GreaterThanOrEqualTo, GreaterThan, NotEqualTo }
     public enum OperationType { IncreaseBy, DecreaseBy, Set }
     public enum ListChangeType { Add, Remove }
@@ -21,7 +21,7 @@ namespace DescantComponents
     }
     
     [Serializable]
-    public abstract class DescantNodeComponent // TODO: find a way to have components interact with the controller at runtime
+    public abstract class DescantNodeComponent
     {
         public bool Collapsed;
 
@@ -109,4 +109,6 @@ namespace DescantComponents
         
         public ParameterGroupAttribute(string group) => Group = group;
     }
+    
+    public class NoFilteringAttribute : Attribute { }
 }

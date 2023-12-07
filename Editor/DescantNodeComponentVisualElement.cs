@@ -109,7 +109,17 @@ namespace DescantEditor
 
                         temp.RegisterValueChangedCallback(callback =>
                         {
-                            temp.value = DescantUtilities.FilterText(callback.newValue, i.FieldType != typeof(string));
+                            try
+                            {
+                                string unused = ((NoFilteringAttribute) i.GetCustomAttributes(
+                                    typeof(NoFilteringAttribute),
+                                    true
+                                ).FirstOrDefault())!.ToString();
+                            }
+                            catch
+                            {
+                                temp.value = DescantUtilities.FilterText(temp.value, i.FieldType != typeof(string));
+                            }
 
                             try
                             {

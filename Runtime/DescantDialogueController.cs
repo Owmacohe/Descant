@@ -33,38 +33,40 @@ namespace DescantRuntime
     
     public class DescantDialogueController : MonoBehaviour // TODO: create log file
     {
-        /// <summary>
-        /// The current runtime node being accessed
-        /// </summary>
-        [HideInInspector] public RuntimeNode Current;
-        [HideInInspector] public string CurrentType;
-        [HideInInspector] public List<RuntimeNode> Nodes = new List<RuntimeNode>();
-        [HideInInspector] public List<DescantActor> Actors = new List<DescantActor>();
+        [HideInInspector] public RuntimeNode Current; // The current runtime node being accessed
+        [HideInInspector] public string CurrentType; // The string NodeType type of the runtime node being accessed
+        [HideInInspector] public List<RuntimeNode> Nodes = new List<RuntimeNode>(); // The list of RuntimeNodes derived from the data
+        [HideInInspector] public List<DescantActor> Actors = new List<DescantActor>(); // The list of DescantActors derived from the data
 
-        DescantActor player;
-        DescantActor NPC;
+        DescantActor player; // The player DescantActor for this dialogue
+        DescantActor NPC; // The NPC DescantActor for this dialogue
 
-        [HideInInspector] public bool HasEnded;
-        [HideInInspector] public bool Typewriter;
-        [HideInInspector] public float TypewriterSpeed;
+        [HideInInspector] public bool HasEnded; // Whether the current dialogue has finished
+        [HideInInspector] public bool Typewriter; // Whether the current dialogue is using a typewriter
+        [HideInInspector] public float TypewriterSpeed; // The speed of the dialogue's typewriter (if it's using one)
 
         /// <summary>
         /// Initializes the conversation controller
         /// </summary>
         /// <param name="g">The JSON graph to be loaded</param>
+        /// <param name="a">The dialogue's extra actors to be loaded</param>
+        /// <param name="p">The dialogue's player to be loaded</param>
+        /// <param name="npc">The dialogue's NPC to be loaded</param>
         public void Initialize(TextAsset g, TextAsset[] a, TextAsset p, TextAsset npc)
         {
             #if UNITY_EDITOR
             AssetDatabase.Refresh();
             #endif
             
-            GenerateRuntimeNodes(g);
+            GenerateRuntimeNodes(g); // Initializing the RuntimeNodes
 
             Actors = new List<DescantActor>();
             
+            // Adding in all the extra actors first
             foreach (var i in a)
                 Actors.Add(DescantEditorUtilities.LoadActorFromString(i.text));
 
+            // Initializing the player (if one has been set)
             if (p != null)
             {
                 player = DescantEditorUtilities.LoadActorFromString(p.text);
@@ -72,6 +74,7 @@ namespace DescantRuntime
                 if (!Actors.Contains(player)) Actors.Add(player);
             }
             
+            // Initializing the NPC (if one has been set)
             if (npc != null)
             {
                 NPC = DescantEditorUtilities.LoadActorFromString(npc.text);
@@ -80,14 +83,19 @@ namespace DescantRuntime
             }
         }
 
+        /// <summary>
+        /// Quick method to begin the dialogue
+        /// (to be called from a DescantDialogueUI, and only after this has been Initialized)
+        /// </summary>
         public void BeginDialogue()
         {
             Current = Nodes[0];
             CurrentType = "Start";
 
+            // Upping the NPC's dialogue attempts
             if (NPC != null)
             {
-                NPC.ConversationAttempts++;
+                NPC.DialogueAttempts++;
                 DescantEditorUtilities.SaveActor(false, NPC);   
             }
         }
@@ -187,7 +195,10 @@ namespace DescantRuntime
                 Current.Next.Count == 0 ||
                 Current.Next[choiceIndex] == null)
             {
-                // TODO: error message about there being no end node
+                DescantUtilities.ErrorMessage(
+                    GetType(),
+                    "Dialogue path contains no end node!"
+                );
                 
                 return null;
             }

@@ -8,8 +8,11 @@ namespace DescantComponents
     {
         [ParameterGroup("Keys/buttons to check")] public string KeyCode;
         [ParameterGroup("Keys/buttons to check")] public string ButtonName;
+        
+        [ParameterGroup("Tag of object to find")] public string ObjectTag;
         [ParameterGroup("Script to find")] public string ScriptName;
         [ParameterGroup("Method to call")] public string MethodName;
+        [ParameterGroup("Method to call"), NoFiltering] public string Parameter;
 
         public override bool Update()
         {
@@ -18,21 +21,15 @@ namespace DescantComponents
 
             if (interrupted && ScriptName != "" && MethodName != "")
             {
-                bool invoked = false;
+                bool invoked = DescantComponentUtilities.InvokeFromObjectOrScript(
+                    this,
+                    ObjectTag,
+                    ScriptName,
+                    MethodName,
+                    Parameter
+                );
 
-                foreach (var i in GameObject.FindObjectsOfType<MonoBehaviour>())
-                {
-                    if (DescantComponentUtilities.InvokeMethod(i, ScriptName, MethodName, null))
-                    {
-                        invoked = true;
-                        break;
-                    }
-                }
-
-                if (!invoked)
-                {
-                    // TODO: unable to find script error message   
-                }
+                if (!invoked) DescantComponentUtilities.MissingMethodError(this, ScriptName, MethodName);
             }
 
             return !interrupted;

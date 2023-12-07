@@ -19,7 +19,7 @@ namespace DescantEditor
         VisualElement statistics;
         VisualElement topics;
         VisualElement relationships;
-        TextField conversationAttempts;
+        TextField dialogueAttempts;
         
         DescantActor data;
 
@@ -111,11 +111,16 @@ namespace DescantEditor
             topics = AddActorList(data.Topics, "Topics");
             relationships = AddActorDictionary(data.RelationshipKeys, data.RelationshipValues, "Relationships");
 
-            conversationAttempts = new TextField();
-            conversationAttempts.label = "Conversation attempts: ";
-            conversationAttempts.value = data.ConversationAttempts.ToString();
-            conversationAttempts.AddToClassList("actor_list");
-            actor.Add(conversationAttempts);
+            dialogueAttempts = new TextField();
+            dialogueAttempts.label = "Dialogue attempts: ";
+            dialogueAttempts.value = data.DialogueAttempts.ToString();
+            dialogueAttempts.AddToClassList("actor_list");
+            actor.Add(dialogueAttempts);
+
+            dialogueAttempts.RegisterValueChangedCallback(callback =>
+            {
+                dialogueAttempts.value = DescantUtilities.FilterText(callback.newValue);
+            });
         }
 
         void AddListItem<T>(VisualElement list, T v)
@@ -132,6 +137,11 @@ namespace DescantEditor
             TextField value = new TextField();
             value.value = v.ToString();
             item.Add(value);
+
+            value.RegisterValueChangedCallback(callback =>
+            {
+                value.value = DescantUtilities.FilterText(callback.newValue);
+            });
         }
 
         VisualElement AddActorList<T>(List<T> lst, string name)
@@ -171,10 +181,20 @@ namespace DescantEditor
             TextField key = new TextField();
             key.value = k.ToString();
             item.Add(key);
+
+            key.RegisterValueChangedCallback(callback =>
+            {
+                key.value = DescantUtilities.FilterText(callback.newValue);
+            });
                 
             TextField value = new TextField();
             value.value = v.ToString();
             item.Add(value);
+
+            value.RegisterValueChangedCallback(callback =>
+            {
+                value.value = DescantUtilities.FilterText(callback.newValue);
+            });
         }
         
         VisualElement AddActorDictionary<T, U>(List<T> keys, List<U> values, string name)
@@ -255,7 +275,7 @@ namespace DescantEditor
                 data.RelationshipValues.Add(float.Parse(((TextField)temp[2]).value));
             }
 
-            data.ConversationAttempts = int.Parse(conversationAttempts.value);
+            data.DialogueAttempts = int.Parse(dialogueAttempts.value);
             
             DescantEditorUtilities.SaveActor(false, data);
             AssetDatabase.Refresh();

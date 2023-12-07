@@ -27,8 +27,6 @@ namespace DescantEditor
         public int ID { get; set; }
         
         public DescantNodeType Type { get; protected set; }
-        
-        // TODO: component IDs
 
         public Dictionary<string, int> Components { get; }
         public PopupField<string> ComponentDropdown { get; private set; }

@@ -59,7 +59,7 @@ namespace DescantComponents
                 : temp;
         }
         
-        public static bool InvokeMethod(MonoBehaviour script, string scriptName, string methodName, string parameter)
+        public static bool InvokeMethod(DescantNodeComponent component, MonoBehaviour script, string scriptName, string methodName, string parameter)
         {
             if (scriptName == "" || methodName == "") return false;
             
@@ -74,7 +74,10 @@ namespace DescantComponents
 
                     if (method == null)
                     {
-                        Debug.Log("<b>EventScript:</b> Unable to find the given method!");
+                        DescantUtilities.ErrorMessage(
+                            component.GetType(),
+                            "Unable to find the method '" + methodName + "' on script '" + scriptName + "'!"
+                        );
                         return false;
                     }
 
@@ -90,7 +93,10 @@ namespace DescantComponents
                 }
                 catch (AmbiguousMatchException)
                 {
-                    Debug.Log("<b>EventScript:</b> Ambiguous method name!");
+                    DescantUtilities.ErrorMessage(
+                        component.GetType(),
+                        "Ambiguous name for method '" + methodName + "' on script '" + scriptName + "'!"
+                    );
                 }
 
                 return true;
@@ -99,13 +105,42 @@ namespace DescantComponents
             return false;
         }
 
-        public static DescantActor GetActor(List<DescantActor> actors, string name)
+        public static bool InvokeFromObjectOrScript(DescantNodeComponent component, string objectTag, string scriptName, string methodName, string parameter)
+        {
+            if (objectTag == "")
+            {
+                foreach (var i in GameObject.FindObjectsOfType<MonoBehaviour>())
+                    if (InvokeMethod(component, i, scriptName, methodName, parameter))
+                        return true;   
+            }
+            else
+            {
+                foreach (var i in GameObject.FindWithTag(objectTag).GetComponents<MonoBehaviour>())
+                    if (InvokeMethod(component, i, scriptName, methodName, parameter))
+                        return true;
+            }
+
+            return false;
+        }
+
+        public static void MissingMethodError(DescantNodeComponent component, string scriptName, string methodName)
+        {
+            DescantUtilities.ErrorMessage(
+                component.GetType(),
+                "Unable to find method '" + methodName + "' on script '" + scriptName + "'!"
+            );
+        }
+
+        public static DescantActor GetActor(DescantNodeComponent component, List<DescantActor> actors, string name)
         {
             foreach (var i in actors)
                 if (i.Name.Equals(name.Trim()))
                     return i;
             
-            // TODO: error message for actor not found
+            DescantUtilities.ErrorMessage(
+                component.GetType(),
+                "Unable to find actor '" + name + "'!"
+            );
             
             return null;
         }

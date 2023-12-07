@@ -28,7 +28,8 @@ namespace DescantRuntime
         bool isTyping;
         string targetTypewriterText;
         int typewriterIndex;
-    
+        List<string> tags = new List<string>();
+
         void Awake()
         {
             dialogueController = gameObject.AddComponent<DescantDialogueController>();
@@ -103,7 +104,10 @@ namespace DescantRuntime
                 {
                     SetClickMessage(true);
                     
-                    // TODO: error message about there being no end node
+                    DescantUtilities.ErrorMessage(
+                        GetType(),
+                        "Dialogue path contains no end node!"
+                    );
                     
                     return;
                 }
@@ -172,9 +176,30 @@ namespace DescantRuntime
         {
             if (isTyping && response.text != targetTypewriterText && typewriterIndex < targetTypewriterText.Length)
             {
-                response.text += targetTypewriterText[typewriterIndex];
-                typewriterIndex++;
-                
+                char temp = targetTypewriterText[typewriterIndex];
+
+                if (temp == '<' && targetTypewriterText.Substring(typewriterIndex).Contains('>'))
+                {
+                    int skipLength = 0;
+                    
+                    for (int i = typewriterIndex; i < targetTypewriterText.Length; i++)
+                    {
+                        skipLength++;
+                        response.text += targetTypewriterText[i];
+                        
+                        if (targetTypewriterText[i] == '>')
+                        {
+                            typewriterIndex += skipLength;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    response.text += temp;
+                    typewriterIndex++;   
+                }
+
                 Invoke(nameof(Type), (1f / dialogueController.TypewriterSpeed) / 10f);
             }
         }
