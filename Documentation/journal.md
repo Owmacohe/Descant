@@ -1,3 +1,13 @@
+## Friday, December 8^th^
+
+The semester is coming to close, and I’ve completed the functional aspects of the system. All the editor, runtime, saving, and loading scripts are done (save for a few tweaks), and I just need to put together proper test scenes and documentation before I publish on the Unity Asset Store in January. The report is finished too.
+
+In the spirit of reflection, it’s interesting to see how the project has both slowed down and sped up over its lifetime. Development took a long time, and meant that I wasn’t able to accomplish all my goals, but now I’m able to create Components extremely quickly, and demonstrate it live. The development is practically done, even though it took a while. I think that now my goal should be polish. Make it look nice, make it feel nice, and get to ready for public viewing.
+
+As mentioned below, I plan to demonstrate Descant in TAG at some point in the new year. I was talking with Jonathan today and he recommended I showcase the project in an academic showcase/conference coming up in May, which is very exciting. I’ll definitely be applying. Good things are on the horizon, though I definitely deserve a break.
+
+
+
 ## Thursday, November 23^rd^
 
 By this point in the project, I’m starting to think about the end of the independent study. I’ve been able to get a little bit of user testing through some students in Jongwoo’s class, and I plan to run a Descant workshop in TAG as well (either in December or in the new year). As for the project itself, it’m getting close to the end! I’ve successfully implemented pretty much every single Component! I just have to iron out a fair number of bugs, add comments to nearly everything, and develop some proper test scenes. I aim to get most of that done in the next week or so.
