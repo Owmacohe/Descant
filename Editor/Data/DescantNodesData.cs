@@ -33,6 +33,15 @@ namespace DescantEditor
 
         public override bool Equals(object other)
         {
+            try
+            {
+                var unused = (DescantNodeData) other;
+            }
+            catch
+            {
+                return false;
+            }
+            
             return Equals((DescantNodeData)other);
         }
 
@@ -80,6 +89,15 @@ namespace DescantEditor
 
         public override bool Equals(object other)
         {
+            try
+            {
+                var unused = (DescantChoiceNodeData) other;
+            }
+            catch
+            {
+                return false;
+            }
+            
             return Equals((DescantChoiceNodeData)other);
         }
         
@@ -125,6 +143,15 @@ namespace DescantEditor
 
         public override bool Equals(object other)
         {
+            try
+            {
+                var unused = (DescantResponseNodeData) other;
+            }
+            catch
+            {
+                return false;
+            }
+            
             return Equals((DescantResponseNodeData)other);
         }
         

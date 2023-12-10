@@ -28,8 +28,22 @@ namespace DescantComponents
                     MethodName,
                     Parameter
                 );
-
+                
                 if (!invoked) DescantComponentUtilities.MissingMethodError(this, ScriptName, MethodName);
+                
+                invoked = DescantComponentUtilities.InvokeFromObjectOrScript(
+                    this,
+                    "",
+                    "DescantDialogueUI",
+                    "EndDialogue",
+                    ""
+                );
+
+                if (!invoked) DescantComponentUtilities.MissingMethodError(
+                    this,
+                    "DescantDialogueUI",
+                    "EndDialogue"
+                );
             }
 
             return !interrupted;

@@ -64,6 +64,15 @@ namespace DescantEditor
 
         public override bool Equals(object other)
         {
+            try
+            {
+                var unused = (DescantGraphData) other;
+            }
+            catch
+            {
+                return false;
+            }
+            
             return Equals((DescantGraphData)other);
         }
 
@@ -108,6 +117,8 @@ namespace DescantEditor
         {
             // Setting the local path if this is the first time
             if (newFile) Path = DescantEditorUtilities.GetCurrentLocalDirectory() + Name + ".desc.json";
+            
+            DescantUtilities.RoundObjectToDecimal(this, 2);
             
             // Saving to the full path
             File.WriteAllText(

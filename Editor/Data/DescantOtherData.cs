@@ -27,6 +27,15 @@ namespace DescantEditor
 
         public override bool Equals(object other)
         {
+            try
+            {
+                var unused = (DescantGroupData) other;
+            }
+            catch
+            {
+                return false;
+            }
+            
             return Equals((DescantGroupData)other);
         }
         
@@ -77,6 +86,15 @@ namespace DescantEditor
 
         public override bool Equals(object other)
         {
+            try
+            {
+                var unused = (DescantConnectionData) other;
+            }
+            catch
+            {
+                return false;
+            }
+            
             return Equals((DescantConnectionData)other);
         }
 

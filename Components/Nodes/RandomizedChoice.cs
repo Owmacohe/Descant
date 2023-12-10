@@ -9,21 +9,20 @@ namespace DescantComponents
     {
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            DescantNodeInvokeResult temp = new DescantNodeInvokeResult(
-                new List<KeyValuePair<int, string>>(),
-                result.Actors
-            );
+            var temp = new List<KeyValuePair<int, string>>();
 
             int copy = result.Choices.Count;
             
             for (int i = 0; i < copy; i++)
             {
                 var moved = result.Choices[Random.Range(0, result.Choices.Count)];
-                temp.Choices.Add(moved);
+                temp.Add(moved);
                 result.Choices.Remove(moved);
             }
 
-            return temp;
+            result.Choices = temp;
+
+            return result;
         }
     }
 }

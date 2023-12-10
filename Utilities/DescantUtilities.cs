@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -8,6 +9,8 @@ public enum DescantNodeType { Choice, Response, Start, End, Any }
 
 public static class DescantUtilities
 {
+    #region Text Manipulation
+
     /// <summary>
     /// Formats a single-line JSON string into something that is much more human-readable
     /// </summary>
@@ -70,6 +73,8 @@ public static class DescantUtilities
         return text;
     }
 
+    #endregion
+
     /// <summary>
     /// Prints an error message to the console, formatted in red with a bold source name
     /// </summary>
@@ -79,4 +84,63 @@ public static class DescantUtilities
     {
         Debug.Log("<color='#f08080'><b>" + source.Name + ":</b> " + message + "</color>");
     }
+
+    #region Rounding
+
+    /// <summary>
+    /// Quickly rounds a float to the specified decimal length
+    /// </summary>
+    /// <param name="f">The float to be rounded</param>
+    /// <param name="decimalPlaces">The number of decimal places to include</param>
+    /// <returns>The rounded float</returns>
+    public static float RoundToDecimal(float f, int decimalPlaces)
+    {
+        float factor = Mathf.Pow(10, decimalPlaces);
+
+        return Mathf.Round(f * factor) / factor;
+    }
+
+    /// <summary>
+    /// Semi-recursive method to check through all floats in a class (and those in its member classes),
+    /// and round them to the specified decimal length
+    /// </summary>
+    /// <param name="obj">The object with the floats to be rounded</param>
+    /// <param name="decimalPlaces">The number of decimal places to include</param>
+    /// <param name="checkedObjects">
+    /// A list of previously-checked objects
+    /// (to make sure we don't hit any infinite loops)
+    /// </param>
+    public static void RoundObjectToDecimal<T>(T obj, int decimalPlaces, List<object> checkedObjects = null) where T : class
+    {
+        if (obj == null) return;
+
+        // Initializing the checkObjects if this is the first time
+        if (checkedObjects == null)
+            checkedObjects = new List<object>();
+        else if (checkedObjects.Contains(obj)) return;
+        
+        checkedObjects.Add(obj); // Adding the object being checked to the checkedObjects
+        
+        // Checking each of the class's fields
+        foreach (var i in obj.GetType().GetFields())
+        {
+            if (i.FieldType == typeof(List<float>))
+            {
+                var temp = (List<float>)i.GetValue(obj);
+
+                for (int j = 0; j < temp.Count; j++)
+                    temp[j] = RoundToDecimal(temp[j], decimalPlaces);
+            }
+            else if (i.FieldType == typeof(float))
+            {
+                i.SetValue(obj, RoundToDecimal((float) i.GetValue(obj), decimalPlaces));
+            }
+            else if (i.FieldType.IsClass)
+            {
+                RoundObjectToDecimal(i.GetValue(obj), decimalPlaces, checkedObjects);
+            }
+        }
+    }
+
+    #endregion
 }

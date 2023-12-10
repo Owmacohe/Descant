@@ -193,7 +193,7 @@ namespace DescantEditor
 
             value.RegisterValueChangedCallback(callback =>
             {
-                value.value = DescantUtilities.FilterText(callback.newValue);
+                value.value = DescantUtilities.FilterText(callback.newValue, true);
             });
         }
         

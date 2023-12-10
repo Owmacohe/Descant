@@ -11,6 +11,8 @@ namespace DescantEditor
     /// </summary>
     public static class DescantFileHandler
     {
+        #region Graphs
+
         /// <summary>
         /// Checks to see whether the file with the supplied instanceID has the file type .desc.json
         /// </summary>
@@ -20,17 +22,6 @@ namespace DescantEditor
         {
             string path = DescantEditorUtilities.GetFullPathFromInstanceID(instanceID);
             return path.Substring(path.Length - 10) == ".desc.json";
-        }
-        
-        /// <summary>
-        /// Checks to see whether the file with the supplied instanceID has the file type .descactor.json
-        /// </summary>
-        /// <param name="instanceID">The instanceID of the file being checked</param>
-        /// <returns>Whether the file is a Descant Actor file</returns>
-        static bool IsDescantActorFile(int instanceID)
-        {
-            string path = DescantEditorUtilities.GetFullPathFromInstanceID(instanceID);
-            return path.Substring(path.Length - 15) == ".descactor.json";
         }
         
         /// <summary>
@@ -53,25 +44,6 @@ namespace DescantEditor
         }
         
         /// <summary>
-        /// Project view contextual menu edit option for Descant Actor files
-        /// </summary>
-        [MenuItem("Assets/Edit Descant Actor")]
-        static void EditActorFile() {
-            EditorWindow.GetWindow<DescantActorEditor>("Descant Actor Editor").Load(
-                DescantEditorUtilities.GetFullPathFromInstanceID(
-                    Selection.activeObject.GetInstanceID()));
-        }
-        
-        /// <summary>
-        /// Method to confirm that the edit option only shows up for Descant Actor files
-        /// </summary>
-        /// <returns>Whether the selected file is a Descant Actor file</returns>
-        [MenuItem("Assets/Edit Descant Actor", true)]
-        static bool ConfirmEditActorFile() {
-            return IsDescantActorFile(Selection.activeObject.GetInstanceID());
-        }
-
-        /// <summary>
         /// Project view contextual menu create option for Descant Graph files
         /// </summary>
         [MenuItem("Assets/Create/Descant Graph")]
@@ -93,7 +65,41 @@ namespace DescantEditor
                 AssetDatabase.Refresh(); // Refreshing the AssetDatabase so the new file shows up immediately
             }
         }
+
+        #endregion
+
+        #region Actors
+
+        /// <summary>
+        /// Checks to see whether the file with the supplied instanceID has the file type .descactor.json
+        /// </summary>
+        /// <param name="instanceID">The instanceID of the file being checked</param>
+        /// <returns>Whether the file is a Descant Actor file</returns>
+        static bool IsDescantActorFile(int instanceID)
+        {
+            string path = DescantEditorUtilities.GetFullPathFromInstanceID(instanceID);
+            return path.Substring(path.Length - 15) == ".descactor.json";
+        }
+
+        /// <summary>
+        /// Project view contextual menu edit option for Descant Actor files
+        /// </summary>
+        [MenuItem("Assets/Edit Descant Actor")]
+        static void EditActorFile() {
+            EditorWindow.GetWindow<DescantActorEditor>("Descant Actor Editor").Load(
+                DescantEditorUtilities.GetFullPathFromInstanceID(
+                    Selection.activeObject.GetInstanceID()));
+        }
         
+        /// <summary>
+        /// Method to confirm that the edit option only shows up for Descant Actor files
+        /// </summary>
+        /// <returns>Whether the selected file is a Descant Actor file</returns>
+        [MenuItem("Assets/Edit Descant Actor", true)]
+        static bool ConfirmEditActorFile() {
+            return IsDescantActorFile(Selection.activeObject.GetInstanceID());
+        }
+
         /// <summary>
         /// Project view contextual menu create option for Descant Actor files
         /// </summary>
@@ -116,6 +122,8 @@ namespace DescantEditor
                 AssetDatabase.Refresh(); // Refreshing the AssetDatabase so the new file shows up immediately
             }
         }
+
+        #endregion
     }
 }
 #endif

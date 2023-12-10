@@ -12,11 +12,25 @@ namespace DescantComponents
     {
         public List<KeyValuePair<int, string>> Choices;
         public List<DescantActor> Actors;
+        public string PlayerPortrait;
+        public bool PlayerPortraitEnabled;
+        public string NPCPortrait;
+        public bool NPCPortraitEnabled;
 
-        public DescantNodeInvokeResult(List<KeyValuePair<int, string>> choices, List<DescantActor> actors)
+        public DescantNodeInvokeResult(
+            List<KeyValuePair<int, string>> choices,
+            List<DescantActor> actors,
+            string playerPortrait,
+            bool playerPortraitEnabled,
+            string npcPortrait,
+            bool npcPortraitEnabled)
         {
             Choices = choices;
             Actors = actors;
+            PlayerPortrait = playerPortrait;
+            PlayerPortraitEnabled = playerPortraitEnabled;
+            NPCPortrait = npcPortrait;
+            NPCPortraitEnabled = npcPortraitEnabled;
         }
     }
     
@@ -42,6 +56,15 @@ namespace DescantComponents
 
         public override bool Equals(object other)
         {
+            try
+            {
+                var unused = (DescantNodeComponent) other;
+            }
+            catch
+            {
+                return false;
+            }
+            
             return Equals((DescantNodeComponent)other);
         }
 

@@ -37,6 +37,10 @@ namespace DescantRuntime
         [HideInInspector] public string CurrentType; // The string NodeType type of the runtime node being accessed
         [HideInInspector] public List<RuntimeNode> Nodes = new List<RuntimeNode>(); // The list of RuntimeNodes derived from the data
         [HideInInspector] public List<DescantActor> Actors = new List<DescantActor>(); // The list of DescantActors derived from the data
+        [HideInInspector] public string PlayerPortrait; // The name of the current player portrait
+        [HideInInspector] public bool PlayerPortraitEnabled; // Whether the player portrait should be enabled
+        [HideInInspector] public string NPCPortrait; // The name of the current NPC portrait
+        [HideInInspector] public bool NPCPortraitEnabled; // Whether the NPC portrait should be enabled
 
         DescantActor player; // The player DescantActor for this dialogue
         DescantActor NPC; // The NPC DescantActor for this dialogue
@@ -52,7 +56,7 @@ namespace DescantRuntime
         /// <param name="p">The dialogue's player to be loaded</param>
         /// <param name="npc">The dialogue's NPC to be loaded</param>
         /// <param name="a">The dialogue's extra actors to be loaded</param>
-        public void Initialize(TextAsset g, TextAsset p, TextAsset npc, TextAsset[] a)
+        public void Initialize(TextAsset g, TextAsset p, TextAsset npc, TextAsset[] a, string pp, string npcp)
         {
             #if UNITY_EDITOR
             AssetDatabase.Refresh();
@@ -81,6 +85,12 @@ namespace DescantRuntime
                 
                 if (!Actors.Contains(NPC)) Actors.Add(NPC);
             }
+
+            // Initializing the actor portrait info
+            PlayerPortrait = pp;
+            PlayerPortraitEnabled = true;
+            NPCPortrait = npcp;
+            NPCPortraitEnabled = true;
         }
 
         /// <summary>
@@ -91,6 +101,8 @@ namespace DescantRuntime
         {
             Current = Nodes[0];
             CurrentType = "Start";
+
+            HasEnded = false;
 
             // Upping the NPC's dialogue attempts
             if (NPC != null)
@@ -113,6 +125,8 @@ namespace DescantRuntime
             foreach (var j in Current.Data.NodeComponents)
                 if (!j.Update()) HasEnded = true;
         }
+
+        #region RuntimeNodes
 
         /// <summary>
         /// Generates all the runtime nodes that will be necessary to display the data when in-game
@@ -170,6 +184,8 @@ namespace DescantRuntime
             return null;
         }
 
+        #endregion
+
         /// <summary>
         /// Sets the current runtime node to one of the next ones
         /// </summary>
@@ -187,7 +203,13 @@ namespace DescantRuntime
             
             // Creating a new results object to be passed in and out of the Components
             DescantNodeInvokeResult currentResult = new DescantNodeInvokeResult(
-                new List<KeyValuePair<int, string>>(), Actors);
+                new List<KeyValuePair<int, string>>(),
+                Actors,
+                PlayerPortrait,
+                PlayerPortraitEnabled,
+                NPCPortrait,
+                NPCPortraitEnabled
+            );
 
             // Invoking the StartNode's components if we're at the beginning of the dialogue
             if (Current.Data.Type.Equals("Start"))
@@ -232,9 +254,13 @@ namespace DescantRuntime
                     break;
             }
             
-            // Invoking the Components for the new node, and setting the actors accordingly
+            // Invoking the Components for the new node, and setting the actors and their portraits accordingly
             currentResult = InvokeComponents(currentResult);
             Actors = currentResult.Actors;
+            PlayerPortrait = currentResult.PlayerPortrait;
+            PlayerPortraitEnabled = currentResult.PlayerPortraitEnabled;
+            NPCPortrait = currentResult.NPCPortrait;
+            NPCPortraitEnabled = currentResult.NPCPortraitEnabled;
 
             // Saving the changes to the actors
             foreach (var i in Actors)

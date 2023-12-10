@@ -603,6 +603,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3099828025751121454, guid: f628a439a00194aa4a7962cf53bda26c, type: 3}
+      propertyPath: npcPortraitName
+      value: UISprite
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099828025751121454, guid: f628a439a00194aa4a7962cf53bda26c, type: 3}
+      propertyPath: playerPortraitName
+      value: Knob
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099828025751121454, guid: f628a439a00194aa4a7962cf53bda26c, type: 3}
+      propertyPath: actorPortraits.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099828025751121454, guid: f628a439a00194aa4a7962cf53bda26c, type: 3}
+      propertyPath: actorPortraits.Array.data[0]
+      value: 
+      objectReference: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: 3099828025751121454, guid: f628a439a00194aa4a7962cf53bda26c, type: 3}
+      propertyPath: actorPortraits.Array.data[1]
+      value: 
+      objectReference: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: 3099828025751121454, guid: f628a439a00194aa4a7962cf53bda26c, type: 3}
+      propertyPath: actorPortraits.Array.data[2]
+      value: 
+      objectReference: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 4448661632235425834, guid: f628a439a00194aa4a7962cf53bda26c, type: 3}
       propertyPath: m_Pivot.x
       value: 0

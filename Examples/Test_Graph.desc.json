@@ -67,9 +67,6 @@
 			"NodeComponents": [
 				{
 					"rid": 1005
-				},
-				{
-					"rid": 1006
 				}
 			],
 			"Choices": [
@@ -84,12 +81,12 @@
 			"Type": "Response",
 			"ID": 0,
 			"Position": {
-				"x": 470.0,
-				"y": 82.0
+				"x": 467.0,
+				"y": 98.0
 			},
 			"NodeComponents": [
 				{
-					"rid": 1007
+					"rid": 1006
 				}
 			],
 			"Response": "<b><i>Welcome</b></i> to <color=\"blue\">Descant</color>! How can I help you?"
@@ -100,10 +97,12 @@
 			"ID": 1,
 			"Position": {
 				"x": 1666.0,
-				"y": -153.0
+				"y": -314.0
 			},
 			"NodeComponents": [
-				
+				{
+					"rid": 1007
+				}
 			],
 			"Response": "You can download it at: https://github.com/owmacohe/Descant/releases"
 		},
@@ -146,6 +145,9 @@
 			"NodeComponents": [
 				{
 					"rid": 1009
+				},
+				{
+					"rid": 1010
 				}
 			],
 			"Response": "Okay goodbye!"
@@ -160,10 +162,10 @@
 			},
 			"NodeComponents": [
 				{
-					"rid": 1010
+					"rid": 1011
 				},
 				{
-					"rid": 1011
+					"rid": 1012
 				}
 			],
 			"Response": "Goodbye for real!"
@@ -192,7 +194,7 @@
 		},
 		"NodeComponents": [
 			{
-				"rid": 1012
+				"rid": 1013
 			}
 		]
 	},
@@ -207,7 +209,7 @@
 			},
 			"NodeComponents": [
 				{
-					"rid": 1013
+					"rid": 1014
 				}
 			]
 		},
@@ -221,7 +223,7 @@
 			},
 			"NodeComponents": [
 				{
-					"rid": 1014
+					"rid": 1015
 				}
 			]
 		},
@@ -235,7 +237,7 @@
 			},
 			"NodeComponents": [
 				{
-					"rid": 1015
+					"rid": 1016
 				}
 			]
 		}
@@ -264,7 +266,7 @@
 			"ID": 1,
 			"Position": {
 				"x": 1641.0,
-				"y": -212.0
+				"y": -373.0
 			},
 			"Nodes": [
 				"Response",
@@ -523,17 +525,6 @@
 			{
 				"rid": 1006,
 				"type": {
-					"class": "RandomizedChoice",
-					"ns": "DescantComponents",
-					"asm": "omch.descant.components"
-				},
-				"data": {
-					"Collapsed": false
-				}
-			},
-			{
-				"rid": 1007,
-				"type": {
 					"class": "ChangedResponse",
 					"ns": "DescantComponents",
 					"asm": "omch.descant.components"
@@ -546,6 +537,20 @@
 					"ComparisonType": 0,
 					"Comparison": 0.0,
 					"ChangeTo": "Wow, you don't like me very much!"
+				}
+			},
+			{
+				"rid": 1007,
+				"type": {
+					"class": "PortraitChange",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": false,
+					"PlayerPortrait": true,
+					"ChangeType": 0,
+					"PortraitName": "Checkmark"
 				}
 			},
 			{
@@ -582,6 +587,20 @@
 			{
 				"rid": 1010,
 				"type": {
+					"class": "PortraitChange",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": false,
+					"PlayerPortrait": false,
+					"ChangeType": 0,
+					"PortraitName": ""
+				}
+			},
+			{
+				"rid": 1011,
+				"type": {
 					"class": "RelationshipChange",
 					"ns": "DescantComponents",
 					"asm": "omch.descant.components"
@@ -595,30 +614,18 @@
 				}
 			},
 			{
-				"rid": 1011,
+				"rid": 1012,
 				"type": {
 					"class": "StatisticChange",
 					"ns": "DescantComponents",
 					"asm": "omch.descant.components"
 				},
 				"data": {
-					"Collapsed": false,
+					"Collapsed": true,
 					"ActorName": "Test_Player",
 					"StatisticName": "Health",
 					"OperationType": 1,
 					"OperationValue": 1000.0
-				}
-			},
-			{
-				"rid": 1012,
-				"type": {
-					"class": "Log",
-					"ns": "DescantComponents",
-					"asm": "omch.descant.components"
-				},
-				"data": {
-					"Collapsed": false,
-					"Message": "Start"
 				}
 			},
 			{
@@ -630,7 +637,7 @@
 				},
 				"data": {
 					"Collapsed": false,
-					"Message": "Default ending"
+					"Message": "Start"
 				}
 			},
 			{
@@ -642,11 +649,23 @@
 				},
 				"data": {
 					"Collapsed": false,
-					"Message": "Special ending"
+					"Message": "Default ending"
 				}
 			},
 			{
 				"rid": 1015,
+				"type": {
+					"class": "Log",
+					"ns": "DescantComponents",
+					"asm": "omch.descant.components"
+				},
+				"data": {
+					"Collapsed": false,
+					"Message": "Special ending"
+				}
+			},
+			{
+				"rid": 1016,
 				"type": {
 					"class": "Log",
 					"ns": "DescantComponents",

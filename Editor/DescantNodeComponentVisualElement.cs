@@ -68,8 +68,6 @@ namespace DescantEditor
             collabsible.Add(paramRow1);
             paramRows.Add(paramRow1);
             paramRowGroups.Add("");
-            
-            // TODO: make it scrollable
 
             string[] ignoreFields = { "Collapsed" };
             

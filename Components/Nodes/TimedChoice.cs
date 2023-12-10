@@ -38,12 +38,12 @@ namespace DescantComponents
                     percentage.ToString()
                 )) DescantComponentUtilities.MissingMethodError(this, ScriptName, TimerMethodName);
 
-                if (ScriptName != "" && FinishedMethodName != "" && percentage >= 1)
+                if (percentage >= 1)
                     if (!DescantComponentUtilities.InvokeFromObjectOrScript(
                         this,
-                        ObjectTag,
-                        ScriptName,
-                        FinishedMethodName,
+                        "",
+                        "DescantDialogueUI",
+                        "DisplayNode",
                         (ChoiceToPick - 1).ToString()
                     )) DescantComponentUtilities.MissingMethodError(this, ScriptName, FinishedMethodName);
             }
