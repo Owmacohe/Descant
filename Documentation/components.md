@@ -1,89 +1,188 @@
-[toc]
+# Descant Components Directory
+
+A list of the available components that come default with Descant. Also included is a guide on how to write your own Components in C#.
 
 
 
-## Node components
+## Components
 
-- **Event call**
-  - *Method*
-  - *Parameters*
-- **Statistic change**
-  - *Actor*
-  - *Statistic*
-- **Relationship change**
-  - *Actor*
-  - *Relationship*
-- **Statistic reveal**
-  - *Actor*
-  - *Statistic*
+> **Node type(s):** The types of `DescantNode`s that this `Component` can be added to
+> **Maximum quantity:** The maximum number of `Component`s of this type that can be added to a single `DescantNode`
+> **Usage example(s):** A few examples of how this `Component` could be used
+> **Properties:** An in-depth description of each of this `Component`'s properties, and how they are used
+> **Notes/disclaimers:** Any other useful information pertaining to recommendations/bugs/etc. with this `Component`
 
 
 
-### Choice node components
+### ChangedChoice
 
-- **Timed choice**
-  - *Time allowed for choice*
-  - *Timer visible?*
-- **Locked choice**
-  - *Topic lock?*
-  - *Statistic lock?*
-  - *Timed lock?*
-  - *Re-attempt lock?*
-  - *Relationship lock?*
-- **Changeable choice**
-  - *Topic change?*
-  - *Statistic change?*
-  - *Timed change?*
-  - *Re-attempt change?*
-  - *Relationship change?*
-  
+- **Node type(s):**
+- **Maximum quantity:**
+- **Usage example(s):**
+  - 
+- **Properties:**
+  - 
+- **Notes/disclaimers:**
+  - 
 
 
 
-### Response node components
+### ChangedResponse
 
-- **Interruptable**
-  - *Resume conversation after?*
-- **Add known topic**
-  - *Keyword*
-- **Changeable response**
-  - *Topic change?*
-  - *Statistic change?*
-  - *Timed change?*
-  - *Re-attempt change?*
-  - *Relationship change?*
+- **Node type(s):**
+- **Maximum quantity:**
+- **Usage example(s):**
+  - 
+- **Properties:**
+  - 
+- **Notes/disclaimers:**
+  - 
 
 
 
-## End node components
+### Event
 
-- **Ending type**
-  - *Good*
-  - *Bad*
-  - *Custom*
-
-
-
-## Actor components
-
-- NPC
-  - **Limited responses**
-    - *Number of responses*
-    - *Number of re-attempts*
-  - **Limited conversations**
-    - *Number of conversations*
-    - *Number of re-attempts*
-- Both
-  - **Movement freedom**
-    - *Does distance end conversation?*
+- **Node type(s):**
+- **Maximum quantity:**
+- **Usage example(s):**
+  - 
+- **Properties:**
+  - 
+- **Notes/disclaimers:**
+  - 
 
 
 
-## Conversation components
+### Interruptable
 
-- **Conversation recap**
-  - *Statistic changes*
-  - *Relationship changes*
-  - *Topics learned*
-  - *Conversation length*
-  - *Ending type*
+- **Node type(s):**
+- **Maximum quantity:**
+- **Usage example(s):**
+  - 
+- **Properties:**
+  - 
+- **Notes/disclaimers:**
+  - 
+
+
+
+### LockedChoice
+
+- **Node type(s):**
+- **Maximum quantity:**
+- **Usage example(s):**
+  - 
+- **Properties:**
+  - 
+- **Notes/disclaimers:**
+  - 
+
+
+
+### Log
+
+- **Node type(s):**
+- **Maximum quantity:**
+- **Usage example(s):**
+  - 
+- **Properties:**
+  - 
+- **Notes/disclaimers:**
+  - 
+
+
+
+### PortraitChange
+
+- **Node type(s):**
+- **Maximum quantity:**
+- **Usage example(s):**
+  - 
+- **Properties:**
+  - 
+- **Notes/disclaimers:**
+  - 
+
+
+
+### RandomizedChoice
+
+- **Node type(s):**
+- **Maximum quantity:**
+- **Usage example(s):**
+  - 
+- **Properties:**
+  - 
+- **Notes/disclaimers:**
+  - 
+
+
+
+### RelationshipChange
+
+- **Node type(s):**
+- **Maximum quantity:**
+- **Usage example(s):**
+  - 
+- **Properties:**
+  - 
+- **Notes/disclaimers:**
+  - 
+
+
+
+### StatisticChange
+
+- **Node type(s):**
+- **Maximum quantity:**
+- **Usage example(s):**
+  - 
+- **Properties:**
+  - 
+- **Notes/disclaimers:**
+  - 
+
+
+
+### StatisticReveal
+
+- **Node type(s):**
+- **Maximum quantity:**
+- **Usage example(s):**
+  - 
+- **Properties:**
+  - 
+- **Notes/disclaimers:**
+  - 
+
+
+
+### TimedChoice
+
+- **Node type(s):**
+- **Maximum quantity:**
+- **Usage example(s):**
+  - 
+- **Properties:**
+  - 
+- **Notes/disclaimers:**
+  - 
+
+
+
+### TopicChange
+
+- **Node type(s):**
+- **Maximum quantity:**
+- **Usage example(s):**
+  - 
+- **Properties:**
+  - 
+- **Notes/disclaimers:**
+  - 
+
+
+
+## Writing your own Components
+
+1. 

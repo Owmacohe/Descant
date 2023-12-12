@@ -115,15 +115,17 @@ namespace DescantRuntime
         void FixedUpdate()
         {
             // Calling each of the current Components' FixedUpdates, then ending the dialogue if any return false
-            foreach (var j in Current.Data.NodeComponents)
-                if (!j.FixedUpdate()) HasEnded = true;
+            if (Current != null)
+                foreach (var j in Current.Data.NodeComponents)
+                    if (!j.FixedUpdate()) HasEnded = true;
         }
 
         void Update()
         {
             // Calling each of the current Components' Updates, then ending the dialogue if any return false
-            foreach (var j in Current.Data.NodeComponents)
-                if (!j.Update()) HasEnded = true;
+            if (Current != null)
+                foreach (var j in Current.Data.NodeComponents)
+                    if (!j.Update()) HasEnded = true;
         }
 
         #region RuntimeNodes

@@ -157,7 +157,7 @@ namespace DescantEditor
             
             Button add = new Button();
             add.text = "Add new " + name.ToLower().Substring(0, name.Length - 1);
-            add.clicked += () => AddListItem(list, 0);
+            add.clicked += () => AddListItem(list, "");
             add.AddToClassList("add_button");
             list.Add(add);
 

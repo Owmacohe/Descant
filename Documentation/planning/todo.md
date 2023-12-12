@@ -3,6 +3,7 @@
 - Add comments
 - ~~Remove text filtering from certain Component fields~~
 - ~~Round floats when saving to file~~
+- ~~Update `README`~~
 
 
 
@@ -14,6 +15,9 @@
 - ~~Make TMP text styling more intuitive when being typed out~~
 - Make it so that new nodes spawn where clicked
 - ~~Fix bug with TimedChoice~~
+- Save panned position in `Descant Graph Editor`
+- Add option to set actor properties when the dialogue starts
+- Add option to interject variables into the text
 
 
 

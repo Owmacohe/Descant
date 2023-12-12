@@ -1,27 +1,14 @@
 using System;
-using System.Collections.Generic;
 using DescantComponents;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace DescantRuntime
 {
     public class DescantDialogueUI : MonoBehaviour
     {
-        [Header("Data")]
-        [SerializeField, Tooltip("The Descant Graph that will be converted into dialogue")] TextAsset graph;
-        [SerializeField, Tooltip("The player's DescantActor")] TextAsset player;
-        [SerializeField, Tooltip("The NPC DescantActor being interacted with")] TextAsset NPC;
-        [SerializeField, Tooltip("Any more extra NPCs that the Descant Graph references")] TextAsset[] actors;
-        
-        [Header("Portraits")]
-        [SerializeField, Tooltip("A list of portraits that can be applied to actors during the dialogue")] List<Sprite> actorPortraits;
-        [SerializeField, Tooltip("The name of the player's default portrait")] string playerPortraitName;
-        [SerializeField, Tooltip("The name of the NPC's default portrait")] string npcPortraitName;
-
-        [Header("UI")]
-        [SerializeField, Tooltip("Whether to start the dialogue when the scene starts")] bool displayOnStart;
         [SerializeField, Tooltip("The parent UI object for the player's choices (ideally a LayoutGroup)")] Transform choices;
         [SerializeField, Tooltip("The player choice prefab to be spawned with the choice text")] GameObject choice;
         [SerializeField, Tooltip("The player's portrait image")] Image playerPortrait;
@@ -37,20 +24,22 @@ namespace DescantRuntime
 
         string targetTypewriterText; // The full text that the typewriter is typing out
         int typewriterIndex; // The index in the target text that the typewriter is currently at
+
+        Sprite[] portraits; // The current array of all possible actor portraits during the dialogue
         
         void Awake()
         {
+            // Making sure to warn the user if there are no EventSystems present
+            if (!FindObjectOfType(typeof(EventSystem)))
+                DescantUtilities.ErrorMessage(
+                    GetType(),
+                    "Don't forget to add an EventSystem to the scene with Create/UI/Event System!");
+            
             dialogueController = gameObject.AddComponent<DescantDialogueController>();
 
             // Hiding the UI to start
             background = transform.GetChild(0).gameObject;
             background.SetActive(false);
-        }
-        
-        void Start()
-        {
-            // Initializing the dialogue (so that it doesn't have to be in Initialized when the interaction begins)
-            Initialize(graph, player, NPC, actors, displayOnStart);
         }
 
         void Update()
@@ -70,14 +59,22 @@ namespace DescantRuntime
         /// (to be called before a dialogue is displayed)
         /// (generally called at the beginning of a scene or right before a new dialogue is about to begin)
         /// </summary>
-        /// <param name="g">The JSON graph to be loaded</param>
-        /// <param name="p">The dialogue's player to be loaded</param>
+        /// <param name="graph">The JSON graph to be loaded</param>
+        /// <param name="player">The dialogue's player to be loaded</param>
         /// <param name="npc">The dialogue's NPC to be loaded</param>
-        /// <param name="a">The dialogue's extra actors to be loaded</param>
+        /// <param name="extraActors">The dialogue's extra actors to be loaded</param>
+        /// <param name="portraits">The array of all possible actor portraits during the dialogue</param>
+        /// <param name="playerPortrait">The name of the player's default portrait</param>
+        /// <param name="npcPortrait">The name of the NPC's default portrait</param>
         /// <param name="display">Whether to immediately display the UI after its been Initialized</param>
-        public void Initialize(TextAsset g, TextAsset p, TextAsset npc, TextAsset[] a, bool display)
+        public void Initialize(
+            TextAsset graph,
+            TextAsset player, TextAsset npc, TextAsset[] extraActors,
+            Sprite[] portraits, string playerPortrait, string npcPortrait,
+            bool display = true)
         {
-            dialogueController.Initialize(g, p, npc, a, playerPortraitName, npcPortraitName);
+            this.portraits = portraits;
+            dialogueController.Initialize(graph, player, npc, extraActors, playerPortrait, npcPortrait);
             
             if (display) BeginDialogue();
         }
@@ -216,7 +213,7 @@ namespace DescantRuntime
         /// <returns>The portrait image</returns>
         Sprite GetPortrait(string name)
         {
-            foreach (var i in actorPortraits)
+            foreach (var i in portraits)
                 if (i.name == name)
                     return i;
 
