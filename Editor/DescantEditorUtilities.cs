@@ -216,6 +216,16 @@ namespace DescantEditor
         }
         
         /// <summary>
+        /// Loads a DescantActor from the given file
+        /// </summary>
+        /// <param name="file">The actor's TextAsset file</param>
+        /// <returns>A generated actor</returns>
+        public static DescantActor LoadActorFromFile(TextAsset file)
+        {
+            return LoadActorFromString(file.text);
+        }
+        
+        /// <summary>
         /// Loads a DescantActor from the file at the given path
         /// </summary>
         /// <param name="fullPath">The full disc path to the file</param>

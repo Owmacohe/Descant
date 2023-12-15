@@ -14,7 +14,7 @@
 
 ## Overview
 
-**Descant** is a **Unity** dialogue system plugin. The [Unity Asset Store](https://assetstore.unity.com) is [chock full](Documentation/system_review.xlsx) of many such types of plugins, ranging from [feature-rich](https://assetstore.unity.com/packages/tools/behavior-ai/dialogue-system-for-unity-11672), to [ultra-minimalist](https://assetstore.unity.com/packages/tools/visual-scripting/conversa-dialogue-system-192549), to [downright bad](https://assetstore.unity.com/packages/tools/c5-dialogue-system-14881). **Descant** aims to hit the sweet spot between quality UI, powerful features, and easy-to-lean functionality, while also addressing many of the game-specific consequences of the standard dialogue manager setup. Besides acting as a standard tool for creating, saving, and actualizing non-linear game dialogue, it also pushes the enveloppe by adding optional dialogue-enhancing node components that introduce features to break away from the overused and underwhelming trends seen in many interactive fiction games. These enhancements act similar to **Unity**’s standard `GameObject` `Component` system, and can be applied at-will to nodes. This modular approach is so-far not explored in the world of Unity dialogue systems. The project will be free *(and collaborative open-source)* forever. Feel free to send me a message or submit a pull request if you want to make any changes.
+**Descant** is a **Unity** dialogue system plugin. The [Unity Asset Store](https://assetstore.unity.com) is [chock full](Documentation/system_review.xlsx) of many such types of plugins, ranging from [feature-rich](https://assetstore.unity.com/packages/tools/behavior-ai/dialogue-system-for-unity-11672), to [ultra-minimalist](https://assetstore.unity.com/packages/tools/visual-scripting/conversa-dialogue-system-192549), to [downright bad](https://assetstore.unity.com/packages/tools/c5-dialogue-system-14881). **Descant** aims to hit the sweet spot between quality UI, powerful features, and easy-to-lean functionality, while also addressing many of the game-specific consequences of the standard dialogue manager setup. Besides acting as a standard tool for creating, saving, and actualizing non-linear game dialogue, it also pushes the envelope by adding optional dialogue-enhancing node components that introduce features to break away from the overused and underwhelming trends seen in many interactive fiction games. These enhancements act similar to **Unity**’s standard `GameObject` `Component` system, and can be applied at-will to nodes. This modular approach is so-far not explored in the world of Unity dialogue systems. The project will be free *(and collaborative open-source)* forever. Feel free to send me a message or submit a pull request if you want to make any changes.
 
 
 
@@ -46,9 +46,9 @@
   1. Use middle-click to pan around in the editor
   1. New nodes can be created by right-clicking within the grid
   1. Connections between nodes can be created by left-clicking on nodes’ ports, and dragging to create a connection line to another port
-  1. `ChoiceNode`s represent player choices within a given dialogue, and `ResponseNode`s represent the NPC’s responses or statements
+  1. `ChoiceNode`s represent player choices within a given dialogue, and `ResponseNode`s represent the NPC’s responses or statements. To inject a DescantActor’s statistic into the text, write `{actor_name:statistic_name}`
   1. The `StartNode` represents the place where a given dialogue begins, and `EndNode`s represent where it can end
-  1. More complex functionality can be added to nodes by adding `Components` (see the [Components directory](Documentation/components.md) in the `Documentation` folder for more info on each default component, as well as how to write your own)
+  1. More complex functionality can be added to nodes by adding `Components` (see the [Descant documentation](https://omch.tech/descant) for more info on each default component, as well as how to write your own)
 - **Descant Actors**
   1. The **Descant Actor Editor** can be opened with `Tools/Descant/Descant Actor Editor` or by creating/editing a **Descant Actor** file
   2. New **Statistics**, **Topics**, and **Relationships** can be added with their respective **Add** buttons
@@ -67,11 +67,11 @@
 ## Documentation
 
 - This `README`
-- [Component directory](Documentation/components.md)
+- [Descant documentation](https://omch.tech/descant)
 - Planning
-  - [Initial research](Documentation/ideas/interaction_research.md), [market survey](Documentation/ideas/system_review.xlsx), and [key pitfalls and successes](Documentation/ideas/pitfalls_and_sucesses.md)
-  - [Features list](Documentation/ideas/features.md)
-  - [Weekly process journal](Documentation/ideas/journal.md)
+  - [Initial research](Documentation/interaction_research.md), [market survey](Documentation/system_review.xlsx), and [key pitfalls and successes](Documentation/pitfalls_and_sucesses.md)
+  - [Features list](Documentation/features.md)
+  - [Weekly process journal](Documentation/journal.md)
 
 - [Unity Asset Store page]() *(will be created near the end of the project)*
 

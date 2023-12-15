@@ -1,10 +1,12 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
+using System.Linq;
 using DescantComponents;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Event = DescantComponents.Event;
 
 namespace DescantEditor
 {
@@ -42,22 +44,33 @@ namespace DescantEditor
         /// </summary>
         public int GroupID { get; set; }
 
+        /// <summary>
+        /// The list of all DescantChoiceNodes in the graph
+        /// </summary>
         public List<DescantChoiceNode> ChoiceNodes = new List<DescantChoiceNode>();
+        
+        /// <summary>
+        /// The list of all DescantResponseNodes in the graph
+        /// </summary>
         public List<DescantResponseNode> ResponseNodes = new List<DescantResponseNode>();
+        
+        /// <summary>
+        /// The list of all DescantStartNodes in the graph
+        /// </summary>
         public DescantStartNode StartNode;
+        
+        /// <summary>
+        /// The list of all DescantEndNodes in the graph
+        /// </summary>
         public List<DescantEndNode> EndNodes = new List<DescantEndNode>();
         
+        /// <summary>
+        /// The list of all DescantNodeGroups in the graph
+        /// </summary>
         public List<DescantNodeGroup> Groups = new List<DescantNodeGroup>();
-
-        /// <summary>
-        /// The 'Add Start Node' contextual menu manipulator
-        /// </summary>
-        IManipulator startNodeManipulator;
         
-        /// <summary>
-        /// The list of contextual menu manipulators for nodes
-        /// </summary>
-        List<IManipulator> contextMenuManipulators = new List<IManipulator>();
+        IManipulator startNodeManipulator; // The 'Add Start Node' contextual menu manipulator
+        List<IManipulator> contextMenuManipulators = new List<IManipulator>(); // The list of contextual menu manipulators for nodes
 
         public DescantGraphView(DescantEditor editor)
         {
@@ -245,7 +258,7 @@ namespace DescantEditor
             this.AddManipulator(new ContentZoomer());
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new RectangleSelector());
-
+            
             AddContextMenuManipulators();
         }
         
@@ -264,19 +277,23 @@ namespace DescantEditor
                         switch (type)
                         {
                             case DescantNodeType.Choice:
-                                AddElement(CreateChoiceNode(actionEvent.eventInfo.localMousePosition));
+                                AddElement(CreateChoiceNode(contentViewContainer.WorldToLocal(
+                                    actionEvent.eventInfo.localMousePosition)));
                                 break;
                             
                             case DescantNodeType.Response:
-                                AddElement(CreateResponseNode(actionEvent.eventInfo.localMousePosition));
+                                AddElement(CreateResponseNode(contentViewContainer.WorldToLocal(
+                                    actionEvent.eventInfo.localMousePosition)));
                                 break;
                             
                             case DescantNodeType.Start:
-                                AddElement(CreateStartNode(actionEvent.eventInfo.localMousePosition));
+                                AddElement(CreateStartNode(contentViewContainer.WorldToLocal(
+                                    actionEvent.eventInfo.localMousePosition)));
                                 break;
 
                             case DescantNodeType.End:
-                                AddElement(CreateEndNode(actionEvent.eventInfo.localMousePosition));
+                                AddElement(CreateEndNode(contentViewContainer.WorldToLocal(
+                                    actionEvent.eventInfo.localMousePosition)));
                                 break;
 
                         }
@@ -304,7 +321,8 @@ namespace DescantEditor
                 menuEvent => menuEvent.menu.AppendAction("Add Group",
                     actionEvent =>
                     {
-                        AddElement(CreateNodeGroup(actionEvent.eventInfo.localMousePosition));
+                        AddElement(CreateNodeGroup(contentViewContainer.WorldToLocal(
+                            actionEvent.eventInfo.localMousePosition)));
                         Editor.CheckAndSave(); // Check for autosave
                     })
             );

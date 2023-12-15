@@ -68,12 +68,12 @@ namespace DescantRuntime
             
             // Adding in all the extra actors first
             foreach (var i in a)
-                Actors.Add(DescantEditorUtilities.LoadActorFromString(i.text));
+                Actors.Add(DescantEditorUtilities.LoadActorFromFile(i));
 
             // Initializing the player (if one has been set)
             if (p != null)
             {
-                player = DescantEditorUtilities.LoadActorFromString(p.text);
+                player = DescantEditorUtilities.LoadActorFromFile(p);
                 
                 if (!Actors.Contains(player)) Actors.Add(player);
             }
@@ -81,7 +81,7 @@ namespace DescantRuntime
             // Initializing the NPC (if one has been set)
             if (npc != null)
             {
-                NPC = DescantEditorUtilities.LoadActorFromString(npc.text);
+                NPC = DescantEditorUtilities.LoadActorFromFile(npc);
                 
                 if (!Actors.Contains(NPC)) Actors.Add(NPC);
             }
@@ -267,6 +267,12 @@ namespace DescantRuntime
             // Saving the changes to the actors
             foreach (var i in Actors)
                 DescantEditorUtilities.SaveActor(false, i);
+
+            for (int j = 0; j < currentResult.Choices.Count; j++)
+            {
+                var temp = currentResult.Choices[j];
+                currentResult.Choices[j] = new KeyValuePair<int, string>(temp.Key, CheckForStatistics(temp.Value));
+            }
             
             return currentResult.Choices.Count == 0 ? null : currentResult; // Stopping if there are no choices
         }
@@ -281,6 +287,34 @@ namespace DescantRuntime
                 currentResult = i.Invoke(currentResult);
 
             return currentResult;
+        }
+
+        string CheckForStatistics(string choice)
+        {
+            string temp = "";
+            
+            for (int i = 0; i < choice.Length; i++)
+            {
+                if (choice[i] == '{' && choice.Substring(i).Contains('}'))
+                {
+                    string injection = choice.Substring(i + 1, choice.Substring(i).IndexOf('}') - 1);
+                    var split = injection.Split(':');
+                    
+                    Debug.Log(split[0] + " " + split[1]);
+                    
+                    foreach (var j in Actors)
+                        if (j.Name == split[0])
+                            temp += j.StatisticValues[j.StatisticKeys.IndexOf(split[1])];
+
+                    i += injection.Length + 1;
+                }
+                else
+                {
+                    temp += choice[i];
+                }
+            }
+
+            return temp;
         }
     }
 }

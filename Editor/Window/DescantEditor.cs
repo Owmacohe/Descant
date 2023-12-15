@@ -164,10 +164,12 @@ namespace DescantEditor
                 Save();
             });
             
+            /*
             // Initializing the autosave toggle button
             autoSave = new Toggle("Autosave:");
             autoSave.value = data.Autosave;
             saveSection.Add(autoSave);
+            */
 
             // Initializing the save button
             Button save = new Button();
@@ -175,6 +177,7 @@ namespace DescantEditor
             save.text = "Save";
             saveSection.Add(save);
 
+            /*
             if (autoSave.value) save.visible = false;
             
             // Adding a callback for when the autosave value is changed
@@ -185,6 +188,7 @@ namespace DescantEditor
 
                 Save();
             });
+            */
             
             // Initializing the close button
             Button close = new Button();
@@ -216,7 +220,7 @@ namespace DescantEditor
             DescantGraphData temp = new DescantGraphData(data.Name)
             {
                 Path = data.Path,
-                Autosave = autoSave.value,
+                Autosave = /*autoSave.value*/false,
                 Typewriter = typewriter.value,
                 TypewriterSpeed = float.Parse(typewriterSpeed.value),
                 ChoiceNodeID = graphView.ChoiceNodeID,
