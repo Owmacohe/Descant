@@ -124,6 +124,7 @@ public static class DescantUtilities
         // Checking each of the class's fields
         foreach (var i in obj.GetType().GetFields())
         {
+            // The field is a float list, we round it
             if (i.FieldType == typeof(List<float>))
             {
                 var temp = (List<float>)i.GetValue(obj);
@@ -131,10 +132,12 @@ public static class DescantUtilities
                 for (int j = 0; j < temp.Count; j++)
                     temp[j] = RoundToDecimal(temp[j], decimalPlaces);
             }
+            // If it's a float, we round it
             else if (i.FieldType == typeof(float))
             {
                 i.SetValue(obj, RoundToDecimal((float) i.GetValue(obj), decimalPlaces));
             }
+            // If it's a class, we check all of its fields for floats too
             else if (i.FieldType.IsClass)
             {
                 RoundObjectToDecimal(i.GetValue(obj), decimalPlaces, checkedObjects);

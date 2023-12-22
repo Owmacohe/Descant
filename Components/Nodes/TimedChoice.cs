@@ -8,12 +8,12 @@ namespace DescantComponents
     {
         [Inline] public float Time;
         
+        [ParameterGroup("When timer runs out (base 1)")] public int ChoiceToPick;
+        
         [ParameterGroup("Tag of object to find")] public string ObjectTag;
         [ParameterGroup("Script to find")] public string ScriptName;
         [ParameterGroup("Methods to call")] public string TimerMethodName;
         [ParameterGroup("Methods to call")] public string FinishedMethodName;
-        
-        [ParameterGroup("When timer runs out (base 1)")] public int ChoiceToPick;
 
         float startTime;
 
@@ -30,22 +30,25 @@ namespace DescantComponents
             
             foreach (var i in GameObject.FindObjectsOfType<MonoBehaviour>())
             {
-                if (ScriptName != "" && TimerMethodName != "" && !DescantComponentUtilities.InvokeFromObjectOrScript(
-                    this,
-                    ObjectTag,
-                    ScriptName,
-                    TimerMethodName,
-                    percentage.ToString()
-                )) DescantComponentUtilities.MissingMethodError(this, ScriptName, TimerMethodName);
+                if (ScriptName != "")
+                {
+                    if (TimerMethodName != "" && !DescantComponentUtilities.InvokeFromObjectOrScript(
+                            this,
+                            ObjectTag,
+                            ScriptName,
+                            TimerMethodName,
+                            percentage.ToString()
+                        )) DescantComponentUtilities.MissingMethodError(this, ScriptName, TimerMethodName);
 
-                if (percentage >= 1)
-                    if (!DescantComponentUtilities.InvokeFromObjectOrScript(
-                        this,
-                        "",
-                        "DescantDialogueUI",
-                        "DisplayNode",
-                        (ChoiceToPick - 1).ToString()
-                    )) DescantComponentUtilities.MissingMethodError(this, ScriptName, FinishedMethodName);
+                    if (FinishedMethodName != "" && percentage >= 1)
+                        if (!DescantComponentUtilities.InvokeFromObjectOrScript(
+                                this,
+                                "",
+                                "DescantDialogueUI",
+                                "DisplayNode",
+                                (ChoiceToPick - 1).ToString()
+                            )) DescantComponentUtilities.MissingMethodError(this, ScriptName, FinishedMethodName);   
+                }
             }
 
             return true;

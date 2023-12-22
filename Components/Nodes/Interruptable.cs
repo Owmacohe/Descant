@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DescantComponents
 {
-    [Serializable, MaxQuantity(1), NodeType(DescantNodeType.Response)]
+    [Serializable, MaxQuantity(float.PositiveInfinity), NodeType(DescantNodeType.Response)]
     public class Interruptable : DescantNodeComponent
     {
         [ParameterGroup("Keys/buttons to check")] public string KeyCode;
@@ -16,7 +16,7 @@ namespace DescantComponents
 
         public override bool Update()
         {
-            bool interrupted = (KeyCode != "" && Input.GetKeyDown(KeyCode)) ||
+            bool interrupted = (KeyCode != "" && Input.GetKeyDown(UnityEngine.KeyCode.A)) ||
                                (ButtonName != "" && Input.GetButtonDown(ButtonName));
 
             if (interrupted && ScriptName != "" && MethodName != "")

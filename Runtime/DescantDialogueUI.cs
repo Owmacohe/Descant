@@ -26,33 +26,8 @@ namespace DescantRuntime
         int typewriterIndex; // The index in the target text that the typewriter is currently at
 
         Sprite[] portraits; // The current array of all possible actor portraits during the dialogue
-        
-        void Awake()
-        {
-            // Making sure to warn the user if there are no EventSystems present
-            if (!FindObjectOfType(typeof(EventSystem)))
-                DescantUtilities.ErrorMessage(
-                    GetType(),
-                    "Don't forget to add an EventSystem to the scene with Create/UI/Event System!");
-            
-            dialogueController = gameObject.AddComponent<DescantDialogueController>();
 
-            // Hiding the UI to start
-            background = transform.GetChild(0).gameObject;
-            background.SetActive(false);
-        }
-
-        void Update()
-        {
-            if (dialogueController.HasEnded) EndDialogue(); // Constantly checking to see if the dialogue has ended
-            
-            // Advancing the dialogue when the player clicks (if it's waiting for that)
-            if (waitForClick && Input.GetButtonDown("Fire1"))
-            {
-                if (dialogueController.Current.Next.Count == 0) EndDialogue();
-                else DisplayNode();
-            }
-        }
+        #region Initialization
 
         /// <summary>
         /// Initializes the DescantDialogueController's data
@@ -99,6 +74,37 @@ namespace DescantRuntime
             dialogueController.HasEnded = true;
         }
 
+        #endregion
+        
+        void Awake()
+        {
+            // Making sure to warn the user if there are no EventSystems present
+            if (!FindObjectOfType(typeof(EventSystem)))
+                DescantUtilities.ErrorMessage(
+                    GetType(),
+                    "Don't forget to add an EventSystem to the scene with Create/UI/Event System!");
+            
+            dialogueController = gameObject.AddComponent<DescantDialogueController>();
+
+            // Hiding the UI to start
+            background = transform.GetChild(0).gameObject;
+            background.SetActive(false);
+        }
+
+        void Update()
+        {
+            if (dialogueController.HasEnded) EndDialogue(); // Constantly checking to see if the dialogue has ended
+            
+            // Advancing the dialogue when the player clicks (if it's waiting for that)
+            if (waitForClick && Input.GetButtonDown("Fire1"))
+            {
+                if (dialogueController.Current.Next.Count == 0) EndDialogue();
+                else DisplayNode();
+            }
+        }
+
+        #region Node processing
+
         /// <summary>
         /// Calls the Next() method in the conversation controller, gets the data, and displays it on-screen
         /// </summary>
@@ -135,11 +141,11 @@ namespace DescantRuntime
             npcPortrait.gameObject.SetActive(npcPortrait.sprite != null && dialogueController.NPCPortraitEnabled);
 
             // Displaying the ResponseNodes...
-            if (temp.Choices.Count == 1 && dialogueController.Current.Data.Type.Equals("Response"))
+            if (temp.Text.Count == 1 && dialogueController.Current.Data.Type.Equals("Response"))
             {
                 // Either starting the typewriter or just sticking the text right in
-                if (dialogueController.Typewriter) StartTypewriter(temp.Choices[0].Value);
-                else response.text = temp.Choices[0].Value;
+                if (dialogueController.Typewriter) StartTypewriter(temp.Text[0].Value);
+                else response.text = temp.Text[0].Value;
 
                 // Quickly checking to see what the next node is
                 var next = dialogueController.Current.Next;
@@ -175,7 +181,7 @@ namespace DescantRuntime
             // Displaying the ChoiceNodes...
             else
             {
-                foreach (var j in temp.Choices)
+                foreach (var j in temp.Text)
                 {
                     // Instantiating the player choices in the player choice parent
                     GameObject tempChoice = Instantiate(choice, choices);
@@ -195,17 +201,7 @@ namespace DescantRuntime
                 }
             }
         }
-
-        /// <summary>
-        /// Shows/hides the click message to indicate that the player has to click to advance the dialogue
-        /// </summary>
-        /// <param name="visible">Whether to show or hide it</param>
-        void SetClickMessage(bool visible)
-        {
-            waitForClick = visible;
-            response.transform.GetChild(0).gameObject.SetActive(visible);
-        }
-
+        
         /// <summary>
         /// Quick method to check through all the available actor portraits to find teh one with the given name
         /// </summary>
@@ -218,6 +214,18 @@ namespace DescantRuntime
                     return i;
 
             return null;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Shows/hides the click message to indicate that the player has to click to advance the dialogue
+        /// </summary>
+        /// <param name="visible">Whether to show or hide it</param>
+        void SetClickMessage(bool visible)
+        {
+            waitForClick = visible;
+            response.transform.GetChild(0).gameObject.SetActive(visible);
         }
 
         #region Typewriter

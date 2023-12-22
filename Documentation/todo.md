@@ -22,8 +22,9 @@
 
 ## Hard
 
-- Create a proper tutorial
+- Create a proper video tutorial
 - Add `DescantIfNode`
 - ~~Make script calling easier~~
 - Make autosave better (removed temporarily)
 - Create log system
+- ~~Create an online Component documentation website~~

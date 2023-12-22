@@ -29,7 +29,7 @@ namespace DescantComponents
                 (VariableType.Equals(VariableType.DialogueAttempts) && CompareVariable(
                     actor.DialogueAttempts, Comparison, ComparisonType)))
             {
-                result.Choices.RemoveAt(ChoiceNumber - 1);
+                result.Text.RemoveAt(ChoiceNumber - 1);
             }
             
             return result;

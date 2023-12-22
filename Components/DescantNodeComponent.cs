@@ -10,7 +10,7 @@ namespace DescantComponents
 
     public class DescantNodeInvokeResult
     {
-        public List<KeyValuePair<int, string>> Choices;
+        public List<KeyValuePair<int, string>> Text;
         public List<DescantActor> Actors;
         public string PlayerPortrait;
         public bool PlayerPortraitEnabled;
@@ -18,14 +18,14 @@ namespace DescantComponents
         public bool NPCPortraitEnabled;
 
         public DescantNodeInvokeResult(
-            List<KeyValuePair<int, string>> choices,
+            List<KeyValuePair<int, string>> text,
             List<DescantActor> actors,
             string playerPortrait,
             bool playerPortraitEnabled,
             string npcPortrait,
             bool npcPortraitEnabled)
         {
-            Choices = choices;
+            Text = text;
             Actors = actors;
             PlayerPortrait = playerPortrait;
             PlayerPortraitEnabled = playerPortraitEnabled;

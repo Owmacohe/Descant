@@ -8,11 +8,11 @@ namespace DescantComponents
     {
         [Inline] public string ActorName;
         
+        [ParameterGroup("Statistic to reveal")] public string StatisticName;
+        
         [ParameterGroup("Tag of object to find")] public string ObjectTag;
         [ParameterGroup("Script to find")] public string ScriptName;
         [ParameterGroup("Method to call")] public string MethodName;
-        
-        [ParameterGroup("Statistic to reveal")] public string StatisticName;
 
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {

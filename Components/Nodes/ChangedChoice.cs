@@ -33,8 +33,8 @@ namespace DescantComponents
                 (VariableType.Equals(VariableType.DialogueAttempts) && CompareVariable(
                     actor.DialogueAttempts, Comparison, ComparisonType)))
             {
-                result.Choices[ChoiceNumber - 1] = new KeyValuePair<int, string>(
-                    result.Choices[ChoiceNumber - 1].Key,
+                result.Text[ChoiceNumber - 1] = new KeyValuePair<int, string>(
+                    result.Text[ChoiceNumber - 1].Key,
                     ChangeTo);
             }
 

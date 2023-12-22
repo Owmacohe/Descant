@@ -11,16 +11,16 @@ namespace DescantComponents
         {
             var temp = new List<KeyValuePair<int, string>>();
 
-            int copy = result.Choices.Count;
+            int copy = result.Text.Count;
             
             for (int i = 0; i < copy; i++)
             {
-                var moved = result.Choices[Random.Range(0, result.Choices.Count)];
+                var moved = result.Text[Random.Range(0, result.Text.Count)];
                 temp.Add(moved);
-                result.Choices.Remove(moved);
+                result.Text.Remove(moved);
             }
 
-            result.Choices = temp;
+            result.Text = temp;
 
             return result;
         }

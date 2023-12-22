@@ -8,7 +8,7 @@
 
 
 
-***Disclaimer: `.desc.json` and `.descactor.json` files can only be opened from the Assets directory, not the Packages directory. If you want to open the test files in the `Examples` folder, simply copy them to anywhere within the Assets folder.***
+***Disclaimer: `.desc.json` and `.descactor.json` files can only be opened from the `Assets` directory, not the `Packages` directory. If you want to open the test files in the `Descant/Examples` folder, simply copy them to anywhere within the `Assets` folder.***
 
 
 
@@ -20,47 +20,48 @@
 
 ## Installation
 
-1. Install the latest release from the [GitHub repository](https://github.com/Owmacohe/Descant/releases), unzip it, and place the folder into your Unity project's `Packages` folder
-2. Within your Unity project, navigate to the **Package Manager** window
+1. Install the latest release from the [GitHub repository](https://github.com/Owmacohe/Descant/releases), unzip it, and place the folder into your Unity project's `Packages` folder.
+2. Within your Unity project, navigate to the **Package Manager** window.
 3. Within the **Package Manager**, click on the **+** icon in the top left, and select **Add package from disk…**
-4. Navigate to the zipped **Descant** folder, and within that folder, select `package.json`
-5. A sample scene can be found at: `Examples/Test_Scene.unity`
-6. Opening this scene may prompt you to install **Text Mesh Pro**. Simple click on **Import TMP Essentials** to do so
+4. Navigate to the zipped **Descant** folder, and within that folder, select `package.json`.
+5. A sample scene can be found at: `Descant/Examples/Test_Scene.unity`.
+6. Opening this scene may prompt you to install **Text Mesh Pro**. Simple click on **Import TMP Essentials** to do so.
 
 
 
 ## Descant Files
 
 - **Descant Graphs**
-  - **Descant Graphs** can be created by right clicking, and selecting `Create/Descant Graph`
-  - **Descant Graphs** can be edited by right clicking on a `.desc.json` file, and selecting `Edit Descant Graph`
+  - **Descant Graphs** can be created by right clicking, and selecting `Create/Descant Graph`.
+  - **Descant Graphs** can be edited by right clicking on a `.desc.json` file, and selecting `Edit Descant Graph`.
 - **Descant Actors**
-  - **Descant Actors** can be created by right clicking, and selecting `Create/Descant Actor`
-  - **Descant Actors** can be edited by right clicking on a `.descactor.json` file, and selecting `Edit Descant Actor`
+  - **Descant Actors** can be created by right clicking, and selecting `Create/Descant Actor`.
+  - **Descant Actors** can be edited by right clicking on a `.descactor.json` file, and selecting `Edit Descant Actor`.
 
 
 
 ## Usage
 - **Descant Graphs**
-  1. The **Descant Graph Editor** can be opened with `Tools/Descant/Descant Graph Editor` or by creating/editing a **Descant Graph** file
-  1. Use middle-click to pan around in the editor
-  1. New nodes can be created by right-clicking within the grid
-  1. Connections between nodes can be created by left-clicking on nodes’ ports, and dragging to create a connection line to another port
-  1. `ChoiceNode`s represent player choices within a given dialogue, and `ResponseNode`s represent the NPC’s responses or statements. To inject a DescantActor’s statistic into the text, write `{actor_name:statistic_name}`
-  1. The `StartNode` represents the place where a given dialogue begins, and `EndNode`s represent where it can end
-  1. More complex functionality can be added to nodes by adding `Components` (see the [Descant documentation](https://omch.tech/descant) for more info on each default component, as well as how to write your own)
+  1. The **Descant Graph Editor** can be opened with `Tools/Descant/Descant Graph Editor` or by creating/editing a **Descant Graph** file.
+  1. Use middle-click to pan around in the editor.
+  1. New nodes can be created by right-clicking within the grid.
+  1. Connections between nodes can be created by left-clicking on nodes’ ports, and dragging to create a connection line to another port.
+  1. `ChoiceNode`s represent player choices at certain moments within the dialogue, and `ResponseNode`s represent the NPC’s responses or statements.
+  1. If you want to have a `DescantActor`’s statistic show up within a `ChoiceNode` or `ResponseNode`'s text, write `{actor_name:statistic_name}`, and **Descant** will inject the statistic right into it. *(see the below for more info on `DescantActor`s)*.
+  1. The `StartNode` represents the place where a given dialogue begins, and `EndNode`s represent where it can end.
+  1. More complex functionality can be added to nodes by adding `Components` (see the [Descant documentation](https://omch.tech/descant) for more info on each default component, as well as how to write your own).
 - **Descant Actors**
-  1. The **Descant Actor Editor** can be opened with `Tools/Descant/Descant Actor Editor` or by creating/editing a **Descant Actor** file
-  2. New **Statistics**, **Topics**, and **Relationships** can be added with their respective **Add** buttons
-     - **Statistics** are variables that pertain to actors such as health, level, stamina, etc.
-     - **Topics** are names of characters, locations, events, concepts, etc. that the actors may learn
-     - **Relationships** are values quantifiably that represent how actors feel about each other, concepts, factions, etc.
-  3. The **Dialogue attempts** represents the number of times that this actor has been talked to by the player
+  1. The **Descant Actor Editor** can be opened with `Tools/Descant/Descant Actor Editor` or by creating/editing a **Descant Actor** file.
+  2. New **Statistics**, **Topics**, and **Relationships** can be added with their respective **Add** buttons.
+     - **Statistics** are variables that pertain to actors *(e.g. health, level, stamina, etc.)*
+     - **Topics** are concepts that the actors may learn during dialogue *(e.g. names of characters, locations, events, etc.)*
+     - **Relationships** are values quantifiably that represent how actors feel about each other.
+  3. The **Dialogue attempts** represents the number of times that this actor has been talked to by the player.
 - **Runtime**
-  1. Drag the `ConversationUI` prefab into your Unity scene (you may have as many `ConversationUI`s as you want in the same scene, and you may modify their text and UI styles as much as you want, so long as the `DescantConversationUI`'s inspector assignments don’t get broken)
-  2. Add an `Event System` object to your scene, if you don't already have one
-  3. Add a `DescantDialogueTrigger` script to a GameObject of your choice, and assign its fields (hover over each field to see a popup of its description) (you may have as many `DescantDialogueTrigger`s as you want in the same scene)
-  4. At some point while the game is running, call the `Display()` method in the `DescantDialogueTrigger` script to begin the dialogue *(e.g. when the player presses `[E]`, or when a `Button` is clicked)*
+  1. Drag the `ConversationUI` prefab from the `Descant/Assets` folder into your Unity scene *(you may have as many `ConversationUI`s as you want in the same scene, and you may modify their text and UI styles as much as you want, so long as the `DescantConversationUI`'s inspector assignments don’t get broken)*.
+  2. Add an `Event System` object to your scene *(`Create/UI/Event System`)*, if you don't already have one.
+  3. Add a `DescantDialogueTrigger` script to a GameObject of your choice, and assign its fields *(hover over each field to see a popup of its description) (you may have as many `DescantDialogueTrigger`s as you want in the same scene)*.
+  4. At some point while the game is running, call the `Display()` method in the `DescantDialogueTrigger` script to begin the dialogue *(e.g. when the player presses `[E]`, when a `Button` is clicked, etc.)*.
 
 
 

@@ -24,6 +24,10 @@ namespace DescantRuntime
         /// </summary>
         public List<RuntimeNode> Next;
 
+        /// <summary>
+        /// RuntimeNode constructor
+        /// </summary>
+        /// <param name="data">The data for this runtime node that will be used later</param>
         public RuntimeNode(DescantNodeData data)
         {
             Data = data;
@@ -48,6 +52,8 @@ namespace DescantRuntime
         [HideInInspector] public bool HasEnded; // Whether the current dialogue has finished
         [HideInInspector] public bool Typewriter; // Whether the current dialogue is using a typewriter
         [HideInInspector] public float TypewriterSpeed; // The speed of the dialogue's typewriter (if it's using one)
+
+        #region Initialization
 
         /// <summary>
         /// Initializes the conversation controller
@@ -111,6 +117,8 @@ namespace DescantRuntime
                 DescantEditorUtilities.SaveActor(false, NPC);   
             }
         }
+
+        #endregion
         
         void FixedUpdate()
         {
@@ -187,6 +195,8 @@ namespace DescantRuntime
         }
 
         #endregion
+        
+        # region Node processing
 
         /// <summary>
         /// Sets the current runtime node to one of the next ones
@@ -246,12 +256,12 @@ namespace DescantRuntime
                     List<string> choices = ((DescantChoiceNodeData) Current.Data).Choices;
                     
                     for (int i = 0; i < choices.Count; i++)
-                        currentResult.Choices.Add(new KeyValuePair<int, string>(i, choices[i]));
+                        currentResult.Text.Add(new KeyValuePair<int, string>(i, choices[i]));
                     break;
                 
                 // Add the ResponseNode's response to the result object
                 case "Response":
-                    currentResult.Choices.Add(
+                    currentResult.Text.Add(
                         new KeyValuePair<int, string>(0, ((DescantResponseNodeData)Current.Data).Response));
                     break;
             }
@@ -268,13 +278,14 @@ namespace DescantRuntime
             foreach (var i in Actors)
                 DescantEditorUtilities.SaveActor(false, i);
 
-            for (int j = 0; j < currentResult.Choices.Count; j++)
+            // Checking through the text, replacing all in instances of statistic injections
+            for (int j = 0; j < currentResult.Text.Count; j++)
             {
-                var temp = currentResult.Choices[j];
-                currentResult.Choices[j] = new KeyValuePair<int, string>(temp.Key, CheckForStatistics(temp.Value));
+                var temp = currentResult.Text[j];
+                currentResult.Text[j] = new KeyValuePair<int, string>(temp.Key, CheckForStatistics(temp.Value));
             }
             
-            return currentResult.Choices.Count == 0 ? null : currentResult; // Stopping if there are no choices
+            return currentResult.Text.Count == 0 ? null : currentResult; // Stopping if there are no choices
         }
 
         /// <summary>
@@ -289,32 +300,42 @@ namespace DescantRuntime
             return currentResult;
         }
 
-        string CheckForStatistics(string choice)
+        /// <summary>
+        /// Method to check through a string, replacing all instances of DescantActor statistic injections
+        /// </summary>
+        /// <param name="text">A DescantChoiceNode's or DescantResponseNode's text to be checked through</param>
+        /// <returns>The string, with the injection replaced with its corresponding statistic</returns>
+        string CheckForStatistics(string text)
         {
             string temp = "";
             
-            for (int i = 0; i < choice.Length; i++)
+            for (int i = 0; i < text.Length; i++)
             {
-                if (choice[i] == '{' && choice.Substring(i).Contains('}'))
+                // If we've found the beginning of an injection...
+                if (text[i] == '{' && text.Substring(i).Contains('}'))
                 {
-                    string injection = choice.Substring(i + 1, choice.Substring(i).IndexOf('}') - 1);
+                    // Getting the injection text (minus the brackets),
+                    // and splitting it into actor name and statistic name
+                    string injection = text.Substring(i + 1, text.Substring(i).IndexOf('}') - 1);
                     var split = injection.Split(':');
                     
-                    Debug.Log(split[0] + " " + split[1]);
-                    
+                    // Appending the statistic value
                     foreach (var j in Actors)
                         if (j.Name == split[0])
                             temp += j.StatisticValues[j.StatisticKeys.IndexOf(split[1])];
 
-                    i += injection.Length + 1;
+                    i += injection.Length + 1; // Skipping ahead to avoid adding any of the injection text
                 }
+                // Otherwise, we just spit out the next character and continue on
                 else
                 {
-                    temp += choice[i];
+                    temp += text[i];
                 }
             }
 
             return temp;
         }
+        
+        #endregion
     }
 }

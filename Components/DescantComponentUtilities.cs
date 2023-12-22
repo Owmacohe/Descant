@@ -59,7 +59,12 @@ namespace DescantComponents
                 : temp;
         }
         
-        public static bool InvokeMethod(DescantNodeComponent component, MonoBehaviour script, string scriptName, string methodName, string parameter)
+        public static bool InvokeMethod(
+            DescantNodeComponent component,
+            MonoBehaviour script,
+            string scriptName,
+            string methodName,
+            string parameter)
         {
             if (scriptName == "" || methodName == "") return false;
             
@@ -78,6 +83,17 @@ namespace DescantComponents
                             component.GetType(),
                             "Unable to find the method '" + methodName + "' on script '" + scriptName + "'!"
                         );
+                        
+                        return false;
+                    }
+
+                    if (method.GetParameters().Length == 0)
+                    {
+                        DescantUtilities.ErrorMessage(
+                            component.GetType(),
+                            "Method '" + methodName + "' on script '" + scriptName + "' has more than one parameter!"
+                        );
+                        
                         return false;
                     }
 
@@ -105,7 +121,12 @@ namespace DescantComponents
             return false;
         }
 
-        public static bool InvokeFromObjectOrScript(DescantNodeComponent component, string objectTag, string scriptName, string methodName, string parameter)
+        public static bool InvokeFromObjectOrScript(
+            DescantNodeComponent component,
+            string objectTag,
+            string scriptName,
+            string methodName,
+            string parameter)
         {
             if (objectTag == "")
             {
