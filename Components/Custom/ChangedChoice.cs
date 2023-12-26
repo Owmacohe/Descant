@@ -1,11 +1,13 @@
-﻿using System;
+﻿// Please see https://omch.tech/descant/#changedchoice for documentation
+
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace DescantComponents
 {
     [Serializable, MaxQuantity(float.PositiveInfinity), NodeType(DescantNodeType.Choice)]
-    public class ChangedChoice : DescantNodeComponent
+    public class ChangedChoice : DescantComponent
     {
         [Inline] public string ActorName;
         

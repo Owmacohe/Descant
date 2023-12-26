@@ -12,6 +12,9 @@ namespace DescantEditor
     [Serializable]
     public class DescantGraphData
     {
+        /// <summary>
+        /// The name of the Descant Graph
+        /// </summary>
         public string Name;
         
         /// <summary>
@@ -21,33 +24,83 @@ namespace DescantEditor
         public string Path;
         
         /// <summary>
-        /// Whether to autosave this graph when in the Editor
+        /// Whether to autosave the graph when in the Editor
         /// </summary>
         public bool Autosave;
 
+        /// <summary>
+        /// Whether or not to type out ResponseNode text one character at a time
+        /// </summary>
         public bool Typewriter;
+        
+        /// <summary>
+        /// The speed of the typewriter (higher value = faster typing speed)
+        /// (see DescantDialogueUI::Type() for its application)
+        /// </summary>
         public float TypewriterSpeed;
         
+        /// <summary>
+        /// A unique ID number that will be applied to the next-created ChoiceNode
+        /// </summary>
         public int ChoiceNodeID;
+        
+        /// <summary>
+        /// A unique ID number that will be applied to the next-created ResponseNode
+        /// </summary>
         public int ResponseNodeID;
+        
+        /// <summary>
+        /// A unique ID number that will be applied to the next-created EndNode
+        /// </summary>
         public int EndNodeID;
+        
+        /// <summary>
+        /// A unique ID number that will be applied to the next-created NodeGroup
+        /// </summary>
         public int GroupID;
         
+        /// <summary>
+        /// The ChoiceNodes in the graph
+        /// </summary>
         public List<DescantChoiceNodeData> ChoiceNodes;
+        
+        /// <summary>
+        /// The ResponseNodes in the graph
+        /// </summary>
         public List<DescantResponseNodeData> ResponseNodes;
+        
+        /// <summary>
+        /// The StartNode in the graph
+        /// </summary>
         public DescantStartNodeData StartNode;
+        
+        /// <summary>
+        /// The EndNodes in the graph
+        /// </summary>
         public List<DescantEndNodeData> EndNodes;
         
+        /// <summary>
+        /// The NodeGroups in the graph
+        /// </summary>
         public List<DescantGroupData> Groups;
         
+        /// <summary>
+        /// The connections between Nodes in the graph
+        /// </summary>
         public List<DescantConnectionData> Connections;
 
+        /// <summary>
+        /// Parameterized constructor
+        /// (most of the DescantGroupData's properties are set after
+        /// it has been initialized, as part of the saving process)
+        /// </summary>
+        /// <param name="name">The name of the Descant Graph</param>
         public DescantGraphData(string name)
         {
             #if UNITY_EDITOR
-                Name = DescantUtilities.FilterText(name);
+            Name = DescantUtilities.FilterText(name);
             #else
-                Name = name;
+            Name = name;
             #endif
 
             Path = "";
@@ -56,17 +109,30 @@ namespace DescantEditor
             TypewriterSpeed = 1;
             ChoiceNodes = new List<DescantChoiceNodeData>();
             ResponseNodes = new List<DescantResponseNodeData>();
-            StartNode = new DescantStartNodeData("StartNode", "Start", Vector2.zero, new List<DescantNodeComponent>());
+            
+            // We assume that we'll replace this later, but just in case we don't, we create a default StartNode
+            StartNode = new DescantStartNodeData(
+                "StartNode",
+                "Start",
+                Vector2.zero,
+                new List<DescantComponent>()
+            );
+            
             EndNodes = new List<DescantEndNodeData>();
             Groups = new List<DescantGroupData>();
             Connections = new List<DescantConnectionData>();
         }
 
+        /// <summary>
+        /// Overridden Equals method
+        /// </summary>
+        /// <param name="other">The object being compared against</param>
+        /// <returns>Whether the other object has the same data as this one</returns>
         public override bool Equals(object other)
         {
             try
             {
-                var unused = (DescantGraphData) other;
+                _ = (DescantGraphData) other;
             }
             catch
             {
@@ -76,11 +142,21 @@ namespace DescantEditor
             return Equals((DescantGraphData)other);
         }
 
+        #if UNITY_EDITOR
+        /// <summary>
+        /// Custom Equals method
+        /// </summary>
+        /// <param name="other">The data object being compared against</param>
+        /// <returns>Whether the other DescantGraphData has the same data as this one</returns>
         public bool Equals(DescantGraphData other)
         {
             return ToString() == other.ToString();
         }
+        #endif
 
+        /// <summary>
+        /// Overridden ToString method
+        /// </summary>
         public override string ToString()
         {
             string temp = "";
@@ -108,7 +184,7 @@ namespace DescantEditor
                    (temp.Length > 1 ? temp : "");
         }
 
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
         /// <summary>
         /// Saves all the data from this graph to its path
         /// </summary>
@@ -125,7 +201,7 @@ namespace DescantEditor
                 Application.dataPath + "/" + Path,
                 DescantUtilities.FormatJSON(JsonUtility.ToJson(this)));
         }
-#endif
+        #endif
 
         /// <summary>
         /// Loads and returns a new graph from a full disc path

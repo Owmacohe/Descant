@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Primary Meta Tags -->
+  <title>Descant - Enhanced Unity Dialogue System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="components.js"></script>
+  <meta name="title" content="Descant - Enhanced Unity Dialogue System" />
+  <meta name="description" content="An enhanced and and user-friendly Unity dialogue system plugin" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://omch.tech" />
+  <meta property="og:title" content="Descant - Enhanced Unity Dialogue System" />
+  <meta property="og:description" content="An enhanced and and user-friendly Unity dialogue system plugin" />
+  <meta property="og:image" content="" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://omch.tech" />
+  <meta property="twitter:title" content="Descant - Enhanced Unity Dialogue System" />
+  <meta property="twitter:description" content="An enhanced and and user-friendly Unity dialogue system plugin" />
+  <meta property="twitter:image" content="" />
+</head>
+
+<body class="flex column center">
+  <div class="flex column center" id="content">
+    <div class="flex column center section">
+      <h1>Descant</h1>
+      <h2>Enhanced Unity Dialogue System</h2>
+      <p>by <a href="\">Owen Hellum</a></p>
+    </div>
+
+    <div class="flex column center section">
+      <p class="important">
+        <strong>Please view the Descant <a href="https://github.com/owmacohe/Descant">README</a> for
+          information regarding installation and usage!</strong>
+      </p>
+    </div>
+
+    <div class="flex row center section">
+      <h2 style="margin-right: 80px"><a href="">Descant Unity Asset Store Page</a> (coming soon)</h2>
+      <h2><a href="https://github.com/owmacohe/Descant">Descant GitHub page</a></h2>
+    </div>
+
+    <div class="flex column center section">
+      <p>
+        <strong>Descant</strong> is a <strong>Unity</strong> dialogue system plugin. The
+        <strong><a href="https://assetstore.unity.com">Unity Asset Store</a></strong> is
+        <a href="https://github.com/owmacohe/Descant/Documentation/system_review.xlsx">chock full</a> of many such
+        types of plugins, ranging from <a href="https://assetstore.unity.com/packages/tools/behavior-ai/dialogue-system-for-unity-11672">feature-rich</a>,
+        to <a href="https://assetstore.unity.com/packages/tools/visual-scripting/conversa-dialogue-system-192549">ultra-minimalist</a>,
+        to <a href="https://assetstore.unity.com/packages/tools/c5-dialogue-system-14881">downright bad</a>.
+        <strong>Descant</strong> aims to hit the sweet spot between quality UI, powerful features, and easy-to-lean
+        functionality, while also addressing many of the game-specific consequences of the standard dialogue manager
+        setup. Besides acting as a standard tool for creating, saving, and actualizing non-linear game dialogue, it
+        also pushes the envelope by adding optional dialogue-enhancing node components that introduce features to break
+        away from the overused and underwhelming trends seen in many interactive fiction games. These enhancements act
+        similar to <strong>Unity</strong>'s standard <strong>GameObject Component</strong> system, and can be applied
+        at-will to nodes. This modular approach is so-far not explored in the world of Unity dialogue systems. The
+        project will be free <em>(and collaborative open-source)</em> forever. Feel free to send me a message or submit
+        a pull request if you want to make any changes.
+      </p>
+    </div>
+
+    <div class="flex column center section">
+      <h2>Component documentation</h2>
+      <p>
+        A number of Descant Components come bundled with the system by default. They cover a wide range of
+        applications, and can be edited at-will. Please see the next section, <strong>Component creation</strong>, for
+        a guide on how to write your own Components in C#.
+      </p>
+
+      <div class="flex row center" id="components"></div>
+    </div>
+
+    <div class="flex column center section">
+      <h2>Component creation</h2>
+      <ol>
+        <li>Create a new C# class in <strong>Descant/Components/Custom</strong>.</li>
+        <li>Make sure that the Component is in the <strong>DescantComponents</strong> namespace.</li>
+        <li>Make sure that the Component inherits from the <strong>DescantComponent</strong> abstract class.</li>
+        <li>Add a <strong>[Serializable]</strong> attribute to the Component.</li>
+        <li>
+          Add a <strong>[MaxQuantity(...)]</strong> attribute to the Component (replace the '...' with the maximum number
+          of Components of this type that can be added to a single node) ('...' can be <strong>float.PositiveInfinity</strong>).
+        </li>
+        <li>
+          Add a <strong>[NodeType(...)]</strong> attribute to the Component (replace the '...' with the
+          <strong>DescantNodeType</strong> indicating which types of nodes it can be added to).
+        </li>
+        <li>
+          Add any number of public variables/properties to the Component (these properties will show up in
+          the <strong>Descant Graph Editor</strong> when you add the Component to a node) (you may also create
+          private/protected properties, but they won't appear in the editor). Properties may only be of type
+          <strong>int</strong>, <strong>float</strong>, <strong>string</strong>, <strong>bool</strong>, or
+          <strong>enum</strong> (<strong>VariableType</strong>, <strong>ComparisonType</strong>,
+          <strong>OperationType</strong>, or <strong>ListChangeType</strong> <strong>enum</strong>s only).
+        </li>
+        <li>
+          For each public variable, add either an <strong>[Inline]</strong> attribute (indicating that it will be
+          visually nestled beside the Component name in the editor) or a <strong>[ParameterGroup(...)]</strong>
+          attribute (indicating that it will be visually arranged in a new group beneath the Component name in the
+          editor) (replace the '...' with the string name of the group to order it into).
+        </li>
+        <li>
+          <em>Optional: By default, all Component fields filter any out most special characters on input. You can
+          override this by giving any public variable a <strong>[NoFiltering]</strong> attribute, disabling filtering
+          for that variable's corresponding field in the <strong>Descant Graph Editor</strong>. This is useful for
+          long-form fields that may have sentence grammar and punctuation.</em>
+        </li>
+        <li>
+          If this Component performs some action when it is reached during dialogue, give it the following method:
+          <strong>public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)</strong>. The
+          <strong>DescantNodeInvokeResult</strong> object being passed contains all the choice/response text for the
+          current node, the current actors, and info regarding the actor portraits) (see the
+          <a href="https://github.com/Owmacohe/Descant/blob/main/Components/DescantNodeInvokeResult.cs">DescantNodeInvokeResult</a>
+          class for more info). The <strong>Invoke</strong> method must return a <strong>DescantNodeInvokeResult</strong>
+          object (almost always just <strong>result</strong> itself, with its properties modified).
+        </li>
+        <li>
+          <em>Optional: Many of the default Components require actor names to know which actors' properties to check.
+          If your Component must also access a <strong>DescantActor</strong>, make sure that it has a <strong>public
+          string ActorName</strong> variable, then get access to the actor with
+          <strong>DescantComponentUtilities.GetActor(this, result.Actors, ActorName)</strong>.</em>
+        </li>
+        <li>
+          <em>Optional: Many default Descant Components only do their effect if some comparison is made. Should your
+            Component also wish to do so, the <strong>CompareVariable</strong> method in
+            <a href="https://github.com/Owmacohe/Descant/blob/main/Components/DescantComponent.cs">DescantComponent</a>
+            may be of use.</em>
+        </li>
+        <li>
+          <em>Optional: If you need the Component to do something continuously while it is active during dialogue, give
+          it one of the following methods: <strong>public override bool FixedUpdate()</strong> or <strong>public
+          override bool Update()</strong>. They function in exactly the same manner as the classic <strong>MonoBehaviour</strong>
+          methods of the same names, save for the fact that if they ever return <strong>false</strong>, the dialogue
+          ends immediately (should the Component want to end the dialogue for some reason).</em>
+        </li>
+        <li>
+          That's it! Your new Component will now show up as an option to add to a node in the <strong>Descant Graph
+          Editor</strong>.
+        </li>
+      </ol>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,9 +1,11 @@
-﻿using System;
+﻿// Please see https://omch.tech/descant/#topicchange for documentation
+
+using System;
 
 namespace DescantComponents
 {
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Response)]
-    public class TopicChange : DescantNodeComponent
+    public class TopicChange : DescantComponent
     {
         [Inline] public string ActorName;
         

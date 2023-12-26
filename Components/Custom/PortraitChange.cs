@@ -1,11 +1,11 @@
-﻿using System;
+﻿// Please see https://omch.tech/descant/#portraitchange for documentation
+
+using System;
 
 namespace DescantComponents
 {
-    public enum PortraitChangeType { Set, Enable, Disable }
-    
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Any)]
-    public class PortraitChange : DescantNodeComponent
+    public class PortraitChange : DescantComponent
     {
         [Inline] public bool PlayerPortrait;
         

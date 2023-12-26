@@ -19,7 +19,7 @@ namespace DescantEditor
         /// <summary>
         /// The Component that this visual element is representing
         /// </summary>
-        public DescantNodeComponent Component { get; }
+        public DescantComponent Component { get; }
         
         DescantGraphView graphView; // The DescantGraphView (used for saving)
         DescantNode node; // The node that this Component is attached to
@@ -41,7 +41,7 @@ namespace DescantEditor
             DescantGraphView graph,
             DescantNode descantNode,
             string name,
-            DescantNodeComponent component)
+            DescantComponent component)
         {
             graphView = graph;
             node = descantNode;
@@ -50,10 +50,10 @@ namespace DescantEditor
             // If the Component is null (i.e. it's being created for the first time), we create a new instance of it
             if (component == null)
             {
-                List<Type> types = DescantComponentUtilities.GetAllNodeComponentTypes();
-                var temp = types[DescantComponentUtilities.TrimmedNodeComponentTypes(types).IndexOf(Name)];
+                List<Type> types = DescantComponentUtilities.GetComponentTypes();
+                var temp = types[DescantComponentUtilities.GetTrimmedComponentTypes(types).IndexOf(Name)];
                 
-                Component = (DescantNodeComponent) Activator.CreateInstance(temp);
+                Component = (DescantComponent) Activator.CreateInstance(temp);
             }
             else Component = component; // Otherwise we just use the previously saved copy
         }
@@ -364,10 +364,10 @@ namespace DescantEditor
         /// </summary>
         void RemoveComponent()
         {
-            node.Components[Name]--; // Decrementing the Component's node's count for this particular type of Component
+            node.ComponentCounts[Name]--; // Decrementing the Component's node's count for this particular type of Component
 
             // Now that we've removed it from the count, can future nodes of this type be added?
-            if (node.Components[Name] < DescantComponentUtilities.GetNodeComponentMaximum(Name))
+            if (node.ComponentCounts[Name] < DescantComponentUtilities.GetComponentMaximum(Name))
             {
                 node.ComponentDropdown.choices.Add(Name);
                 node.ComponentDropdown.choices.Sort();

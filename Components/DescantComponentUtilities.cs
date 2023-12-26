@@ -8,31 +8,53 @@ namespace DescantComponents
 {
     public static class DescantComponentUtilities
     {
-        public static List<Type> GetAllNodeComponentTypes()
+        #region Component Type Lists
+        
+        /// <summary>
+        /// Gets the list of all class types that inherit from DescantComponent
+        /// </summary>
+        public static List<Type> GetComponentTypes()
         {
             return AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(domainAssembly => domainAssembly.GetTypes())
-                .Where(type => type.IsSubclassOf(typeof(DescantNodeComponent)))
+                .Where(type => type.IsSubclassOf(typeof(DescantComponent)))
                 .ToList();
         }
-
-        public static string GetTrimmedNodeComponentType(Type type)
+        
+        /// <summary>
+        /// Trims a class name down to its base name (i.e. not including namespaces/parents)
+        /// </summary>
+        /// <param name="type">The type with the name to be trimmed</param>
+        public static string GetTrimmedTypeName(Type type)
         {
-            return type.ToString().Substring(18);
+            var temp = type.ToString();
+            return temp.Substring(temp.LastIndexOf('.') + 1);
         }
 
-        public static List<string> TrimmedNodeComponentTypes(List<Type> types)
+        /// <summary>
+        /// Gets the list of trimmed names of all class types that inherit from DescantComponent
+        /// </summary>
+        /// <param name="types">The types with names to be trimmed</param>
+        /// <returns></returns>
+        public static List<string> GetTrimmedComponentTypes(List<Type> types)
         {
             return types
-                .Select(GetTrimmedNodeComponentType)
+                .Select(GetTrimmedTypeName)
                 .ToList();
         }
+        
+        #endregion
+        
+        #region Component Attributes
 
-        public static float GetNodeComponentMaximum(string componentName)
+        /// <summary>
+        /// Gets the maximum number of Components of some type that can be added to a DescantNode
+        /// </summary>
+        /// <param name="componentName">The name of the Component being checked</param>
+        /// <returns>(-1 if no maximum has been indicated)</returns>
+        public static float GetComponentMaximum(string componentName)
         {
-            List<Type> types = GetAllNodeComponentTypes();
-
-            foreach (var i in types)
+            foreach (var i in GetComponentTypes())
             {
                 string typeName = i.ToString().Substring(i.ToString().LastIndexOf('.') + 1);
                 
@@ -48,30 +70,41 @@ namespace DescantComponents
             return -1;
         }
 
+        /// <summary>
+        /// Gets the value of a Component's parameter, making sure to first parse it accordingly
+        /// </summary>
+        /// <param name="value">The value of the parameter</param>
+        /// <param name="type">The type of the parameter</param>
         public static object GetComponentParameterValue(string value, Type type)
         {
-            object temp = type != typeof(string)
-                ? float.Parse(value)
-                : value;
-
-            return type == typeof(int)
-                ? int.Parse(value)
-                : temp;
+            if (type == typeof(int)) return float.Parse(value);
+            if (type == typeof(float)) return float.Parse(value);
+            return value;
         }
         
-        public static bool InvokeMethod(
-            DescantNodeComponent component,
+        #endregion
+        
+        #region Method Invokation
+        
+        /// <summary>
+        /// Calls a method from somewhere in the scene
+        /// </summary>
+        /// <param name="component">The Component source that this call is coming from</param>
+        /// <param name="script">The script that the method belongs to</param>
+        /// <param name="scriptName">The name of the script that the method belongs to</param>
+        /// <param name="methodName">The name of the method being called</param>
+        /// <param name="parameter">The parameter being accepted by the method (can be empty)</param>
+        /// <returns>Whether the method was successfully called</returns>
+        static bool InvokeMethod(
+            DescantComponent component,
             MonoBehaviour script,
             string scriptName,
             string methodName,
             string parameter)
         {
-            if (scriptName == "" || methodName == "") return false;
+            if (scriptName == "" || methodName == "") return false; // Stopping if the script or method names are false
             
-            string fullType = script.GetType().ToString();
-            string type = fullType.Substring(fullType.LastIndexOf('.') + 1);
-
-            if (type == scriptName)
+            if (GetTrimmedTypeName(script.GetType()) == scriptName)
             {
                 try
                 {
@@ -87,7 +120,9 @@ namespace DescantComponents
                         return false;
                     }
 
-                    if (method.GetParameters().Length == 0)
+                    var methodParameters = method.GetParameters(); // The ParameterInfo for the method
+
+                    if (methodParameters.Length > 1)
                     {
                         DescantUtilities.ErrorMessage(
                             component.GetType(),
@@ -97,9 +132,9 @@ namespace DescantComponents
                         return false;
                     }
 
-                    List<object> parameters = new List<object>();
+                    List<object> parameters = new List<object>(); // The parameters that are going to be supplied
 
-                    foreach (var j in method.GetParameters())
+                    foreach (var j in methodParameters)
                         parameters.Add(GetComponentParameterValue(
                             parameter,
                             j.ParameterType
@@ -121,8 +156,20 @@ namespace DescantComponents
             return false;
         }
 
+        /// <summary>
+        /// Calls a method from somewhere in the scene
+        /// </summary>
+        /// <param name="component">The Component source that this call is coming from</param>
+        /// <param name="objectTag">
+        /// The tag of the GameObject that the script is attached to
+        /// (if empty, the first found script in the scene with the given name is called instead
+        /// </param>
+        /// <param name="scriptName">The name of the script that the method belongs to (if empty, no method is called)</param>
+        /// <param name="methodName">The name of the method being called (if empty, no method is called)</param>
+        /// <param name="parameter">The parameter being accepted by the method (can be empty)</param>
+        /// <returns>Whether the method was successfully called</returns>
         public static bool InvokeFromObjectOrScript(
-            DescantNodeComponent component,
+            DescantComponent component,
             string objectTag,
             string scriptName,
             string methodName,
@@ -143,16 +190,30 @@ namespace DescantComponents
 
             return false;
         }
-
-        public static void MissingMethodError(DescantNodeComponent component, string scriptName, string methodName)
+        
+        /// <summary>
+        /// Method to be called by Components if InvokeFromObjectOrScript returns false
+        /// </summary>
+        /// <param name="component">The Component source that this call is coming from</param>
+        /// <param name="scriptName">The name of the script that the method belongs to</param>
+        /// <param name="methodName">The name of the method being called</param>
+        public static void MissingMethodError(DescantComponent component, string scriptName, string methodName)
         {
             DescantUtilities.ErrorMessage(
                 component.GetType(),
                 "Unable to find method '" + methodName + "' on script '" + scriptName + "'!"
             );
         }
+        
+        #endregion
 
-        public static DescantActor GetActor(DescantNodeComponent component, List<DescantActor> actors, string name)
+        /// <summary>
+        /// Gets an actor with a given name from the a list of actors
+        /// </summary>
+        /// <param name="component">The Component source that this call is coming from</param>
+        /// <param name="actors">The current list of DescantActors</param>
+        /// <param name="name">The name of the DescantActor being searched for</param>
+        public static DescantActor GetActor(DescantComponent component, List<DescantActor> actors, string name)
         {
             foreach (var i in actors)
                 if (i.Name.Equals(name.Trim()))
@@ -166,6 +227,12 @@ namespace DescantComponents
             return null;
         }
         
+        /// <summary>
+        /// Parses a string into an enum
+        /// </summary>
+        /// <param name="value">The string value to parse</param>
+        /// <typeparam name="T">The enum type we are checking</typeparam>
+        /// <returns>The value that the string corresponds to</returns>
         public static T ParseEnum<T>(string value) where T : Enum
         {
             return (T)Enum.Parse(typeof(T), value, true);

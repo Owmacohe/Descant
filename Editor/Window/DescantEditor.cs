@@ -18,42 +18,19 @@ namespace DescantEditor
         /// </summary>
         public DescantGraphData data;
         
-        /// <summary>
-        /// The graph view part the editor
-        /// </summary>
-        DescantGraphView graphView;
+        DescantGraphView graphView; // The graph view part the editor
+        Toolbar toolbar; // The toolbar part of the editor
         
-        /// <summary>
-        /// The toolbar part of the editor
-        /// </summary>
-        Toolbar toolbar;
+        Toggle typewriter; // The Toggle VisualElement for turning the typewriter on and off
+        TextField typewriterSpeed; // The field for inputting the typewriter speed
         
-        Toggle typewriter;
-
-        TextField typewriterSpeed;
+        Toggle autoSave; // The autosave toggle button in the toolbar
+        TextElement unsaved; // The unsaved changes marker in the toolbar
         
-        /// <summary>
-        /// The autosave toggle button in the toolbar
-        /// </summary>
-        Toggle autoSave;
-        
-        /// <summary>
-        /// The unsaved changes marker in the toolbar
-        /// </summary>
-        TextElement unsaved;
-
-        /// <summary>
-        /// Whether a Descant graph is currently loaded into the editor
-        /// </summary>
-        bool loaded;
-        
-        /// <summary>
-        /// The full disc path of the last loaded Descant graph
-        /// (so that it can be re-loaded when the editor is re-loaded (e.g. when there is a script change))
-        /// </summary>
-        string lastLoaded;
-        
-        // TODO: ctrl-S functionality
+        // The full disc path of the last loaded Descant graph
+        // (so that it can be re-loaded when the editor is re-loaded (e.g. when there is a script change))
+        string lastPath;
+        bool GUICreated; // Whether a Descant graph is currently loaded into the editor
         
         [MenuItem("Window/Descant/Descant Graph Editor"), MenuItem("Tools/Descant/Descant Graph Editor")]
         public static void Open()
@@ -61,11 +38,13 @@ namespace DescantEditor
             GetWindow<DescantEditor>("Descant Graph Editor");
         }
 
+        #region GUI
+
         void CreateGUI()
         {
             // If the graph data has already been loaded into the editor, we simple generate the graph view and toolbar
             // (they're dependant on the data having been previously loaded)
-            if (loaded)
+            if (GUICreated)
             {
                 AddGraphView();
                 AddToolbar();
@@ -76,14 +55,14 @@ namespace DescantEditor
             // (the Load method will call CreateGUI again when it has finished)
             else
             {
-                Load(lastLoaded);
+                Load(lastPath);
                 AssetDatabase.Refresh();
             }
 
             // Resetting the loaded variable to indicate that the UI should be
-            // reloaded if CreateGUI is ever called again naturally
+            // reloaded if CreateGUI is ever called again when Unity is refreshed
             // (otherwise the graph view and toolbar would be added without any data to initialize them with)
-            loaded = false;
+            GUICreated = false;
         }
 
         /// <summary>
@@ -114,6 +93,16 @@ namespace DescantEditor
             
             rootVisualElement.Add(graphView);
             graphView.StretchToParentSize(); // Making sure it's properly scaled up
+        }
+        
+        /// <summary>
+        /// Adds the stylesheet to the editor
+        /// (the DescantGraphView needs to also have the style sheet set)
+        /// </summary>
+        void AddStyleSheet()
+        {
+            StyleSheet styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/Descant/Assets/DescantGraphEditorStyleSheet.uss");
+            rootVisualElement.styleSheets.Add(styleSheet);
         }
 
         /// <summary>
@@ -147,16 +136,19 @@ namespace DescantEditor
             saveSection.AddToClassList("save-section");
             toolbar.Add(saveSection);
 
+            // Initializing the typewriter toggle
             typewriter = new Toggle("Typewriter:");
             typewriter.value = data.Typewriter;
             saveSection.Add(typewriter);
 
+            // Initializing the typewriter speed
             typewriterSpeed = new TextField("Speed:");
             typewriterSpeed.value = data.TypewriterSpeed.ToString();
             saveSection.Add(typewriterSpeed);
             
             if (!typewriter.value) typewriterSpeed.visible = false;
 
+            // Adding a callback for when the typewriter toggle value is changed
             typewriter.RegisterValueChangedCallback(callback =>
             {
                 typewriterSpeed.visible = typewriter.value;
@@ -196,16 +188,10 @@ namespace DescantEditor
             close.text = "Close";
             saveSection.Add(close);
         }
+        
+        #endregion
 
-        /// <summary>
-        /// Adds the stylesheet to the editor
-        /// (the DescantGraphView needs to also have the style sheet set)
-        /// </summary>
-        void AddStyleSheet()
-        {
-            StyleSheet styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/Descant/Assets/DescantGraphEditorStyleSheet.uss");
-            rootVisualElement.styleSheets.Add(styleSheet);
-        }
+        #region Saving and Loading
 
         /// <summary>
         /// Checks through the entire graph view and toolbar for relevant information,
@@ -474,7 +460,7 @@ namespace DescantEditor
         }
 
         /// <summary>
-        /// Loads the data from a Descant file
+        /// Loads the data from a Descant graph file
         /// </summary>
         /// <param name="fullPath">The full disc path to the Descant file to load</param>
         public void Load(string fullPath)
@@ -482,7 +468,7 @@ namespace DescantEditor
             // Making sure the path isn't null or empty
             if (fullPath != null && fullPath.Trim() != "")
             {
-                lastLoaded = fullPath;
+                lastPath = fullPath;
 
                 data = DescantGraphData.LoadGraphFromPath(fullPath);
                 
@@ -492,7 +478,7 @@ namespace DescantEditor
                 
                 data.Save(false);
 
-                loaded = true;
+                GUICreated = true;
 
                 // Removing the old GUI (if it exists) and
                 // creating the new GUI (now that the data has been loaded)
@@ -507,8 +493,8 @@ namespace DescantEditor
         {
             data = null;
             
-            loaded = false;
-            lastLoaded = null;
+            GUICreated = false;
+            lastPath = null;
             
             RemoveGUI();
         }
@@ -521,10 +507,12 @@ namespace DescantEditor
             data = new DescantGraphData("New_Descant_Graph");
             data.Save(true);
 
-            loaded = true;
+            GUICreated = true;
             
             ReloadGUI();
         }
+        
+        #endregion
     }
 }
 #endif

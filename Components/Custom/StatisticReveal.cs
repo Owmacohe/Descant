@@ -1,10 +1,12 @@
-﻿using System;
+﻿// Please see https://omch.tech/descant/#statisticreveal for documentation
+
+using System;
 using UnityEngine;
 
 namespace DescantComponents
 {
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Any)]
-    public class StatisticReveal : DescantNodeComponent
+    public class StatisticReveal : DescantComponent
     {
         [Inline] public string ActorName;
         

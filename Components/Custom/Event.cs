@@ -1,10 +1,12 @@
-﻿using System;
+﻿// Please see https://omch.tech/descant/#event for documentation
+
+using System;
 using UnityEngine;
 
 namespace DescantComponents
 {
     [Serializable, MaxQuantity(float.PositiveInfinity), NodeType(DescantNodeType.Any)]
-    public class Event : DescantNodeComponent
+    public class Event : DescantComponent
     {
         [Inline] public string ObjectTag;
         [ParameterGroup("Script to find")] public string ScriptName;

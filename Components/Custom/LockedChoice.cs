@@ -1,9 +1,11 @@
-﻿using System;
+﻿// Please see https://omch.tech/descant/#lockedchoice for documentation
+
+using System;
 
 namespace DescantComponents
 {
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Choice)]
-    public class LockedChoice : DescantNodeComponent
+    public class LockedChoice : DescantComponent
     {
         [Inline] public string ActorName;
         

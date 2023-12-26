@@ -1,9 +1,11 @@
-﻿using System;
+﻿// Please see https://omch.tech/descant/#relationshipchange for documentation
+
+using System;
 
 namespace DescantComponents
 {
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Any)]
-    public class RelationshipChange : DescantNodeComponent
+    public class RelationshipChange : DescantComponent
     {
         [ParameterGroup("Actors")] public string FirstActorName;
         [ParameterGroup("Actors")] public string SecondActorName;

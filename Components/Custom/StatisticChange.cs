@@ -1,9 +1,11 @@
-﻿using System;
+﻿// Please see https://omch.tech/descant/#statisticchange for documentation
+
+using System;
 
 namespace DescantComponents
 {
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Any)]
-    public class StatisticChange : DescantNodeComponent
+    public class StatisticChange : DescantComponent
     {
         [Inline] public string ActorName;
         

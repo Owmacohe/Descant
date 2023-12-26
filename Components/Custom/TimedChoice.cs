@@ -1,10 +1,12 @@
-﻿using System;
+﻿// Please see https://omch.tech/descant/#timedchoice for documentation
+
+using System;
 using UnityEngine;
 
 namespace DescantComponents
 {
     [Serializable, MaxQuantity(1), NodeType(DescantNodeType.Choice)]
-    public class TimedChoice : DescantNodeComponent
+    public class TimedChoice : DescantComponent
     {
         [Inline] public float Time;
         

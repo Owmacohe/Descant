@@ -10,19 +10,47 @@ namespace DescantEditor
     /// </summary>
     public abstract class DescantNodeData
     {
+        /// <summary>
+        /// The custom name of the node
+        /// </summary>
         public string Name;
+        
+        /// <summary>
+        /// The unique identifier ID for the node
+        /// </summary>
         public string Type;
+        
+        /// <summary>
+        /// The type of this node
+        /// </summary>
         public int ID;
+        
+        /// <summary>
+        /// The node's current position
+        /// </summary>
         public Vector2 Position;
         
-        [SerializeReference] public List<DescantNodeComponent> NodeComponents;
+        /// <summary>
+        /// The list of Components attached to the node
+        /// ([SerializeReference] is necessary to ensure that the Serialized
+        /// DescantNodeComponents are saved to the file as a list)
+        /// </summary>
+        [SerializeReference] public List<DescantComponent> NodeComponents;
 
+        /// <summary>
+        /// Parameterized constructor
+        /// </summary>
+        /// <param name="name">The custom name of the node</param>
+        /// <param name="type">The unique identifier ID for the node</param>
+        /// <param name="id">The type of this node</param>
+        /// <param name="position">The node's current position</param>
+        /// <param name="nodeComponents">The list of Components attached to the node</param>
         protected DescantNodeData(
             string name,
             string type,
             int id,
             Vector2 position,
-            List<DescantNodeComponent> nodeComponents)
+            List<DescantComponent> nodeComponents)
         {
             Name = name;
             Type = type;
@@ -31,11 +59,16 @@ namespace DescantEditor
             NodeComponents = nodeComponents;
         }
 
+        /// <summary>
+        /// Overridden Equals method
+        /// </summary>
+        /// <param name="other">The object being compared against</param>
+        /// <returns>Whether the other object has the same data as this one</returns>
         public override bool Equals(object other)
         {
             try
             {
-                var unused = (DescantNodeData) other;
+                _ = (DescantNodeData) other;
             }
             catch
             {
@@ -45,7 +78,12 @@ namespace DescantEditor
             return Equals((DescantNodeData)other);
         }
 
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
+        /// <summary>
+        /// Custom Equals method
+        /// </summary>
+        /// <param name="other">The data object being compared against</param>
+        /// <returns>Whether the other DescantNodeData has the same data as this one</returns>
         protected bool Equals(DescantNodeData other)
         {
             return
@@ -54,8 +92,11 @@ namespace DescantEditor
                 Position == other.Position &&
                 DescantEditorUtilities.AreListsEqual(NodeComponents, other.NodeComponents);
         }
-#endif
+        #endif
 
+        /// <summary>
+        /// Overridden ToString method
+        /// </summary>
         public override string ToString()
         {
             string temp = "";
@@ -73,25 +114,42 @@ namespace DescantEditor
     [Serializable]
     public class DescantChoiceNodeData : DescantNodeData
     {
+        /// <summary>
+        /// The list of possible choices that the player can make at the ChoiceNode
+        /// </summary>
         public List<string> Choices = new List<string>();
 
+        /// <summary>
+        /// Parameterized constructor
+        /// </summary>
+        /// <param name="name">The custom name of the node</param>
+        /// <param name="type">The unique identifier ID for the node</param>
+        /// <param name="id">The type of this node</param>
+        /// <param name="position">The node's current position</param>
+        /// <param name="nodeComponents">The list of Components attached to the node</param>
+        /// <param name="choices">The list of possible choices that the player can make at the ChoiceNode</param>
         public DescantChoiceNodeData(
             string name,
             string type,
             int id,
             Vector2 position,
             List<string> choices,
-            List<DescantNodeComponent> nodeComponents)
+            List<DescantComponent> nodeComponents)
             : base(name, type, id, position, nodeComponents)
         {
             Choices = choices;
         }
 
+        /// <summary>
+        /// Overridden Equals method
+        /// </summary>
+        /// <param name="other">The object being compared against</param>
+        /// <returns>Whether the other object has the same data as this one</returns>
         public override bool Equals(object other)
         {
             try
             {
-                var unused = (DescantChoiceNodeData) other;
+                _ = (DescantChoiceNodeData) other;
             }
             catch
             {
@@ -101,15 +159,23 @@ namespace DescantEditor
             return Equals((DescantChoiceNodeData)other);
         }
         
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
+        /// <summary>
+        /// Custom Equals method
+        /// </summary>
+        /// <param name="other">The data object being compared against</param>
+        /// <returns>Whether the other DescantChoiceNodeData has the same data as this one</returns>
         public bool Equals(DescantChoiceNodeData other)
         {
             return
                 base.Equals(other) &&
                 DescantEditorUtilities.AreListsEqual(Choices, other.Choices);
         }
-#endif
+        #endif
         
+        /// <summary>
+        /// Overridden ToString method
+        /// </summary>
         public override string ToString()
         {
             string temp = "";
@@ -127,25 +193,42 @@ namespace DescantEditor
     [Serializable]
     public class DescantResponseNodeData : DescantNodeData
     {
+        /// <summary>
+        /// The response text at the ResponseNode
+        /// </summary>
         public string Response;
         
+        /// <summary>
+        /// Parameterized constructor
+        /// </summary>
+        /// <param name="name">The custom name of the node</param>
+        /// <param name="type">The unique identifier ID for the node</param>
+        /// <param name="id">The type of this node</param>
+        /// <param name="position">The node's current position</param>
+        /// <param name="nodeComponents">The list of Components attached to the node</param>
+        /// <param name="response">The response text at the ResponseNode</param>
         public DescantResponseNodeData(
             string name,
             string type,
             int id,
             Vector2 position,
             string response,
-            List<DescantNodeComponent> nodeComponents)
+            List<DescantComponent> nodeComponents)
             : base(name, type, id, position, nodeComponents)
         {
             Response = response;
         }
 
+        /// <summary>
+        /// Overridden Equals method
+        /// </summary>
+        /// <param name="other">The object being compared against</param>
+        /// <returns>Whether the other object has the same data as this one</returns>
         public override bool Equals(object other)
         {
             try
             {
-                var unused = (DescantResponseNodeData) other;
+                _ = (DescantResponseNodeData) other;
             }
             catch
             {
@@ -155,13 +238,23 @@ namespace DescantEditor
             return Equals((DescantResponseNodeData)other);
         }
         
+        #if UNITY_EDITOR
+        /// <summary>
+        /// Custom Equals method
+        /// </summary>
+        /// <param name="other">The data object being compared against</param>
+        /// <returns>Whether the other DescantResponseNodeData has the same data as this one</returns>
         public bool Equals(DescantResponseNodeData other)
         {
             return
                 base.Equals(other) &&
                 Response == other.Response;
         }
+        #endif
         
+        /// <summary>
+        /// Overridden ToString method
+        /// </summary>
         public override string ToString()
         {
             return base.ToString() + " (" + Response + ")";
@@ -174,11 +267,18 @@ namespace DescantEditor
     [Serializable]
     public class DescantStartNodeData : DescantNodeData
     {
+        /// <summary>
+        /// Parameterized constructor
+        /// </summary>
+        /// <param name="name">The custom name of the node</param>
+        /// <param name="type">The unique identifier ID for the node</param>
+        /// <param name="position">The node's current position</param>
+        /// <param name="nodeComponents">The list of Components attached to the node</param>
         public DescantStartNodeData(
             string name,
             string type,
             Vector2 position,
-            List<DescantNodeComponent> nodeComponents)
+            List<DescantComponent> nodeComponents)
             : base(name, type, 0, position, nodeComponents) { }
     }
     
@@ -188,12 +288,20 @@ namespace DescantEditor
     [Serializable]
     public class DescantEndNodeData : DescantNodeData
     {
+        /// <summary>
+        /// Parameterized constructor
+        /// </summary>
+        /// <param name="name">The custom name of the node</param>
+        /// <param name="type">The unique identifier ID for the node</param>
+        /// <param name="id">The type of this node</param>
+        /// <param name="position">The node's current position</param>
+        /// <param name="nodeComponents">The list of Components attached to the node</param>
         public DescantEndNodeData(
             string name,
             string type,
             int id,
             Vector2 position,
-            List<DescantNodeComponent> nodeComponents)
+            List<DescantComponent> nodeComponents)
             : base(name, type, id, position, nodeComponents) { }
     }
 }

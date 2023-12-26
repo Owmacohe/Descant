@@ -1,11 +1,13 @@
-﻿using System;
+﻿// Please see https://omch.tech/descant/#changedresponse for documentation
+
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace DescantComponents
 {
     [Serializable, MaxQuantity(float.PositiveInfinity), NodeType(DescantNodeType.Response)]
-    public class ChangedResponse : DescantNodeComponent
+    public class ChangedResponse : DescantComponent
     {
         [Inline] public string ActorName;
         

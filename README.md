@@ -49,7 +49,7 @@
   1. `ChoiceNode`s represent player choices at certain moments within the dialogue, and `ResponseNode`s represent the NPC’s responses or statements.
   1. If you want to have a `DescantActor`’s statistic show up within a `ChoiceNode` or `ResponseNode`'s text, write `{actor_name:statistic_name}`, and **Descant** will inject the statistic right into it. *(see the below for more info on `DescantActor`s)*.
   1. The `StartNode` represents the place where a given dialogue begins, and `EndNode`s represent where it can end.
-  1. More complex functionality can be added to nodes by adding `Components` (see the [Descant documentation](https://omch.tech/descant) for more info on each default component, as well as how to write your own).
+  1. More complex functionality can be added to nodes by adding `Components` (see the [Component documentation](https://omch.tech/descant) for more info on each default component, as well as how to write your own).
 - **Descant Actors**
   1. The **Descant Actor Editor** can be opened with `Tools/Descant/Descant Actor Editor` or by creating/editing a **Descant Actor** file.
   2. New **Statistics**, **Topics**, and **Relationships** can be added with their respective **Add** buttons.
@@ -68,7 +68,7 @@
 ## Documentation
 
 - This `README`
-- [Descant documentation](https://omch.tech/descant)
+- [Component documentation](https://omch.tech/descant)
 - Planning
   - [Initial research](Documentation/interaction_research.md), [market survey](Documentation/system_review.xlsx), and [key pitfalls and successes](Documentation/pitfalls_and_sucesses.md)
   - [Features list](Documentation/features.md)

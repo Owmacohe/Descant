@@ -28,6 +28,11 @@ namespace DescantEditor
         /// </summary>
         DescantGraphView GraphView;
     
+        /// <summary>
+        /// Parameterized constructor
+        /// </summary>
+        /// <param name="graphView">The GraphView for this editor window</param>
+        /// <param name="position">The position to spawn the group at</param>
         public DescantNodeGroup(
             DescantGraphView graphView,
             Vector2 position)

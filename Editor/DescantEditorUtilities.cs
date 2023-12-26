@@ -202,10 +202,10 @@ namespace DescantEditor
         /// <param name="data">The actor data to be saved</param>
         public static void SaveActor(bool newFile, DescantActor data)
         {
-#if UNITY_EDITOR
+            #if UNITY_EDITOR
             // Setting the local path if this is the first time
             if (newFile) data.Path = GetCurrentLocalDirectory() + data.Name + ".descactor.json";
-#endif
+            #endif
             
             DescantUtilities.RoundObjectToDecimal(data, 2);
             

@@ -15,20 +15,29 @@ namespace DescantEditor
     public abstract class DescantNode : Node
     {
         /// <summary>
-        /// The custom name of this node,
-        /// which is independent from its type or ID
+        /// The custom name of this node
         /// </summary>
         public string Name { get; set; }
         
         /// <summary>
-        /// The unique identifier for this node,
+        /// The unique identifier ID for this node,
         /// used to differentiate it from others of the name type and/or name
         /// </summary>
         public int ID { get; set; }
         
+        /// <summary>
+        /// The type of this node
+        /// </summary>
         public DescantNodeType Type { get; protected set; }
 
-        public Dictionary<string, int> Components { get; }
+        /// <summary>
+        /// The number of components of each type that are attached to this node
+        /// </summary>
+        public Dictionary<string, int> ComponentCounts { get; }
+        
+        /// <summary>
+        /// The dropdown VisualElement for this node
+        /// </summary>
         public PopupField<string> ComponentDropdown { get; private set; }
 
         /// <summary>
@@ -36,11 +45,14 @@ namespace DescantEditor
         /// </summary>
         protected DescantGraphView GraphView;
         
-        protected DescantNode(
-            DescantGraphView graphView,
-            Vector2 position)
+        /// <summary>
+        /// Parameterized constructor
+        /// </summary>
+        /// <param name="graphView">The GraphView for this editor window</param>
+        /// <param name="position">The position to spawn the node at</param>
+        protected DescantNode(DescantGraphView graphView, Vector2 position)
         {
-            Components = new Dictionary<string, int>();
+            ComponentCounts = new Dictionary<string, int>();
             
             GraphView = graphView;
             SetPosition(new Rect(position, Vector2.zero));
@@ -98,9 +110,9 @@ namespace DescantEditor
                 }));
             }
             
-            List<Type> nodeComponents = DescantComponentUtilities.GetAllNodeComponentTypes();
-            
-            List<string> nodeComponentNames = DescantComponentUtilities.TrimmedNodeComponentTypes(nodeComponents
+            // Getting a formatted list of all the types of Components that can be attached to this node 
+            List<string> nodeComponentNames = DescantComponentUtilities.GetTrimmedComponentTypes(
+                DescantComponentUtilities.GetComponentTypes()
                 .Where(type =>
                     {
                         var tempType = (((NodeTypeAttribute) type.GetCustomAttributes(
@@ -112,11 +124,13 @@ namespace DescantEditor
                     })
                 .ToList());
             
+            // Initializing the dropdown with the appropriate options from above
             ComponentDropdown = new PopupField<string>(nodeComponentNames, 0);
             ComponentDropdown.AddToClassList("node_component_dropdown");
             ComponentDropdown.value = "Add Component";
             extensionContainer.Add(ComponentDropdown);
 
+            // When the dropdown value is changed, we create a new Component and reset the dropdown
             ComponentDropdown.RegisterValueChangedCallback(callback =>
             {
                 string componentName = callback.newValue;
@@ -137,15 +151,26 @@ namespace DescantEditor
         {
             evt.menu.AppendAction("Delete", actionEvent => { RemoveNode(); });
         }
-
-        public void AddComponent(string componentName, DescantNodeComponent component)
+        
+        /// <summary>
+        /// Creates and adds a new DescantNodeComponentVisualElement to this node
+        /// </summary>
+        /// <param name="componentName">The name of the Component type to add</param>
+        /// <param name="component">
+        /// The DescantNodeComponent object that the VisualElement will be representing
+        /// (if null, the DescantNodeComponentVisualElement will create a new instance of it)
+        /// </param>
+        public void AddComponent(string componentName, DescantComponent component)
         {
-            if (!Components.ContainsKey(componentName)) Components.Add(componentName, 1);
-            else Components[componentName]++;
-
-            if (Components[componentName] >= DescantComponentUtilities.GetNodeComponentMaximum(componentName))
+            // Updating the count for this Component type
+            if (!ComponentCounts.ContainsKey(componentName)) ComponentCounts.Add(componentName, 1);
+            else ComponentCounts[componentName]++;
+            
+            // If we've hit the maximum, we remove the type from the list
+            if (ComponentCounts[componentName] >= DescantComponentUtilities.GetComponentMaximum(componentName))
                 ComponentDropdown.choices.RemoveAt(ComponentDropdown.choices.IndexOf(componentName));
-                    
+            
+            // Creating a new VisualElement
             DescantNodeComponentVisualElement temp = new DescantNodeComponentVisualElement(
                 GraphView, 
                 this,

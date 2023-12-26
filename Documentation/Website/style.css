@@ -1,0 +1,124 @@
+:root {
+    --descant-color-background: #2b2b2b;
+    --descant-color-default: rgba(51, 51, 51, 0.4);
+    --descant-color-light: rgba(51, 51, 51, 1);
+
+    --descant-color-text: rgb(157, 157, 157);
+
+    --choice-highlight: lightskyblue;
+    --choice-background: rgba(90, 137, 166, 0.7);
+
+    --response-highlight: darkgoldenrod;
+    --response-background: rgba(164, 123, 19, 0.7);
+
+    --start-highlight: mediumseagreen;
+    --start-background: rgba(46, 134, 85, 0.7);
+
+    --end-highlight: firebrick;
+    --end-background: rgba(121, 23, 23, 0.7);
+
+    --unsaved: lightcoral;
+}
+
+
+/* Elements */
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+
+    color: var(--descant-color-text);
+
+    background: var(--descant-color-background);
+}
+
+h1, h2, h3, p { margin: 0; }
+h2, h3 strong { font-weight: 700; }
+
+h1 {
+    font-weight: 800;
+    font-size: 60px;
+    color: var(--response-highlight);
+}
+
+h2 {
+    margin-bottom: 20px;
+
+    font-size: 30px;
+    color: var(--start-highlight);
+}
+
+h3 {
+    margin-bottom: 15px;
+
+    font-size: 25px;
+    color: var(--start-background);
+}
+
+p, li { font-size: 20px; }
+
+a {
+    color: var(--choice-highlight);
+}
+a:hover {
+    color: var(--choice-background);
+}
+
+li {
+    margin-bottom: 15px;
+
+    line-height: 30px;
+}
+
+
+/* Flex Classes */
+
+.flex { display: flex; }
+
+.column { flex-direction: column; }
+.row { flex-direction: row; flex-wrap: wrap; }
+
+.start, .align_start { align-items: start; }
+.center, .align_center { align-items: center; }
+.end, .align_end { align-items: end; }
+
+.start, .justify_start { justify-content: start; }
+.center, .justify_center { justify-content: center; }
+.end, .justify_end { justify-content: end; }
+
+
+/* Classes */
+
+.section {
+    margin: 20px;
+}
+
+.important {
+    padding: 20px;
+
+    border-radius: 10px;
+
+    color: var(--end-highlight);
+
+    background: black;
+}
+
+.component {
+    width: 100%;
+
+    margin: 10px;
+    padding: 15px;
+
+    border-radius: 10px;
+
+    background: var(--descant-color-light);
+}
+.component p {
+    margin: 8px;
+}
+
+/* IDs */
+
+#content { width: 90%; }
+
+#components { margin-top: 20px; }

@@ -1,11 +1,13 @@
-﻿using System;
+﻿// Please see https://omch.tech/descant/#randomizedchoice for documentation
+
+using System;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
 namespace DescantComponents
 {
     [Serializable, MaxQuantity(1), NodeType(DescantNodeType.Choice)]
-    public class RandomizedChoice : DescantNodeComponent // TODO: make this always last
+    public class RandomizedChoice : DescantComponent // TODO: make this always last
     {
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {

@@ -11,6 +11,11 @@ namespace DescantEditor
     /// </summary>
     public class DescantResponseNode : DescantNode
     {
+        /// <summary>
+        /// Parameterized constructor
+        /// </summary>
+        /// <param name="graphView">The GraphView for this editor window</param>
+        /// <param name="position">The position to spawn the node at</param>
         public DescantResponseNode(
             DescantGraphView graphView,
             Vector2 position)

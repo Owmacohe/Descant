@@ -1,10 +1,12 @@
-﻿using System;
+﻿// Please see https://omch.tech/descant/#interruptable for documentation
+
+using System;
 using UnityEngine;
 
 namespace DescantComponents
 {
     [Serializable, MaxQuantity(float.PositiveInfinity), NodeType(DescantNodeType.Response)]
-    public class Interruptable : DescantNodeComponent
+    public class Interruptable : DescantComponent
     {
         [ParameterGroup("Keys/buttons to check")] public string KeyCode;
         [ParameterGroup("Keys/buttons to check")] public string ButtonName;

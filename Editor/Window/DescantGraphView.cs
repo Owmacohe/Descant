@@ -72,6 +72,12 @@ namespace DescantEditor
         IManipulator startNodeManipulator; // The 'Add Start Node' contextual menu manipulator
         List<IManipulator> contextMenuManipulators = new List<IManipulator>(); // The list of contextual menu manipulators for nodes
 
+        #region Constructor
+        
+        /// <summary>
+        /// Parameterized constructor
+        /// </summary>
+        /// <param name="editor">The editor window that this graph view is a part of</param>
         public DescantGraphView(DescantEditor editor)
         {
             Editor = editor;
@@ -104,7 +110,7 @@ namespace DescantEditor
                 
                 foreach (var ij in i.NodeComponents)
                     temp.AddComponent(
-                        DescantComponentUtilities.GetTrimmedNodeComponentType(ij.GetType()), ij);
+                        DescantComponentUtilities.GetTrimmedTypeName(ij.GetType()), ij);
                 
                 AddElement(temp);
             }
@@ -117,7 +123,7 @@ namespace DescantEditor
                 
                 foreach (var ji in j.NodeComponents)
                     temp.AddComponent(
-                        DescantComponentUtilities.GetTrimmedNodeComponentType(ji.GetType()), ji);
+                        DescantComponentUtilities.GetTrimmedTypeName(ji.GetType()), ji);
                 
                 AddElement(temp);
             }
@@ -133,7 +139,7 @@ namespace DescantEditor
                 
                 foreach (var k in data.StartNode.NodeComponents)
                     temp.AddComponent(
-                        DescantComponentUtilities.GetTrimmedNodeComponentType(k.GetType()), k);
+                        DescantComponentUtilities.GetTrimmedTypeName(k.GetType()), k);
                 
                 AddElement(temp);
             }
@@ -148,7 +154,7 @@ namespace DescantEditor
                 
                 foreach (var li in l.NodeComponents)
                     temp.AddComponent(
-                        DescantComponentUtilities.GetTrimmedNodeComponentType(li.GetType()), li);
+                        DescantComponentUtilities.GetTrimmedTypeName(li.GetType()), li);
                 
                 AddElement(temp);
             }
@@ -188,28 +194,8 @@ namespace DescantEditor
                 }
             }
         }
-
-        /// <summary>
-        /// Overridden method to make sure that connections can only be made between DescantNodes that are:
-        /// a) Not of the same type and
-        /// b) Not in the same direction
-        /// </summary>
-        public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
-        {
-            List<Port> compatiblePorts = new List<Port>();
-
-            ports.ForEach(port =>
-            {
-                if (startPort == port) return;
-                if (startPort.node == port.node) return;
-                if (startPort.direction == port.direction) return;
-                if (startPort.name == port.name && startPort.name != "Response") return;
-                
-                compatiblePorts.Add(port);
-            });
-
-            return compatiblePorts;
-        }
+        
+        #endregion
 
         /// <summary>
         /// Initializes the grid background for the Descant graph
@@ -220,32 +206,6 @@ namespace DescantEditor
             gridBackground.StretchToParentSize();
             
             Insert(0, gridBackground);
-        }
-
-        /// <summary>
-        /// Removes all the node and group context menu manipulators
-        /// </summary>
-        public void RemoveContextMenuManipulators()
-        {
-            foreach (var i in contextMenuManipulators)
-                this.RemoveManipulator(i);
-            
-            contextMenuManipulators.Clear();
-
-            startNodeManipulator = null;
-        }
-
-        /// <summary>
-        /// Adds all the node and group context menu manipulators
-        /// </summary>
-        public void AddContextMenuManipulators()
-        {
-            this.AddManipulator(CreateNodeContextualMenu("Add Choice Node", DescantNodeType.Choice));
-            this.AddManipulator(CreateNodeContextualMenu("Add Response Node", DescantNodeType.Response));
-            this.AddManipulator(CreateNodeContextualMenu("Add Start Node", DescantNodeType.Start));
-            this.AddManipulator(CreateNodeContextualMenu("Add End Node", DescantNodeType.End));
-
-            this.AddManipulator(CreateNodeGroupContextualMenu());
         }
         
         /// <summary>
@@ -260,6 +220,43 @@ namespace DescantEditor
             this.AddManipulator(new RectangleSelector());
             
             AddContextMenuManipulators();
+        }
+        
+        /// <summary>
+        /// Initializes the stylesheet for this GraphView
+        /// </summary>
+        void AddStyleSheet()
+        {
+            StyleSheet styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/Descant/Assets/DescantGraphEditorStyleSheet.uss");
+            styleSheets.Add(styleSheet);
+        }
+        
+        # region Contextual Menus
+        
+        /// <summary>
+        /// Adds all the node and group context menu manipulators
+        /// </summary>
+        public void AddContextMenuManipulators()
+        {
+            this.AddManipulator(CreateNodeContextualMenu("Add Choice Node", DescantNodeType.Choice));
+            this.AddManipulator(CreateNodeContextualMenu("Add Response Node", DescantNodeType.Response));
+            this.AddManipulator(CreateNodeContextualMenu("Add Start Node", DescantNodeType.Start));
+            this.AddManipulator(CreateNodeContextualMenu("Add End Node", DescantNodeType.End));
+
+            this.AddManipulator(CreateNodeGroupContextualMenu());
+        }
+        
+        /// <summary>
+        /// Removes all the node and group context menu manipulators
+        /// </summary>
+        public void RemoveContextMenuManipulators()
+        {
+            foreach (var i in contextMenuManipulators)
+                this.RemoveManipulator(i);
+            
+            contextMenuManipulators.Clear();
+
+            startNodeManipulator = null;
         }
         
         /// <summary>
@@ -332,6 +329,10 @@ namespace DescantEditor
 
             return context;
         }
+        
+        #endregion
+        
+        #region Node/Group creation
 
         /// <summary>
         /// Creates a new DescantChoiceNode
@@ -452,15 +453,10 @@ namespace DescantEditor
             
             return group;
         }
-
-        /// <summary>
-        /// Initializes the stylesheet for this GraphView
-        /// </summary>
-        void AddStyleSheet()
-        {
-            StyleSheet styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/Descant/Assets/DescantGraphEditorStyleSheet.uss");
-            styleSheets.Add(styleSheet);
-        }
+        
+        #endregion
+        
+        #region Ports
         
         /// <summary>
         /// Disconnects all the ports for some DescantNode container
@@ -474,6 +470,32 @@ namespace DescantEditor
                 if (i.connected && (onlyThisPort == null || i.Equals(onlyThisPort)))
                     DeleteElements(i.connections);
         }
+        
+        /// <summary>
+        /// Overridden method to make sure that connections can only be made between DescantNodes that are:
+        /// a) Not of the same type and
+        /// b) Not in the same direction
+        /// </summary>
+        public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
+        {
+            List<Port> compatiblePorts = new List<Port>();
+
+            ports.ForEach(port =>
+            {
+                if (startPort == port) return;
+                if (startPort.node == port.node) return;
+                if (startPort.direction == port.direction) return;
+                if (startPort.name == port.name && startPort.name != "Response") return;
+                
+                compatiblePorts.Add(port);
+            });
+
+            return compatiblePorts;
+        }
+        
+        #endregion
+        
+        #region Nodes
 
         /// <summary>
         /// Searches through all the DescantNodes in the graph and finds a matching one
@@ -511,6 +533,8 @@ namespace DescantEditor
         {
             return node.Type.ToString() == nodeType && node.ID == nodeID;
         }
+        
+        #endregion
     }
 }
 #endif
