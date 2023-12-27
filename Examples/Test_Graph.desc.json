@@ -89,7 +89,7 @@
 					"rid": 1006
 				}
 			],
-			"Response": "<b><i>Welcome</b></i> to <color=\"blue\">Descant</color>! How can I help you?"
+			"Response": "<b><i>Welcome</b></i> to <color=\"blue\">Descant</color>! How can I help you? Your health is {Test_Player:Health}."
 		},
 		{
 			"Name": "ResponseNode",
@@ -104,7 +104,7 @@
 					"rid": 1007
 				}
 			],
-			"Response": "You can download it at: https://github.com/owmacohe/Descant/releases"
+			"Response": "You can download it at: https://github.com/owmacohe/Descant/releases. I only have {Test_NPC:Money} dollars, but Descant is free!"
 		},
 		{
 			"Name": "ResponseNode",
@@ -515,11 +515,11 @@
 				"data": {
 					"Collapsed": true,
 					"Time": 5.0,
+					"ChoiceToPick": 1,
 					"ObjectTag": "",
 					"ScriptName": "",
 					"TimerMethodName": "",
-					"FinishedMethodName": "",
-					"ChoiceToPick": 1
+					"FinishedMethodName": ""
 				}
 			},
 			{

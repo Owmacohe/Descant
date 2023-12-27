@@ -192,7 +192,11 @@ MonoBehaviour:
     UI and
     text styling can be modified by editing the <b>Text Mesh Pro</b> GameObjects
     in the <i>ConversationUI</i> prefab. Feel free to reposition/recolour/restyle
-    the prefabs to your heart''s content!'
+    the prefabs to your heart''s content!
+
+
+    Please view the README before beginning
+    development.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -508,10 +512,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UI: {fileID: 1216080874}
-  displayOnStart: 0
-  graph: {fileID: 4900000, guid: da2a21cd5e76744f18c2338601734a7f, type: 3}
-  player: {fileID: 4900000, guid: 699383dc5e78a4194953c9d5df0dad37, type: 3}
-  NPC: {fileID: 4900000, guid: 06a320e2fda9b474db269263ebf10d7a, type: 3}
+  displayOnStart: 1
+  graph: {fileID: 0}
+  player: {fileID: 0}
+  NPC: {fileID: 0}
   extraActors: []
   portraits:
   - {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}

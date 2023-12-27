@@ -89,7 +89,7 @@ namespace DescantEditor
         /// </summary>
         void AddStyleSheet()
         {
-            StyleSheet styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/Descant/Assets/DescantActorEditorStyleSheet.uss");
+            StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Packages/com.owmacohe.descant/Assets/DescantActorEditorStyleSheet.uss");
             rootVisualElement.styleSheets.Add(styleSheet);
         }
 

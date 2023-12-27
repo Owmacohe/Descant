@@ -101,7 +101,7 @@ namespace DescantEditor
         /// </summary>
         void AddStyleSheet()
         {
-            StyleSheet styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/Descant/Assets/DescantGraphEditorStyleSheet.uss");
+            StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Packages/com.owmacohe.descant/Assets/DescantGraphEditorStyleSheet.uss");
             rootVisualElement.styleSheets.Add(styleSheet);
         }
 

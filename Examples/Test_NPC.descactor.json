@@ -2,10 +2,10 @@
 	"Name": "Test_NPC",
 	"Path": "/Test_NPC.descactor.json",
 	"StatisticKeys": [
-		"Health"
+		"Money"
 	],
 	"StatisticValues": [
-		20.0
+		5.0
 	],
 	"Topics": [
 		
@@ -16,5 +16,5 @@
 	"RelationshipValues": [
 		-0.5600000023841858
 	],
-	"DialogueAttempts": 51
+	"DialogueAttempts": 66
 }
