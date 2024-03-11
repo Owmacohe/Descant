@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using DescantComponents;
 using UnityEngine;
 
@@ -9,24 +8,13 @@ namespace DescantEditor
     /// <summary>
     /// Serializable class to hold the data for saving and loading Descant graphs
     /// </summary>
-    [Serializable]
-    public class DescantGraphData
+    [Serializable, CreateAssetMenu]
+    public class DescantGraph : ScriptableObject
     {
-        /// <summary>
-        /// The name of the Descant Graph
-        /// </summary>
-        public string Name;
-        
-        /// <summary>
-        /// The local path to the file after the Assets folder
-        /// (useful for knowing where to save the file when no longer in its directory)
-        /// </summary>
-        public string Path;
-        
         /// <summary>
         /// Whether to autosave the graph when in the Editor
         /// </summary>
-        public bool Autosave;
+        [HideInInspector] public bool Autosave;
 
         /// <summary>
         /// Whether or not to type out ResponseNode text one character at a time
@@ -94,16 +82,8 @@ namespace DescantEditor
         /// (most of the DescantGroupData's properties are set after
         /// it has been initialized, as part of the saving process)
         /// </summary>
-        /// <param name="name">The name of the Descant Graph</param>
-        public DescantGraphData(string name)
+        public DescantGraph()
         {
-            #if UNITY_EDITOR
-            Name = DescantUtilities.FilterText(name);
-            #else
-            Name = name;
-            #endif
-
-            Path = "";
             Autosave = false;
             Typewriter = true;
             TypewriterSpeed = 1;
@@ -132,14 +112,14 @@ namespace DescantEditor
         {
             try
             {
-                _ = (DescantGraphData) other;
+                _ = (DescantGraph) other;
             }
             catch
             {
                 return false;
             }
             
-            return Equals((DescantGraphData)other);
+            return Equals((DescantGraph)other);
         }
 
         #if UNITY_EDITOR
@@ -148,7 +128,7 @@ namespace DescantEditor
         /// </summary>
         /// <param name="other">The data object being compared against</param>
         /// <returns>Whether the other DescantGraphData has the same data as this one</returns>
-        public bool Equals(DescantGraphData other)
+        public bool Equals(DescantGraph other)
         {
             return ToString() == other.ToString();
         }
@@ -178,51 +158,11 @@ namespace DescantEditor
             foreach (var m in Connections)
                 temp += "\n\t" + m;
 
-            return GetType() + " (" + Name + " " + Autosave + " " +
+            return GetType() + " (" + name + " " + Autosave + " " +
                    ChoiceNodeID + " " + ResponseNodeID + " " + EndNodeID + " " + GroupID + ")" +
-                   "\n" + Path +
                    (temp.Length > 1 ? temp : "");
         }
-
-        #if UNITY_EDITOR
-        /// <summary>
-        /// Saves all the data from this graph to its path
-        /// </summary>
-        /// <param name="newFile">Whether this is the first time this graph has been saved</param>
-        public void Save(bool newFile)
-        {
-            // Setting the local path if this is the first time
-            if (newFile) Path = DescantEditorUtilities.GetCurrentLocalDirectory() + Name + ".desc.json";
-            
-            DescantUtilities.RoundObjectToDecimal(this, 2);
-            
-            // Saving to the full path
-            File.WriteAllText(
-                Application.dataPath + "/" + Path,
-                DescantUtilities.FormatJSON(JsonUtility.ToJson(this)));
-        }
-        #endif
-
-        /// <summary>
-        /// Loads and returns a new graph from a full disc path
-        /// </summary>
-        /// <param name="fullPath">The full disc path to the file</param>
-        /// <returns>A loaded Descant graph</returns>
-        public static DescantGraphData LoadGraphFromPath(string fullPath)
-        {
-            return LoadGraphFromString(File.ReadAllText(fullPath));
-        }
         
-        /// <summary>
-        /// Loads and returns a new graph from a JSON-formatted string
-        /// </summary>
-        /// <param name="str">The string containing all the data for the graph</param>
-        /// <returns>A loaded Descant graph</returns>
-        public static DescantGraphData LoadGraphFromString(string str)
-        {
-            return JsonUtility.FromJson<DescantGraphData>(str);
-        }
-
         /// <summary>
         /// Checks through all the graph's connections, making sure none of them are redundant or connect to themselves
         /// </summary>

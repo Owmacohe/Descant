@@ -8,11 +8,11 @@ namespace DescantComponents
     [Serializable, MaxQuantity(float.PositiveInfinity), NodeType(DescantNodeType.Any)]
     public class Log : DescantComponent
     {
-        [Inline] public string Message;
+        [Inline, NoFiltering] public string Message;
         
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            Debug.Log(Message);
+            DescantUtilities.LogMessage(GetType(), Message);
             return result;
         }
     }

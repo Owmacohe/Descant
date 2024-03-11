@@ -216,7 +216,7 @@ namespace DescantComponents
         public static DescantActor GetActor(DescantComponent component, List<DescantActor> actors, string name)
         {
             foreach (var i in actors)
-                if (i.Name.Equals(name.Trim()))
+                if (i.name.Equals(name.Trim()))
                     return i;
             
             DescantUtilities.ErrorMessage(

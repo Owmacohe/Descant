@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using DescantComponents;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace DescantEditor
 {
@@ -73,103 +70,22 @@ namespace DescantEditor
         }
 
         #endregion
-
-        #region File Paths
-
-        /// <summary>
-        /// Extracts the file name of a Descant file from its path
-        /// </summary>
-        /// <param name="path">The full or local path ending in [filename].desc.json</param>
-        /// <param name="isDescantGraph">
-        /// Whether the file being pointed towards is a Descant Graph
-        /// (as opposed to a Descant Actor)
-        /// </param>
-        /// <returns>The name of the Descant file, without its folder structure or .desc.json extension</returns>
-        public static string GetDescantFileNameFromPath(string path, bool isDescantGraph = true)
-        {
-            string temp = "";
-            
-            for (int i = 0; i < path.Length; i++)
-            {
-                // Making sure we've passed the .desc.json or .descactor.json at the end
-                if (i > (isDescantGraph ? 9 : 14))
-                {
-                    char c = path[path.Length - 1 - i]; // Getting the characters from the end
-                    
-                    if (c == '/') break; // Stopping when we hit the first folder
-                    
-                    temp = c + temp;
-                }
-            }
-
-            return temp;
-        }
         
         /// <summary>
-        /// Gets the currently-focused directory (minus the full path up to the Assets folder)
-        /// </summary>
-        /// <param name="withFinalSlash">Whether to include one final '/' after the path</param>
-        /// <returns>The string of the local directory, after the Assets folder</returns>
-        public static string GetCurrentLocalDirectory(bool withFinalSlash = true)
-        {
-            // Getting the full path to the directory
-            string temp = AssetDatabase.GetAssetPath(Selection.activeInstanceID);
-            
-            // If this contains a file, we remove up to the last folder
-            if (temp.Contains("."))
-                temp = temp.Remove(temp.LastIndexOf('/'));
-
-            // Removing the Assets folder from the start
-            temp = RemoveAssetsFolderFromPath(temp, true, true);
-            
-            return temp + (withFinalSlash ? "/" : "");
-        }
-
-        /// <summary>
-        /// Removes the Assets folder from a path, ether from the beginning or the end
-        /// </summary>
-        /// <param name="path">The path being modified</param>
-        /// <param name="fromStart">Whether to remove from the start or the end of the path</param>
-        /// <param name="removeStartSlash">Whether to remove the starting '/' after the Assets folder</param>
-        /// <returns>The path with the Assets folder removed from it</returns>
-        public static string RemoveAssetsFolderFromPath(string path, bool fromStart, bool removeStartSlash)
-        {
-            string temp = fromStart ? path.Substring(6) : path.Substring(0, path.Length - 6);
-
-            if (removeStartSlash && temp.Length > 0 && temp[0] == '/')
-                temp = temp.Substring(1);
-            
-            if (temp.Length > 0 && temp[^1] == '/')
-                temp = temp.Substring(0, temp.Length - 1);
-
-            return temp;
-        }
-
-        /// <summary>
-        /// Isolates a local path from a full one
-        /// </summary>
-        /// <param name="fullPath">A full disc path</param>
-        /// <returns>The local path, isolated from the full one</returns>
-        public static string RemoveBeforeLocalPath(string fullPath)
-        {
-            string temp = Application.dataPath;
-            return fullPath.Substring(temp.Length);
-        }
-        
-        /// <summary>
-        /// Gets a full path from the insstanceID of a file
+        /// Gets a DescantGraph object from the instanceID of a file
         /// </summary>
         /// <param name="instanceID">The instanceID of the file being checked</param>
-        /// <returns>The full disc path to the file</returns>
-        public static string GetFullPathFromInstanceID(int instanceID)
+        /// <returns>The graph object (null if the selection is not a DescantGraph)</returns>
+        public static DescantGraph GetObjectFromInstanceID(int instanceID)
         {
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(instanceID, out string guid, out long _);
             
-            return RemoveAssetsFolderFromPath(Application.dataPath, false, false) + "/" +
-                   AssetDatabase.GUIDToAssetPath(guid);
-        }
+            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+            Object asset = AssetDatabase.LoadAssetAtPath(assetPath, typeof(Object));
 
-        #endregion
+            if (asset.GetType() == typeof(DescantGraph)) return (DescantGraph) asset;
+            return null;
+        }
 
         /// <summary>
         /// Checks to see if two lists of some type are equal
@@ -192,59 +108,5 @@ namespace DescantEditor
         }
         
         #endif
-
-        #region Actors
-
-        /// <summary>
-        /// Saves a given DescantActor
-        /// </summary>
-        /// <param name="newFile">Whether this actor should be saved to a new file</param>
-        /// <param name="data">The actor data to be saved</param>
-        public static void SaveActor(bool newFile, DescantActor data)
-        {
-            #if UNITY_EDITOR
-            // Setting the local path if this is the first time
-            if (newFile) data.Path = GetCurrentLocalDirectory() + data.Name + ".descactor.json";
-            #endif
-            
-            DescantUtilities.RoundObjectToDecimal(data, 2);
-            
-            // Saving to the full path
-            File.WriteAllText(
-                Application.dataPath + "/" + data.Path,
-                DescantUtilities.FormatJSON(JsonUtility.ToJson(data)));
-        }
-        
-        /// <summary>
-        /// Loads a DescantActor from the given file
-        /// </summary>
-        /// <param name="file">The actor's TextAsset file</param>
-        /// <returns>A generated actor</returns>
-        public static DescantActor LoadActorFromFile(TextAsset file)
-        {
-            return LoadActorFromString(file.text);
-        }
-        
-        /// <summary>
-        /// Loads a DescantActor from the file at the given path
-        /// </summary>
-        /// <param name="fullPath">The full disc path to the file</param>
-        /// <returns>A generated actor</returns>
-        public static DescantActor LoadActorFromPath(string fullPath)
-        {
-            return LoadActorFromString(File.ReadAllText(fullPath));
-        }
-        
-        /// <summary>
-        /// Loads a DescantActor from the given data string
-        /// </summary>
-        /// <param name="str">The JSON-formatted string of the actor</param>
-        /// <returns>A generated actor</returns>
-        public static DescantActor LoadActorFromString(string str)
-        {
-            return JsonUtility.FromJson<DescantActor>(str);
-        }
-
-        #endregion
     }
 }

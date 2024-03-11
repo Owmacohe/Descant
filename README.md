@@ -8,10 +8,6 @@
 
 
 
-***Disclaimer: `.desc.json` and `.descactor.json` files can only be opened from the `Assets` directory, not the `Packages` directory. If you want to open the test files in the `Descant/Examples` folder, simply copy them to anywhere within the `Assets` folder.***
-
-
-
 ## Overview
 
 **Descant** is a **Unity** dialogue system plugin. The [Unity Asset Store](https://assetstore.unity.com) is [chock full](Documentation/system_review.xlsx) of many such types of plugins, ranging from [feature-rich](https://assetstore.unity.com/packages/tools/behavior-ai/dialogue-system-for-unity-11672), to [ultra-minimalist](https://assetstore.unity.com/packages/tools/visual-scripting/conversa-dialogue-system-192549), to [downright bad](https://assetstore.unity.com/packages/tools/c5-dialogue-system-14881). **Descant** aims to hit the sweet spot between quality UI, powerful features, and easy-to-lean functionality, while also addressing many of the game-specific consequences of the standard dialogue manager setup. Besides acting as a standard tool for creating, saving, and actualizing non-linear game dialogue, it also pushes the envelope by adding optional dialogue-enhancing node components that introduce features to break away from the overused and underwhelming trends seen in many interactive fiction games. These enhancements act similar to **Unity**’s standard `GameObject` `Component` system, and can be applied at-will to nodes. This modular approach is so-far not explored in the world of Unity dialogue systems. The project will be free *(and collaborative open-source)* forever. Feel free to send me a message or submit a pull request if you want to make any changes.
@@ -33,10 +29,10 @@
 
 - **Descant Graphs**
   - **Descant Graphs** can be created by right clicking, and selecting `Create/Descant Graph`.
-  - **Descant Graphs** can be edited by right clicking on a `.desc.json` file, and selecting `Edit Descant Graph`.
+  - **Descant Graphs** can be edited by right clicking on a `Descant Graph` file, and selecting `Edit Descant Graph`.
 - **Descant Actors**
   - **Descant Actors** can be created by right clicking, and selecting `Create/Descant Actor`.
-  - **Descant Actors** can be edited by right clicking on a `.descactor.json` file, and selecting `Edit Descant Actor`.
+  - **Descant Actors** can be edited by right clicking on a `Descant Actor` file, and selecting `Edit Descant Actor`.
 
 
 

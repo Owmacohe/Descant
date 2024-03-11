@@ -93,7 +93,7 @@ namespace DescantEditor
             }));
 
             // Generating all the data that has been previously loaded into the editor
-            DescantGraphData data = Editor.data;
+            DescantGraph data = Editor.data;
 
             ChoiceNodeID = data.ChoiceNodeID;
             ResponseNodeID = data.ResponseNodeID;

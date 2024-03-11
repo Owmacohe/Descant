@@ -58,11 +58,11 @@ namespace DescantRuntime
         /// <summary>
         /// Initializes the conversation controller
         /// </summary>
-        /// <param name="g">The JSON graph to be loaded</param>
+        /// <param name="g">The graph to be loaded</param>
         /// <param name="p">The dialogue's player to be loaded</param>
         /// <param name="npc">The dialogue's NPC to be loaded</param>
         /// <param name="a">The dialogue's extra actors to be loaded</param>
-        public void Initialize(TextAsset g, TextAsset p, TextAsset npc, TextAsset[] a, string pp, string npcp)
+        public void Initialize(DescantGraph g, DescantActor p, DescantActor npc, DescantActor[] a, string pp, string npcp)
         {
             #if UNITY_EDITOR
             AssetDatabase.Refresh();
@@ -74,12 +74,12 @@ namespace DescantRuntime
             
             // Adding in all the extra actors first
             foreach (var i in a)
-                Actors.Add(DescantEditorUtilities.LoadActorFromFile(i));
+                Actors.Add(i);
 
             // Initializing the player (if one has been set)
             if (p != null)
             {
-                player = DescantEditorUtilities.LoadActorFromFile(p);
+                player = p;
                 
                 if (!Actors.Contains(player)) Actors.Add(player);
             }
@@ -87,7 +87,7 @@ namespace DescantRuntime
             // Initializing the NPC (if one has been set)
             if (npc != null)
             {
-                NPC = DescantEditorUtilities.LoadActorFromFile(npc);
+                NPC = npc;
                 
                 if (!Actors.Contains(NPC)) Actors.Add(NPC);
             }
@@ -111,11 +111,7 @@ namespace DescantRuntime
             HasEnded = false;
 
             // Upping the NPC's dialogue attempts
-            if (NPC != null)
-            {
-                NPC.DialogueAttempts++;
-                DescantEditorUtilities.SaveActor(false, NPC);   
-            }
+            if (NPC != null) NPC.DialogueAttempts++;
         }
 
         #endregion
@@ -142,26 +138,23 @@ namespace DescantRuntime
         /// Generates all the runtime nodes that will be necessary to display the data when in-game
         /// </summary>
         /// <param name="descantGraph"></param>
-        void GenerateRuntimeNodes(TextAsset descantGraph)
+        void GenerateRuntimeNodes(DescantGraph descantGraph)
         {
             Nodes = new List<RuntimeNode>();
             
-            // Creating the graph data object first
-            DescantGraphData data = DescantGraphData.LoadGraphFromString(descantGraph.text);
-            
-            Typewriter = data.Typewriter;
-            TypewriterSpeed = data.TypewriterSpeed;
+            Typewriter = descantGraph.Typewriter;
+            TypewriterSpeed = descantGraph.TypewriterSpeed;
             
             // Then synthesizing all the runtime nodes from its node list
-            AddToRuntimeNodes(new List<DescantStartNodeData>() { data.StartNode });
-            AddToRuntimeNodes(data.ChoiceNodes);
-            AddToRuntimeNodes(data.ResponseNodes);
-            AddToRuntimeNodes(data.EndNodes);
+            AddToRuntimeNodes(new List<DescantStartNodeData>() { descantGraph.StartNode });
+            AddToRuntimeNodes(descantGraph.ChoiceNodes);
+            AddToRuntimeNodes(descantGraph.ResponseNodes);
+            AddToRuntimeNodes(descantGraph.EndNodes);
 
             Current = Nodes[0];
 
             // Finally, checking its connections to know how to connect the runtime nodes up
-            foreach (var i in data.Connections)
+            foreach (var i in descantGraph.Connections)
                 FindRuntimeNode(i.From, i.FromID).Next
                     .Add(i.To == "null"
                         ? null
@@ -274,15 +267,11 @@ namespace DescantRuntime
             NPCPortrait = currentResult.NPCPortrait;
             NPCPortraitEnabled = currentResult.NPCPortraitEnabled;
 
-            // Saving the changes to the actors
-            foreach (var i in Actors)
-                DescantEditorUtilities.SaveActor(false, i);
-
             // Checking through the text, replacing all in instances of statistic injections
-            for (int j = 0; j < currentResult.Text.Count; j++)
+            for (int i = 0; i < currentResult.Text.Count; i++)
             {
-                var temp = currentResult.Text[j];
-                currentResult.Text[j] = new KeyValuePair<int, string>(temp.Key, CheckForStatistics(temp.Value));
+                var temp = currentResult.Text[i];
+                currentResult.Text[i] = new KeyValuePair<int, string>(temp.Key, CheckForStatistics(temp.Value));
             }
             
             return currentResult.Text.Count == 0 ? null : currentResult; // Stopping if there are no choices
@@ -321,7 +310,7 @@ namespace DescantRuntime
                     
                     // Appending the statistic value
                     foreach (var j in Actors)
-                        if (j.Name == split[0])
+                        if (j.name == split[0])
                             temp += j.StatisticValues[j.StatisticKeys.IndexOf(split[1])];
 
                     i += injection.Length + 1; // Skipping ahead to avoid adding any of the injection text

@@ -1,5 +1,6 @@
 using System;
 using DescantComponents;
+using DescantEditor;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -21,11 +22,41 @@ namespace DescantRuntime
         // Whether the UI is waiting for the player to click on the screen for the dialogue to continue
         // (rather than continuing automatically)
         bool waitForClick;
+        
+        // Whether this UI has been ended (usually after it finishes)
+        // (also used to make sure that the Update method doesn't just keep checking after the dialogue is done)
+        bool hasEnded;
 
+        bool typing;
         string targetTypewriterText; // The full text that the typewriter is typing out
         int typewriterIndex; // The index in the target text that the typewriter is currently at
+        float currentTypewriterSpeed;
 
         Sprite[] portraits; // The current array of all possible actor portraits during the dialogue
+
+        /// <summary>
+        /// A callback that triggers when the dialogue begins
+        /// (don't forget to unsubscribe when you're done!)
+        /// </summary>
+        public event Action OnBegin;
+        
+        /// <summary>
+        /// A callback that triggers when the next node in the dialogue is reached
+        /// (don't forget to unsubscribe when you're done!)
+        /// </summary>
+        public event Action OnDisplay;
+        
+        /// <summary>
+        /// A callback that triggers when ChoiceNodes are added to the UI
+        /// (don't forget to unsubscribe when you're done!)
+        /// </summary>
+        public event Action<Button> OnAddChoice;
+        
+        /// <summary>
+        /// A callback that triggers when the dialogue ends
+        /// (don't forget to unsubscribe when you're done!)
+        /// </summary>
+        public event Action OnEnd;
 
         #region Initialization
 
@@ -34,7 +65,7 @@ namespace DescantRuntime
         /// (to be called before a dialogue is displayed)
         /// (generally called at the beginning of a scene or right before a new dialogue is about to begin)
         /// </summary>
-        /// <param name="graph">The JSON graph to be loaded</param>
+        /// <param name="graph">The graph to be loaded</param>
         /// <param name="player">The dialogue's player to be loaded</param>
         /// <param name="npc">The dialogue's NPC to be loaded</param>
         /// <param name="extraActors">The dialogue's extra actors to be loaded</param>
@@ -43,13 +74,15 @@ namespace DescantRuntime
         /// <param name="npcPortrait">The name of the NPC's default portrait</param>
         /// <param name="display">Whether to immediately display the UI after its been Initialized</param>
         public void Initialize(
-            TextAsset graph,
-            TextAsset player, TextAsset npc, TextAsset[] extraActors,
+            DescantGraph graph,
+            DescantActor player, DescantActor npc, DescantActor[] extraActors,
             Sprite[] portraits, string playerPortrait, string npcPortrait,
             bool display = true)
         {
             this.portraits = portraits;
             dialogueController.Initialize(graph, player, npc, extraActors, playerPortrait, npcPortrait);
+
+            currentTypewriterSpeed = dialogueController.TypewriterSpeed;
             
             if (display) BeginDialogue();
         }
@@ -61,6 +94,8 @@ namespace DescantRuntime
         {
             dialogueController.BeginDialogue();
             DisplayNode();
+            
+            OnBegin?.Invoke();
         }
         
         /// <summary>
@@ -72,6 +107,9 @@ namespace DescantRuntime
             waitForClick = false;
 
             dialogueController.HasEnded = true;
+            hasEnded = true;
+            
+            OnEnd?.Invoke();
         }
 
         #endregion
@@ -93,13 +131,20 @@ namespace DescantRuntime
 
         void Update()
         {
-            if (dialogueController.HasEnded) EndDialogue(); // Constantly checking to see if the dialogue has ended
-            
-            // Advancing the dialogue when the player clicks (if it's waiting for that)
-            if (waitForClick && Input.GetButtonDown("Fire1"))
+            if (dialogueController.HasEnded && !hasEnded) EndDialogue(); // Constantly checking to see if the dialogue has ended
+
+            if (Input.GetButtonDown("Fire1"))
             {
-                if (dialogueController.Current.Next.Count == 0) EndDialogue();
-                else DisplayNode();
+                if (typing)
+                {
+                    currentTypewriterSpeed *= 10;
+                }
+                // Advancing the dialogue when the player clicks (if it's waiting for that)
+                else if (waitForClick)
+                {
+                    if (dialogueController.Current.Next.Count == 0) EndDialogue();
+                    else DisplayNode();
+                }
             }
         }
 
@@ -198,8 +243,12 @@ namespace DescantRuntime
                     {
                         DisplayNode(copy); 
                     });
+                    
+                    OnAddChoice?.Invoke(tempChoice.GetComponent<Button>());
                 }
             }
+            
+            OnDisplay?.Invoke();
         }
         
         /// <summary>
@@ -236,6 +285,10 @@ namespace DescantRuntime
         /// <param name="text">The text to be typed out</param>
         void StartTypewriter(string text)
         {
+            typing = true;
+
+            currentTypewriterSpeed = dialogueController.TypewriterSpeed;
+            
             response.text = "";
             
             targetTypewriterText = text;
@@ -285,8 +338,9 @@ namespace DescantRuntime
                 }
 
                 // Calling itself again after some amount of time (dependant on the typewriterSpeed)
-                Invoke(nameof(Type), (1f / dialogueController.TypewriterSpeed) / 10f);
+                Invoke(nameof(Type), (1f / currentTypewriterSpeed) / 10f);
             }
+            else typing = false;
         }
 
         #endregion

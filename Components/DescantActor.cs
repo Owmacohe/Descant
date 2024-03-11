@@ -1,25 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace DescantComponents
 {
     /// <summary>
     /// A data class representing an actor (player or NPC) in a Descant Dialogue
     /// </summary>
-    [Serializable]
-    public class DescantActor
+    [Serializable, CreateAssetMenu]
+    public class DescantActor : ScriptableObject
     {
-        /// <summary>
-        /// The name of the actor
-        /// </summary>
-        public string Name;
-        
-        /// <summary>
-        /// The local path to the file after the Assets folder
-        /// (useful for knowing where to save the file when no longer in its directory)
-        /// </summary>
-        public string Path;
-        
         /// <summary>
         /// The actor's statistics dictionary keys
         /// (C# Dictionaries can't be [Serialized], so we use two Lists instead)
@@ -62,12 +52,6 @@ namespace DescantComponents
         /// <param name="name">The name of the actor</param>
         public DescantActor(string name)
         {
-            #if UNITY_EDITOR
-            Name = DescantUtilities.FilterText(name);
-            #else
-            Name = name;
-            #endif
-
             StatisticKeys = new List<string>();
             StatisticValues = new List<float>();
             

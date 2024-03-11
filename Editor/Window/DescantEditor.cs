@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace DescantEditor
@@ -16,7 +17,7 @@ namespace DescantEditor
         /// <summary>
         /// The data object for the current Descant graph
         /// </summary>
-        public DescantGraphData data;
+        public DescantGraph data;
         
         DescantGraphView graphView; // The graph view part the editor
         Toolbar toolbar; // The toolbar part of the editor
@@ -27,12 +28,9 @@ namespace DescantEditor
         Toggle autoSave; // The autosave toggle button in the toolbar
         TextElement unsaved; // The unsaved changes marker in the toolbar
         
-        // The full disc path of the last loaded Descant graph
-        // (so that it can be re-loaded when the editor is re-loaded (e.g. when there is a script change))
-        string lastPath;
         bool GUICreated; // Whether a Descant graph is currently loaded into the editor
         
-        [MenuItem("Window/Descant/Descant Graph Editor"), MenuItem("Tools/Descant/Descant Graph Editor")]
+        [MenuItem("Window/Descant/Descant Graph Editor"), MenuItem("Descant/Descant Graph Editor")]
         public static void Open()
         {
             GetWindow<DescantEditor>("Descant Graph Editor");
@@ -55,7 +53,7 @@ namespace DescantEditor
             // (the Load method will call CreateGUI again when it has finished)
             else
             {
-                Load(lastPath);
+                Load(data);
                 AssetDatabase.Refresh();
             }
 
@@ -124,7 +122,7 @@ namespace DescantEditor
             // Initializing the Descant graph's file name
             TextElement fileName = new TextElement();
             fileName.AddToClassList("toolbar-filename");
-            fileName.text = data.Name;
+            fileName.text = data.name;
             toolbarTitle.Add(fileName);
 
             // Initializing the unsaved marker next to the file name
@@ -201,28 +199,19 @@ namespace DescantEditor
         /// and packages it into a DescantGraphData object
         /// </summary>
         /// <returns>A data object holding the information of the current editor</returns>
-        DescantGraphData GetData()
+        DescantGraph GetData()
         {
             // Initializing the new data object
             // (the name and path are copied from the current data,
             // but everything else comes from the actual VisualElements)
-            DescantGraphData temp = new DescantGraphData(data.Name)
-            {
-                Path = data.Path,
-                Autosave = /*autoSave.value*/false,
-                Typewriter = typewriter.value,
-                TypewriterSpeed = float.Parse(typewriterSpeed.value),
-                ChoiceNodeID = graphView.ChoiceNodeID,
-                ResponseNodeID = graphView.ResponseNodeID,
-                EndNodeID = graphView.EndNodeID,
-                GroupID = graphView.GroupID,
-                ChoiceNodes = new List<DescantChoiceNodeData>(),
-                ResponseNodes = new List<DescantResponseNodeData>(),
-                StartNode = null,
-                EndNodes = new List<DescantEndNodeData>(),
-                Connections = new List<DescantConnectionData>(),
-                Groups = new List<DescantGroupData>()
-            };
+            DescantGraph temp = CreateInstance<DescantGraph>();
+            temp.Typewriter = typewriter.value;
+            temp.TypewriterSpeed = float.Parse(typewriterSpeed.value);
+            temp.ChoiceNodeID = graphView.ChoiceNodeID;
+            temp.ResponseNodeID = graphView.ResponseNodeID;
+            temp.EndNodeID = graphView.EndNodeID;
+            temp.GroupID = graphView.GroupID;
+            temp.StartNode = null;
 
             // Checking through the current DescantChoiceNodes
             foreach (var i in graphView.ChoiceNodes)
@@ -432,6 +421,27 @@ namespace DescantEditor
             return temp;
         }
 
+        void AssignData()
+        {
+            var temp = GetData();
+
+            data.Autosave = temp.Autosave;
+            data.Typewriter = temp.Typewriter;
+            data.TypewriterSpeed = temp.TypewriterSpeed;
+            data.ChoiceNodeID = temp.ChoiceNodeID;
+            data.ResponseNodeID = temp.ResponseNodeID;
+            data.EndNodeID = temp.EndNodeID;
+            data.GroupID = temp.GroupID;
+
+            data.ChoiceNodes = temp.ChoiceNodes;
+            data.ResponseNodes = temp.ResponseNodes;
+            data.StartNode = temp.StartNode;
+            data.EndNodes = temp.EndNodes;
+
+            data.Groups = temp.Groups;
+            data.Connections = temp.Connections;
+        }
+
         /// <summary>
         /// Saves the data if autosave is turned on, otherwise it marks that data needs to be saved
         /// </summary>
@@ -453,11 +463,10 @@ namespace DescantEditor
         /// <param name="refresh">Whether to refresh the AssetDatabase after the data has been saved</param>
         void Save(bool refresh = false)
         {
-            DescantEditorUtilities.FindFirstElement<TextElement>(toolbar).text = data.Name;
+            DescantEditorUtilities.FindFirstElement<TextElement>(toolbar).text = data.name;
             unsaved.visible = false;
-            
-            data = GetData();
-            data.Save(false);
+
+            AssignData();
             
             if (refresh) AssetDatabase.Refresh();
         }
@@ -465,21 +474,11 @@ namespace DescantEditor
         /// <summary>
         /// Loads the data from a Descant graph file
         /// </summary>
-        /// <param name="fullPath">The full disc path to the Descant file to load</param>
-        public void Load(string fullPath)
+        public void Load(DescantGraph graph)
         {
-            // Making sure the path isn't null or empty
-            if (fullPath != null && fullPath.Trim() != "")
+            if (graph != null)
             {
-                lastPath = fullPath;
-
-                data = DescantGraphData.LoadGraphFromPath(fullPath);
-                
-                // Reloading the name and path, in case they got changed after the last time this file was loaded
-                data.Name = DescantUtilities.FilterText(DescantEditorUtilities.GetDescantFileNameFromPath(fullPath));
-                data.Path = DescantEditorUtilities.RemoveBeforeLocalPath(fullPath);
-                
-                data.Save(false);
+                data = graph;
 
                 GUICreated = true;
 
@@ -497,22 +496,8 @@ namespace DescantEditor
             data = null;
             
             GUICreated = false;
-            lastPath = null;
             
             RemoveGUI();
-        }
-
-        /// <summary>
-        /// Creates a new blank file, and reloads the GUI
-        /// </summary>
-        public void NewFile()
-        {
-            data = new DescantGraphData("New_Descant_Graph");
-            data.Save(true);
-
-            GUICreated = true;
-            
-            ReloadGUI();
         }
         
         #endregion

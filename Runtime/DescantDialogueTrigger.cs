@@ -1,4 +1,6 @@
 using System;
+using DescantComponents;
+using DescantEditor;
 using UnityEngine;
 
 namespace DescantRuntime
@@ -9,10 +11,10 @@ namespace DescantRuntime
         [SerializeField, Tooltip("Whether to start the dialogue when the scene starts")] bool displayOnStart;
         
         [Header("Data")]
-        [SerializeField, Tooltip("The Descant Graph that will be converted into dialogue")] TextAsset graph;
-        [SerializeField, Tooltip("The player's DescantActor")] TextAsset player;
-        [SerializeField, Tooltip("The NPC DescantActor being interacted with")] TextAsset NPC;
-        [SerializeField, Tooltip("Any more extra NPCs that the Descant Graph references")] TextAsset[] extraActors;
+        [SerializeField, Tooltip("The Descant Graph that will be converted into dialogue")] DescantGraph graph;
+        [SerializeField, Tooltip("The player's DescantActor")] DescantActor player;
+        [SerializeField, Tooltip("The NPC DescantActor being interacted with")] DescantActor NPC;
+        [SerializeField, Tooltip("Any more extra NPCs that the Descant Graph references")] DescantActor[] extraActors;
         
         [Header("Portraits")]
         [SerializeField, Tooltip("A list of portraits that can be applied to actors during the dialogue")] Sprite[] portraits;
