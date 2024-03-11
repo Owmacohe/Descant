@@ -166,7 +166,7 @@ namespace DescantEditor
 
             // Initializing the save button
             Button save = new Button();
-            save.clicked += () => Save(true);
+            save.clicked += Save;
             save.text = "Save";
             saveSection.Add(save);
 
@@ -421,6 +421,10 @@ namespace DescantEditor
             return temp;
         }
 
+        /// <summary>
+        /// Method to copy all values from one DescantGraph to another
+        /// (simply assigning SerializedObjects breaks the link to the object in the project files)
+        /// </summary>
         void AssignData()
         {
             var temp = GetData();
@@ -461,14 +465,14 @@ namespace DescantEditor
         /// Gathers and saves the data from the current graph view and toolbar
         /// </summary>
         /// <param name="refresh">Whether to refresh the AssetDatabase after the data has been saved</param>
-        void Save(bool refresh = false)
+        void Save()
         {
             DescantEditorUtilities.FindFirstElement<TextElement>(toolbar).text = data.name;
             unsaved.visible = false;
 
             AssignData();
-            
-            if (refresh) AssetDatabase.Refresh();
+
+            DescantUtilities.SaveSerializedObject(data);
         }
 
         /// <summary>

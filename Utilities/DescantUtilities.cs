@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 /// <summary>
 /// Enum to list all of the types of DescantNodes
@@ -52,4 +54,17 @@ public static class DescantUtilities
     {
         Debug.Log("<color='" + colour + "'><b>" + source.Name + ":</b> " + message + "</color>");
     }
+
+    #if UNITY_EDITOR
+    /// <summary>
+    /// Method to make sure that SerializedObjects are properly saved
+    /// </summary>
+    /// <param name="obj">The object to save</param>
+    public static void SaveSerializedObject(Object obj)
+    {
+        EditorUtility.SetDirty(obj);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+    }
+    #endif
 }

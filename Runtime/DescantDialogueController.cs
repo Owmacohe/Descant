@@ -49,6 +49,8 @@ namespace DescantRuntime
         DescantActor player; // The player DescantActor for this dialogue
         DescantActor NPC; // The NPC DescantActor for this dialogue
 
+        RuntimeSerializedObjectSaver saver;
+
         [HideInInspector] public bool HasEnded; // Whether the current dialogue has finished
         [HideInInspector] public bool Typewriter; // Whether the current dialogue is using a typewriter
         [HideInInspector] public float TypewriterSpeed; // The speed of the dialogue's typewriter (if it's using one)
@@ -91,6 +93,8 @@ namespace DescantRuntime
                 
                 if (!Actors.Contains(NPC)) Actors.Add(NPC);
             }
+
+            saver = gameObject.AddComponent<RuntimeSerializedObjectSaver>();
 
             // Initializing the actor portrait info
             PlayerPortrait = pp;
@@ -261,17 +265,23 @@ namespace DescantRuntime
             
             // Invoking the Components for the new node, and setting the actors and their portraits accordingly
             currentResult = InvokeComponents(currentResult);
-            Actors = currentResult.Actors;
             PlayerPortrait = currentResult.PlayerPortrait;
             PlayerPortraitEnabled = currentResult.PlayerPortraitEnabled;
             NPCPortrait = currentResult.NPCPortrait;
             NPCPortraitEnabled = currentResult.NPCPortraitEnabled;
 
-            // Checking through the text, replacing all in instances of statistic injections
-            for (int i = 0; i < currentResult.Text.Count; i++)
+            // Making sure to assign and save the SerializedObjects properly
+            for (int i = 0; i < Actors.Count; i++)
             {
-                var temp = currentResult.Text[i];
-                currentResult.Text[i] = new KeyValuePair<int, string>(temp.Key, CheckForStatistics(temp.Value));
+                DescantComponentUtilities.AssignActor(Actors[i], currentResult.Actors[i]);
+                saver.AddObjectToQueue(Actors[i]);
+            }
+
+            // Checking through the text, replacing all in instances of statistic injections
+            for (int j = 0; j < currentResult.Text.Count; j++)
+            {
+                var temp = currentResult.Text[j];
+                currentResult.Text[j] = new KeyValuePair<int, string>(temp.Key, CheckForStatistics(temp.Value));
             }
             
             return currentResult.Text.Count == 0 ? null : currentResult; // Stopping if there are no choices

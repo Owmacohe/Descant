@@ -15,48 +15,66 @@ MonoBehaviour:
   Autosave: 0
   Typewriter: 1
   TypewriterSpeed: 1
-  ChoiceNodeID: 1
-  ResponseNodeID: 5
-  EndNodeID: 0
-  GroupID: 0
+  ChoiceNodeID: 4
+  ResponseNodeID: 7
+  EndNodeID: 4
+  GroupID: 3
   ChoiceNodes:
   - Name: ChoiceNode
     Type: Choice
     ID: 0
     Position: {x: 1051, y: 0}
-    NodeComponents: []
+    NodeComponents:
+    - rid: 5749858939535884289
+    - rid: 5749858939535884293
     Choices:
     - Where do I download the package?
     - Where is the test scene?
     - Who can I contact for help?
     - Nevermind, I don't want help
+  - Name: ChoiceNode
+    Type: Choice
+    ID: 2
+    Position: {x: 2394, y: -180}
+    NodeComponents: []
+    Choices:
+    - Neat!
+    - Cool!
+  - Name: ChoiceNode
+    Type: Choice
+    ID: 3
+    Position: {x: 2850, y: 403}
+    NodeComponents: []
+    Choices:
+    - Really?
+    - Bye!
   ResponseNodes:
   - Name: ResponseNode
     Type: Response
     ID: 0
-    Position: {x: 410, y: 0}
+    Position: {x: 491, y: 0}
     NodeComponents: []
-    Response: <b><i>Welcome</b></i> to <color=\"blue\">Descant</color>! How can I
-      help you? Your health is {Test_Player:Health}.
+    Response: <b><i>Welcome</b></i> to <color="blue">Descant</color>! How can I help
+      you? Your health is {Test_Player:Health}.
   - Name: ResponseNode
     Type: Response
     ID: 1
     Position: {x: 1659, y: -430}
     NodeComponents: []
-    Response: 'You can download it at: https://github.com/owmacohe/Descant/releases.
+    Response: 'You can download it at: <i>https://github.com/owmacohe/Descant/releases</i>.
       I only have {Test_NPC:Money} dollars, but Descant is free!'
   - Name: ResponseNode
     Type: Response
     ID: 2
     Position: {x: 1659, y: -143}
     NodeComponents: []
-    Response: 'The test scene is located at: Descant/Examples/Test_Scene.unity'
+    Response: 'The test scene is located at: <i>Descant/Examples/Test_Scene.unity</i>'
   - Name: ResponseNode
     Type: Response
     ID: 3
     Position: {x: 1659, y: 131}
     NodeComponents: []
-    Response: 'ou can contact Owen Hellum on Discord at: <b>omch</b> or by email
+    Response: 'You can contact Owen Hellum on Discord at: <b>omch</b> or by email
       at: <b>omch@pm.me</b>'
   - Name: ResponseNode
     Type: Response
@@ -64,14 +82,64 @@ MonoBehaviour:
     Position: {x: 1659, y: 403}
     NodeComponents: []
     Response: Okay goodbye!
+  - Name: ResponseNode
+    Type: Response
+    ID: 5
+    Position: {x: 2261, y: 403}
+    NodeComponents: []
+    Response: Goodbye for real!
+  - Name: ResponseNode
+    Type: Response
+    ID: 6
+    Position: {x: 3496, y: 226}
+    NodeComponents: []
+    Response: Yep!
   StartNode:
     Name: StartNode
     Type: Start
     ID: 0
-    Position: {x: 0, y: 0}
-    NodeComponents: []
-  EndNodes: []
-  Groups: []
+    Position: {x: 81, y: 0}
+    NodeComponents:
+    - rid: 5749858939535884288
+  EndNodes:
+  - Name: EndNode
+    Type: End
+    ID: 0
+    Position: {x: 3048, y: -180}
+    NodeComponents:
+    - rid: 5749858939535884290
+  - Name: EndNode
+    Type: End
+    ID: 2
+    Position: {x: 3496, y: 515}
+    NodeComponents:
+    - rid: 5749858939535884291
+  - Name: EndNode
+    Type: End
+    ID: 3
+    Position: {x: 4055, y: 226}
+    NodeComponents:
+    - rid: 5749858939535884292
+  Groups:
+  - Name: NodeGroup
+    ID: 0
+    Position: {x: 1634, y: -489}
+    Nodes:
+    - Response
+    - Response
+    - Response
+    - Response
+    NodeIDs: 02000000030000000400000001000000
+  - Name: NodeGroup
+    ID: 1
+    Position: {x: 2235.9998, y: 167}
+    Nodes:
+    - Choice
+    - Response
+    - Response
+    - End
+    - End
+    NodeIDs: 0300000005000000060000000200000003000000
   Connections:
   - From: Response
     FromID: 0
@@ -98,11 +166,90 @@ MonoBehaviour:
     To: Response
     ToID: 4
     ChoiceIndex: 4
+  - From: Response
+    FromID: 1
+    To: Choice
+    ToID: 2
+    ChoiceIndex: 0
+  - From: Response
+    FromID: 2
+    To: Choice
+    ToID: 2
+    ChoiceIndex: 0
+  - From: Response
+    FromID: 3
+    To: Choice
+    ToID: 2
+    ChoiceIndex: 0
+  - From: Choice
+    FromID: 2
+    To: End
+    ToID: 0
+    ChoiceIndex: 1
+  - From: Choice
+    FromID: 2
+    To: End
+    ToID: 0
+    ChoiceIndex: 2
+  - From: Response
+    FromID: 5
+    To: Choice
+    ToID: 3
+    ChoiceIndex: 0
+  - From: Choice
+    FromID: 3
+    To: Response
+    ToID: 6
+    ChoiceIndex: 1
+  - From: Choice
+    FromID: 3
+    To: End
+    ToID: 2
+    ChoiceIndex: 2
   - From: Start
     FromID: 0
     To: Response
     ToID: 0
     ChoiceIndex: 0
+  - From: Response
+    FromID: 4
+    To: Response
+    ToID: 5
+    ChoiceIndex: 0
+  - From: Response
+    FromID: 6
+    To: End
+    ToID: 3
+    ChoiceIndex: 0
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5749858939535884288
+      type: {class: Log, ns: DescantComponents, asm: omch.descant.components}
+      data:
+        Collapsed: 0
+        Message: Start here!
+    - rid: 5749858939535884289
+      type: {class: Log, ns: DescantComponents, asm: omch.descant.components}
+      data:
+        Collapsed: 0
+        Message: Initial choice!
+    - rid: 5749858939535884290
+      type: {class: Log, ns: DescantComponents, asm: omch.descant.components}
+      data:
+        Collapsed: 0
+        Message: Default ending
+    - rid: 5749858939535884291
+      type: {class: Log, ns: DescantComponents, asm: omch.descant.components}
+      data:
+        Collapsed: 0
+        Message: Alternate ending
+    - rid: 5749858939535884292
+      type: {class: Log, ns: DescantComponents, asm: omch.descant.components}
+      data:
+        Collapsed: 0
+        Message: Secret ending
+    - rid: 5749858939535884293
+      type: {class: RandomizedChoice, ns: DescantComponents, asm: omch.descant.components}
+      data:
+        Collapsed: 0

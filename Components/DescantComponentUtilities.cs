@@ -237,5 +237,24 @@ namespace DescantComponents
         {
             return (T)Enum.Parse(typeof(T), value, true);
         }
+
+        /// <summary>
+        /// Method to copy all values from one DescantActor to another
+        /// (simply assigning SerializedObjects breaks the link to the object in the project files)
+        /// </summary>
+        /// <param name="data">The actor to be assigned to</param>
+        /// <param name="actor">The actor to be assigned from</param>
+        public static void AssignActor(DescantActor data, DescantActor actor)
+        {
+            data.StatisticKeys = actor.StatisticKeys;
+            data.StatisticValues = actor.StatisticValues;
+
+            data.Topics = actor.Topics;
+
+            data.RelationshipKeys = actor.RelationshipKeys;
+            data.RelationshipValues = actor.RelationshipValues;
+
+            data.DialogueAttempts = actor.DialogueAttempts;
+        }
     }
 }
