@@ -77,8 +77,8 @@ namespace DescantComponents
         /// <param name="type">The type of the parameter</param>
         public static object GetComponentParameterValue(string value, Type type)
         {
-            if (type == typeof(int)) return float.Parse(value);
-            if (type == typeof(float)) return float.Parse(value);
+            if (type == typeof(int)) return value.Trim().Equals("") ? 0 : int.Parse(value);
+            if (type == typeof(float)) return value.Trim().Equals("") ? 0f : float.Parse(value);
             return value;
         }
         

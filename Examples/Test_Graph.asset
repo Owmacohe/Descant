@@ -26,12 +26,13 @@ MonoBehaviour:
     Position: {x: 1051, y: 0}
     NodeComponents:
     - rid: 5749858939535884289
-    - rid: 5749858939535884293
+    - rid: 5749859095655743503
+    - rid: 5749859095655743552
     Choices:
     - Where do I download the package?
-    - Where is the test scene?
     - Who can I contact for help?
     - Nevermind, I don't want help
+    - This is a secret choice!
   - Name: ChoiceNode
     Type: Choice
     ID: 2
@@ -59,16 +60,10 @@ MonoBehaviour:
   - Name: ResponseNode
     Type: Response
     ID: 1
-    Position: {x: 1659, y: -430}
+    Position: {x: 1659, y: -180}
     NodeComponents: []
     Response: 'You can download it at: <i>https://github.com/owmacohe/Descant/releases</i>.
       I only have {Test_NPC:Money} dollars, but Descant is free!'
-  - Name: ResponseNode
-    Type: Response
-    ID: 2
-    Position: {x: 1659, y: -143}
-    NodeComponents: []
-    Response: 'The test scene is located at: <i>Descant/Examples/Test_Scene.unity</i>'
   - Name: ResponseNode
     Type: Response
     ID: 3
@@ -123,16 +118,15 @@ MonoBehaviour:
   Groups:
   - Name: NodeGroup
     ID: 0
-    Position: {x: 1634, y: -489}
+    Position: {x: 1634, y: -239}
     Nodes:
     - Response
     - Response
     - Response
-    - Response
-    NodeIDs: 02000000030000000400000001000000
+    NodeIDs: 030000000400000001000000
   - Name: NodeGroup
     ID: 1
-    Position: {x: 2235.9998, y: 167}
+    Position: {x: 2236, y: 167}
     Nodes:
     - Choice
     - Response
@@ -154,25 +148,20 @@ MonoBehaviour:
   - From: Choice
     FromID: 0
     To: Response
-    ToID: 2
+    ToID: 3
     ChoiceIndex: 2
   - From: Choice
     FromID: 0
     To: Response
-    ToID: 3
+    ToID: 4
     ChoiceIndex: 3
   - From: Choice
     FromID: 0
-    To: Response
-    ToID: 4
+    To: null
+    ToID: -1
     ChoiceIndex: 4
   - From: Response
     FromID: 1
-    To: Choice
-    ToID: 2
-    ChoiceIndex: 0
-  - From: Response
-    FromID: 2
     To: Choice
     ToID: 2
     ChoiceIndex: 0
@@ -249,7 +238,17 @@ MonoBehaviour:
       data:
         Collapsed: 0
         Message: Secret ending
-    - rid: 5749858939535884293
+    - rid: 5749859095655743503
+      type: {class: LockedChoice, ns: DescantComponents, asm: omch.descant.components}
+      data:
+        Collapsed: 0
+        ActorName: Test_Player
+        ChoiceNumber: 4
+        VariableType: 1
+        VariableName: Secret
+        ComparisonType: 0
+        Comparison: 0
+    - rid: 5749859095655743552
       type: {class: RandomizedChoice, ns: DescantComponents, asm: omch.descant.components}
       data:
         Collapsed: 0

@@ -233,6 +233,11 @@ DescantChoiceNode #output TextField TextElement {
     margin: 2;
 }
 
+DescantChoiceNode #output .choice_number {
+    margin-right: 5;
+    font-size: 18;
+}
+
 DescantChoiceNode #contents Button,
 DescantResponseNode #contents Button,
 DescantStartNode #contents Button,

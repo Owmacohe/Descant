@@ -105,8 +105,8 @@ namespace DescantEditor
             {
                 var temp = CreateChoiceNode(i.Position, i.Name, i.ID);
 
-                foreach (var ii in i.Choices)
-                    temp.AddChoice(ii);
+                for (int ii = 0; ii < i.Choices.Count; ii++)
+                    temp.AddChoice(ii + 1, i.Choices[ii]);
                 
                 foreach (var ij in i.NodeComponents)
                     temp.AddComponent(

@@ -1,4 +1,5 @@
 ﻿#if UNITY_EDITOR
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -11,6 +12,8 @@ namespace DescantEditor
     /// </summary>
     public class DescantChoiceNode : DescantNode
     {
+        List<TextElement> choiceNumbers = new List<TextElement>();
+        
         /// <summary>
         /// Parameterized constructor
         /// </summary>
@@ -67,7 +70,7 @@ namespace DescantEditor
             Button addChoice = new Button();
             addChoice.text = "Add Choice";
             addChoice.AddToClassList("add_choice");
-            addChoice.clicked += () => AddChoice();
+            addChoice.clicked += () => AddChoice(choiceNumbers.Count + 1);
             extensionContainer.Insert(0, addChoice);
             
             // Refreshing the extensionContainer after new elements have been added to it
@@ -78,7 +81,7 @@ namespace DescantEditor
         /// Adds a new possible choice to the list in the node
         /// </summary>
         /// <param name="choice"></param>
-        public void AddChoice(string choice = "")
+        public void AddChoice(int index, string choice = "")
         {
             // Initializing the new choice's output port
             Port output = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(bool));
@@ -121,6 +124,13 @@ namespace DescantEditor
             removeChoice.clicked += () => RemoveChoice(output);
             output.Add(removeChoice);
             
+            TextElement choiceNumber = new TextElement();
+            choiceNumber.text = index.ToString();
+            choiceNumber.AddToClassList("choice_number");
+            output.Add(choiceNumber);
+            
+            choiceNumbers.Add(choiceNumber);
+            
             // Refreshing the extensionContainer after new elements have been added to it
             RefreshExpandedState();
             
@@ -135,6 +145,11 @@ namespace DescantEditor
         {
             // Disconnecting all the connections to the port
             GraphView.DisconnectPorts(outputContainer, output);
+            
+            choiceNumbers.RemoveAt(outputContainer.IndexOf(output));
+
+            for (int i = 0; i < choiceNumbers.Count; i++)
+                choiceNumbers[i].text = (i + 1).ToString();
             
             outputContainer.Remove(output); // Actually removing the choice
             

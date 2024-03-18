@@ -173,9 +173,9 @@ namespace DescantEditor
                                     i.FieldType
                                 ));
                             }
-                            catch (FormatException)
+                            catch
                             {
-                                // TODO: error message for wrong format
+                                DescantUtilities.ErrorMessage(GetType(), "Wrong text format!");
                             }
 
                             graphView.Editor.CheckAndSave(); // Check for autosave
@@ -262,6 +262,7 @@ namespace DescantEditor
             else
             {
                 collapsibleButton = new Button();
+                collapsibleButton.tooltip = "collapse/expand";
                 collapsibleButton.text = "v";
                 collapsibleButton.clicked += ToggleCollapseComponent;
                 top_row.Add(collapsibleButton);
