@@ -223,8 +223,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -513,9 +513,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UI: {fileID: 1216080874}
   displayOnStart: 1
-  graph: {fileID: 11400000, guid: 2afe73c3efc0cb54b875c1ed8a7d7fd2, type: 2}
-  player: {fileID: 11400000, guid: dd0840731343a1c4c8074948e9204850, type: 2}
-  NPC: {fileID: 11400000, guid: 949369597d8aa154e89f691798bf86c6, type: 2}
+  graph: {fileID: 11400000, guid: d983a4c99eb750a4aa7c4573d0bd7347, type: 2}
+  player: {fileID: 11400000, guid: aa50e7fd76a0a8c4ba679f3a8ac2fe0e, type: 2}
+  NPC: {fileID: 11400000, guid: ac3d79085608abb479f9d21705ca4a30, type: 2}
   extraActors: []
   portraits:
   - {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
@@ -663,6 +663,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4448661632235425834, guid: f628a439a00194aa4a7962cf53bda26c, type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4448661632235425834, guid: f628a439a00194aa4a7962cf53bda26c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4448661632235425834, guid: f628a439a00194aa4a7962cf53bda26c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4448661632235425834, guid: f628a439a00194aa4a7962cf53bda26c, type: 3}
+      propertyPath: m_LocalScale.z
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4448661632235425834, guid: f628a439a00194aa4a7962cf53bda26c, type: 3}

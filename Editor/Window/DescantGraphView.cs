@@ -228,8 +228,11 @@ namespace DescantEditor
         void AddStyleSheet()
         {
             StyleSheet styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/com.owmacohe.descant/Assets/DescantGraphEditorStyleSheet.uss");
+            if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/Descant-1.1.2/Assets/DescantGraphEditorStyleSheet.uss");
             if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Assets/com.owmacohe.descant/Assets/DescantGraphEditorStyleSheet.uss");
+            if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Assets/Descant-1.1.2/Assets/DescantGraphEditorStyleSheet.uss");
             if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Assets/Packages/com.owmacohe.descant/Assets/DescantGraphEditorStyleSheet.uss");
+            if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Assets/Packages/Descant-1.1.2/Assets/DescantGraphEditorStyleSheet.uss");
             
             styleSheets.Add(styleSheet);
         }
