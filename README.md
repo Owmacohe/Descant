@@ -1,3 +1,7 @@
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow)
+![GitHub stars](https://img.shields.io/github/stars/owmacohe/descant)
+![GitHub downloads](https://img.shields.io/github/downloads/owmacohe/descant/total)
+
 ![Descant logo](Media/Logo/Descant_Logo_C_200.png)
 
 # Descant
