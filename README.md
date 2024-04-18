@@ -37,19 +37,20 @@
 - **Descant Actors**
   - **Descant Actors** can be created by right clicking, and selecting `Create/Descant Actor`.
   - **Descant Actors** can be edited by right clicking on a `Descant Actor` file, and selecting `Edit Descant Actor`.
+- **Descant Logs** don't need to be crated or modified manually by the player at all. A single `DescantLogData` file exists in the `Descant/Resources` folder. Please don't delete it!
 
 
 
 ## Usage
 - **Descant Graphs**
-  1. The **Descant Graph Editor** can be opened with `Tools/Descant/Descant Graph Editor` or by creating/editing a **Descant Graph** file.
-  1. Use middle-click to pan around in the editor.
-  1. New nodes can be created by right-clicking within the grid.
-  1. Connections between nodes can be created by left-clicking on nodes’ ports, and dragging to create a connection line to another port.
-  1. `ChoiceNode`s represent player choices at certain moments within the dialogue, and `ResponseNode`s represent the NPC’s responses or statements.
-  1. If you want to have a `DescantActor`’s statistic show up within a `ChoiceNode` or `ResponseNode`'s text, write `{actor_name:statistic_name}`, and **Descant** will inject the statistic right into it. *(see the below for more info on `DescantActor`s)*.
-  1. The `StartNode` represents the place where a given dialogue begins, and `EndNode`s represent where it can end.
-  1. More complex functionality can be added to nodes by adding `Components` (see the [Component documentation](https://omch.tech/descant) for more info on each default component, as well as how to write your own).
+  1. The **Descant Graph Editor** can be opened with `Tools/Descant/Graph Editor` or by creating/editing a **Descant Graph** file.
+  2. Use middle-click to pan around in the editor.
+  3. New nodes can be created by right-clicking within the grid.
+  4. Connections between nodes can be created by left-clicking on nodes’ ports, and dragging to create a connection line to another port.
+  5. `ChoiceNode`s represent player choices at certain moments within the dialogue, and `ResponseNode`s represent the NPC’s responses or statements.
+  6. If you want to have a `DescantActor`’s statistic show up within a `ChoiceNode` or `ResponseNode`'s text, write `{actor_name:statistic_name}`, and **Descant** will inject the statistic right into it. *(see the below for more info on `DescantActor`s)*.
+  7. The `StartNode` represents the place where a given dialogue begins, and `EndNode`s represent where it can end.
+  8. More complex functionality can be added to nodes by adding `Components` (see the [Component documentation](https://omch.tech/descant) for more info on each default component, as well as how to write your own).
 - **Descant Actors**
   1. The **Descant Actor Editor** can be opened with `Tools/Descant/Descant Actor Editor` or by creating/editing a **Descant Actor** file.
   2. New **Statistics**, **Topics**, and **Relationships** can be added with their respective **Add** buttons.
@@ -62,6 +63,11 @@
   2. Add an `Event System` object to your scene *(`Create/UI/Event System`)*, if you don't already have one.
   3. Add a `DescantDialogueTrigger` script to a GameObject of your choice, and assign its fields *(hover over each field to see a popup of its description) (you may have as many `DescantDialogueTrigger`s as you want in the same scene)*.
   4. At some point while the game is running, call the `Display()` method in the `DescantDialogueTrigger` script to begin the dialogue *(e.g. when the player presses `[E]`, when a `Button` is clicked, etc.)*.
+- **Logs**
+  1. The **Descant Log** can be opened with `Tools/Descant/Log`.
+  2. Turn the `Capture` toggle on to start capturing events as they happen at runtime.
+  3. The log only saves the last played dialogue.
+  4. Please don't delete the log file located at `Descant/Resources`!
 
 
 
@@ -73,8 +79,7 @@
   - [Initial research](Documentation/interaction_research.md), [market survey](Documentation/system_review.xlsx), and [key pitfalls and successes](Documentation/pitfalls_and_sucesses.md)
   - [Features list](Documentation/features.md)
   - [Weekly process journal](Documentation/journal.md)
-
-- [Unity Asset Store page]() *(will be created near the end of the project)*
+- [Unity Asset Store page](https://assetstore.unity.com/packages/slug/273262)
 
 
 

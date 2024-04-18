@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using DescantComponents;
+using Descant.Components;
 using UnityEngine;
 
-namespace DescantEditor
+namespace Descant.Editor
 {
     /// <summary>
     /// Serializable class to hold the data for saving and loading Descant graphs
     /// </summary>
-    [Serializable, CreateAssetMenu]
+    [Serializable, CreateAssetMenu(menuName = "Descant/Graph")]
     public class DescantGraph : ScriptableObject
     {
         /// <summary>
@@ -30,22 +30,22 @@ namespace DescantEditor
         /// <summary>
         /// A unique ID number that will be applied to the next-created ChoiceNode
         /// </summary>
-        public int ChoiceNodeID;
+        [HideInInspector] public int ChoiceNodeID;
         
         /// <summary>
         /// A unique ID number that will be applied to the next-created ResponseNode
         /// </summary>
-        public int ResponseNodeID;
+        [HideInInspector] public int ResponseNodeID;
         
         /// <summary>
         /// A unique ID number that will be applied to the next-created EndNode
         /// </summary>
-        public int EndNodeID;
+        [HideInInspector] public int EndNodeID;
         
         /// <summary>
         /// A unique ID number that will be applied to the next-created NodeGroup
         /// </summary>
-        public int GroupID;
+        [HideInInspector] public int GroupID;
         
         /// <summary>
         /// The ChoiceNodes in the graph
@@ -70,12 +70,12 @@ namespace DescantEditor
         /// <summary>
         /// The NodeGroups in the graph
         /// </summary>
-        public List<DescantGroupData> Groups;
+        [HideInInspector] public List<DescantGroupData> Groups;
         
         /// <summary>
         /// The connections between Nodes in the graph
         /// </summary>
-        public List<DescantConnectionData> Connections;
+        [HideInInspector] public List<DescantConnectionData> Connections;
 
         /// <summary>
         /// Parameterized constructor

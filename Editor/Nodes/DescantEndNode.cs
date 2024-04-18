@@ -1,10 +1,11 @@
 ﻿#if UNITY_EDITOR
 using System.Linq;
+using Descant.Utilities;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace DescantEditor
+namespace Descant.Editor
 {
     /// <summary>
     /// DescantNode used to indicate the end of a DescantGraph

@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Descant.Utilities;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
-using DescantComponents;
+using Descant.Components;
 
-namespace DescantEditor
+namespace Descant.Editor
 {
     /// <summary>
     /// Descant graph node parent class

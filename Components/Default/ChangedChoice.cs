@@ -3,8 +3,9 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Descant.Utilities;
 
-namespace DescantComponents
+namespace Descant.Components
 {
     [Serializable, MaxQuantity(float.PositiveInfinity), NodeType(DescantNodeType.Choice)]
     public class ChangedChoice : DescantComponent

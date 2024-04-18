@@ -2,8 +2,9 @@
 
 using System;
 using UnityEngine;
+using Descant.Utilities;
 
-namespace DescantComponents
+namespace Descant.Components
 {
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Any)]
     public class StatisticReveal : DescantComponent

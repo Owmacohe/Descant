@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DescantComponents
+namespace Descant.Components
 {
     /// <summary>
     /// Enum of DescantActors' variable types

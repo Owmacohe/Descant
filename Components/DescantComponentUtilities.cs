@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Descant.Utilities;
 using System.Reflection;
 using UnityEngine;
 
-namespace DescantComponents
+namespace Descant.Components
 {
     public static class DescantComponentUtilities
     {

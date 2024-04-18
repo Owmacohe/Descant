@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using DescantComponents;
+using Descant.Components;
 using UnityEngine;
 
-namespace DescantEditor
+namespace Descant.Editor
 {
     /// <summary>
     /// Parent class to hold the data for saving and loading Descant nodes
@@ -18,17 +18,17 @@ namespace DescantEditor
         /// <summary>
         /// The unique identifier ID for the node
         /// </summary>
-        public string Type;
+        [HideInInspector] public string Type;
         
         /// <summary>
         /// The type of this node
         /// </summary>
-        public int ID;
+        [HideInInspector] public int ID;
         
         /// <summary>
         /// The node's current position
         /// </summary>
-        public Vector2 Position;
+        [HideInInspector] public Vector2 Position;
         
         /// <summary>
         /// The list of Components attached to the node

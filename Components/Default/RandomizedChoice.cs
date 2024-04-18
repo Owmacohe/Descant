@@ -3,8 +3,9 @@
 using System;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
+using Descant.Utilities;
 
-namespace DescantComponents
+namespace Descant.Components
 {
     [Serializable, MaxQuantity(1), NodeType(DescantNodeType.Choice)]
     public class RandomizedChoice : DescantComponent // TODO: make this always last

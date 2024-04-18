@@ -2,8 +2,9 @@
 
 using System;
 using UnityEngine;
+using Descant.Utilities;
 
-namespace DescantComponents
+namespace Descant.Components
 {
     [Serializable, MaxQuantity(float.PositiveInfinity), NodeType(DescantNodeType.Any)]
     public class Log : DescantComponent

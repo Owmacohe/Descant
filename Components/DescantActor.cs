@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DescantComponents
+namespace Descant.Components
 {
     /// <summary>
     /// A data class representing an actor (player or NPC) in a Descant Dialogue
     /// </summary>
-    [Serializable, CreateAssetMenu]
+    [Serializable, CreateAssetMenu(menuName = "Descant/Actor")]
     public class DescantActor : ScriptableObject
     {
         /// <summary>

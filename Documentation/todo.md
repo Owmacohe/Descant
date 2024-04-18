@@ -25,7 +25,7 @@
 - Add `DescantIfNode`
 - ~~Make script calling easier~~
 - Make autosave better (removed temporarily)
-- Create log system
+- ~~Create log system~~
 - ~~Create an online Component documentation website~~
 - Ctrl-S saving functionality for editors
 - Save panned position in `Descant Graph Editor`

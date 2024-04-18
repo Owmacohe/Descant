@@ -1,8 +1,9 @@
 ﻿// Please see https://omch.tech/descant/#lockedchoice for documentation
 
 using System;
+using Descant.Utilities;
 
-namespace DescantComponents
+namespace Descant.Components
 {
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Choice)]
     public class LockedChoice : DescantComponent

@@ -1,10 +1,10 @@
 ﻿#if UNITY_EDITOR
-using DescantEditor;
+using Descant.Utilities;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace DescantEditor
+namespace Descant.Editor
 {
     /// <summary>
     /// Purely in-Editor VisualElement used to group and name different collections of DescantNodes

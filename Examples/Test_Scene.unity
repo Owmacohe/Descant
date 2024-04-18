@@ -513,7 +513,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UI: {fileID: 1216080874}
   displayOnStart: 1
-  graph: {fileID: 11400000, guid: d983a4c99eb750a4aa7c4573d0bd7347, type: 2}
+  graph: {fileID: 11400000, guid: 872d5bc3b6e5f364e83b1314ea2fe386, type: 2}
   player: {fileID: 11400000, guid: aa50e7fd76a0a8c4ba679f3a8ac2fe0e, type: 2}
   NPC: {fileID: 11400000, guid: ac3d79085608abb479f9d21705ca4a30, type: 2}
   extraActors: []

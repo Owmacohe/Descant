@@ -1,11 +1,12 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Linq;
+using Descant.Utilities;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace DescantEditor
+namespace Descant.Editor
 {
     /// <summary>
     /// DescantNode used to indicate player choice/statement, with a list of possible choices to make

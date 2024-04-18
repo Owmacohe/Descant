@@ -1,10 +1,11 @@
 using System.Collections.Generic;
-using DescantComponents;
-using DescantEditor;
+using Descant.Components;
+using Descant.Editor;
+using Descant.Utilities;
 using UnityEditor;
 using UnityEngine;
 
-namespace DescantRuntime
+namespace Descant.Runtime
 {
     /// <summary>
     /// A simple class used to house a DescantNode's data at runtime,
@@ -49,7 +50,9 @@ namespace DescantRuntime
         DescantActor player; // The player DescantActor for this dialogue
         DescantActor NPC; // The NPC DescantActor for this dialogue
 
-        RuntimeSerializedObjectSaver saver;
+        RuntimeSerializedObjectSaver saver; // A runtime script used to save SerializedObjects
+
+        DescantLogData log; // The log file where the Descant Graph log events are stored
 
         [HideInInspector] public bool HasEnded; // Whether the current dialogue has finished
         [HideInInspector] public bool Typewriter; // Whether the current dialogue is using a typewriter
@@ -94,7 +97,10 @@ namespace DescantRuntime
                 if (!Actors.Contains(NPC)) Actors.Add(NPC);
             }
 
-            saver = gameObject.AddComponent<RuntimeSerializedObjectSaver>();
+            saver = GetComponent<RuntimeSerializedObjectSaver>();
+            if (saver == null) saver = gameObject.AddComponent<RuntimeSerializedObjectSaver>();
+            
+            log = Resources.Load<DescantLogData>("Default Log (DO NOT DELETE)"); // Accessing the log file
 
             // Initializing the actor portrait info
             PlayerPortrait = pp;
@@ -116,6 +122,24 @@ namespace DescantRuntime
 
             // Upping the NPC's dialogue attempts
             if (NPC != null) NPC.DialogueAttempts++;
+            
+            // Clearing and adding a start event to the log
+            log.Clear();
+            log.Log(DescantLogData.LogEventType.Begin);
+            saver.AddObjectToQueue(log);
+        }
+
+        /// <summary>
+        /// Quick method to end the dialogue
+        /// (to be called from a DescantDialogueUI)
+        /// </summary>
+        public void EndDialogue()
+        {
+            HasEnded = true;
+            
+            // Adding an end event to the log
+            log.Log(DescantLogData.LogEventType.End);
+            saver.AddObjectToQueue(log);
         }
 
         #endregion
@@ -202,11 +226,11 @@ namespace DescantRuntime
         /// The index of the choice being made (base 0)
         /// (default 0 if the current node is a ResponseNode)
         /// </param>
+        /// <param name="verbose">Whether to display Debug.Log messages from Log Components</param>
         /// <returns>
-        /// 
-        /// (only length 1 if the current node is a ChoiceNode)
+        /// The results object containing relevant information from the graph after this node has been invoked
         /// </returns>
-        public DescantNodeInvokeResult Next(int choiceIndex = 0)
+        public DescantNodeInvokeResult Next(int choiceIndex, bool verbose)
         {
             if (HasEnded) return null; // Not allowing the dialogue to proceed if it has ended
             
@@ -222,7 +246,7 @@ namespace DescantRuntime
 
             // Invoking the StartNode's components if we're at the beginning of the dialogue
             if (Current.Data.Type.Equals("Start"))
-                InvokeComponents(currentResult);
+                InvokeComponents(currentResult, verbose);
 
             // If there's no next node in the path, stop and throw an error
             if (Current.Next == null ||
@@ -240,12 +264,16 @@ namespace DescantRuntime
             // Getting the next node
             Current = Current.Next[choiceIndex];
             CurrentType = Current.Data.Type;
+            
+            // Logging the next node reached
+            log.Log(DescantLogData.LogEventType.Node, CurrentType, Current.Data.Name);
+            saver.AddObjectToQueue(log);
 
             switch (CurrentType)
             {
                 // If we're at the end, we invoke the final Components and stop
                 case "End":
-                    InvokeComponents(currentResult);
+                    InvokeComponents(currentResult, verbose);
                     return null;
 
                 // Add the ChoiceNode's choices to the result object
@@ -264,7 +292,7 @@ namespace DescantRuntime
             }
             
             // Invoking the Components for the new node, and setting the actors and their portraits accordingly
-            currentResult = InvokeComponents(currentResult);
+            currentResult = InvokeComponents(currentResult, verbose);
             PlayerPortrait = currentResult.PlayerPortrait;
             PlayerPortraitEnabled = currentResult.PlayerPortraitEnabled;
             NPCPortrait = currentResult.NPCPortrait;
@@ -291,10 +319,20 @@ namespace DescantRuntime
         /// Invokes all of the Components of the current node, passing a result object through them
         /// </summary>
         /// <param name="currentResult">The current text and actor result data</param>
-        DescantNodeInvokeResult InvokeComponents(DescantNodeInvokeResult currentResult)
+        /// <param name="verbose">Whether to display Debug.Log messages from Log Components</param>
+        DescantNodeInvokeResult InvokeComponents(DescantNodeInvokeResult currentResult, bool verbose)
         {
             foreach (var i in Current.Data.NodeComponents)
-                currentResult = i.Invoke(currentResult);
+            {
+                if (verbose || i.GetType() != typeof(Log))
+                {
+                    currentResult = i.Invoke(currentResult);
+                    
+                    // Logging the current node's invoked DescantComponents
+                    log.Log(DescantLogData.LogEventType.Component, i.GetType().ToString());
+                    saver.AddObjectToQueue(log);
+                }
+            }
 
             return currentResult;
         }

@@ -1,13 +1,13 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Linq;
+using Descant.Utilities;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace DescantEditor
+namespace Descant.Editor
 {
     /// <summary>
     /// The custom Unity EditorWindow for loading, saving, and manipulating Descant graphs
@@ -30,7 +30,7 @@ namespace DescantEditor
         
         bool GUICreated; // Whether a Descant graph is currently loaded into the editor
         
-        [MenuItem("Window/Descant/Descant Graph Editor"), MenuItem("Descant/Descant Graph Editor")]
+        [MenuItem("Window/Descant/Graph Editor"), MenuItem("Descant/Graph Editor")]
         public static void Open()
         {
             GetWindow<DescantEditor>("Descant Graph Editor");
@@ -46,8 +46,8 @@ namespace DescantEditor
             {
                 AddGraphView();
                 AddToolbar();
-            
-                AddStyleSheet();
+                
+                DescantEditorUtilities.AddStyleSheet(rootVisualElement.styleSheets, "DescantGraphEditorStyleSheet");
             }
             // Otherwise, we first load the data before adding the graph view and toolbar
             // (the Load method will call CreateGUI again when it has finished)
@@ -91,22 +91,6 @@ namespace DescantEditor
             
             rootVisualElement.Add(graphView);
             graphView.StretchToParentSize(); // Making sure it's properly scaled up
-        }
-        
-        /// <summary>
-        /// Adds the stylesheet to the editor
-        /// (the DescantGraphView needs to also have the style sheet set)
-        /// </summary>
-        void AddStyleSheet()
-        {
-            StyleSheet styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/com.owmacohe.descant/Assets/DescantGraphEditorStyleSheet.uss");
-            if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/Descant-1.1.2/Assets/DescantGraphEditorStyleSheet.uss");
-            if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Assets/com.owmacohe.descant/Assets/DescantGraphEditorStyleSheet.uss");
-            if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Assets/Descant-1.1.2/Assets/DescantGraphEditorStyleSheet.uss");
-            if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Assets/Packages/com.owmacohe.descant/Assets/DescantGraphEditorStyleSheet.uss");
-            if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Assets/Packages/Descant-1.1.2/Assets/DescantGraphEditorStyleSheet.uss");
-            
-            rootVisualElement.styleSheets.Add(styleSheet);
         }
 
         /// <summary>

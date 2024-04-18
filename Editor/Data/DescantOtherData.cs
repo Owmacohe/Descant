@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DescantEditor
+namespace Descant.Editor
 {
     /// <summary>
     /// Serializable class to hold the data for saving and loading Descant groups

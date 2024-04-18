@@ -1,8 +1,9 @@
 ﻿// Please see https://omch.tech/descant/#portraitchange for documentation
 
 using System;
+using Descant.Utilities;
 
-namespace DescantComponents
+namespace Descant.Components
 {
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Any)]
     public class PortraitChange : DescantComponent

@@ -1,9 +1,9 @@
 using System;
-using DescantComponents;
-using DescantEditor;
+using Descant.Components;
+using Descant.Editor;
 using UnityEngine;
 
-namespace DescantRuntime
+namespace Descant.Runtime
 {
     public class DescantDialogueTrigger : MonoBehaviour
     {

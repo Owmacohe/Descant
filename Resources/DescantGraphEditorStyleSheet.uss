@@ -52,10 +52,12 @@ Toolbar .toolbar-unsaved {
 
 Toolbar .save-section {
     flex-direction: row;
+    align-items: center;
 }
 
 Toolbar Button {
     font-size: 13;
+    padding: 10;
 }
 
 Toolbar Toggle {
@@ -79,6 +81,7 @@ Toolbar TextField {
 
 Toolbar TextField Label {
     min-width: 15;
+    font-size: 13;
 }
 
 Toolbar TextField TextElement {

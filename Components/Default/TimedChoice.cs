@@ -2,8 +2,9 @@
 
 using System;
 using UnityEngine;
+using Descant.Utilities;
 
-namespace DescantComponents
+namespace Descant.Components
 {
     [Serializable, MaxQuantity(1), NodeType(DescantNodeType.Choice)]
     public class TimedChoice : DescantComponent

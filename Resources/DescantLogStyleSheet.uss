@@ -1,0 +1,87 @@
+:root {
+    --descant-color-background: #2b2b2b;
+    --descant-color-default: rgba(51, 51, 51, 0.4);
+    --descant-color-light: rgba(51, 51, 51, 1);
+
+    --choice-highlight: lightskyblue;
+    --choice-background: rgba(90, 137, 166, 0.4);
+
+    --response-highlight: darkgoldenrod;
+    --response-background: rgba(164, 123, 19, 0.4);
+
+    --start-highlight: mediumseagreen;
+    --start-background: rgba(46, 134, 85, 0.4);
+
+    --end-highlight: firebrick;
+    --end-background: rgba(121, 23, 23, 0.4);
+
+    --unsaved: lightcoral;
+}
+
+Toolbar {
+    height: 40;
+    padding: 8;
+    
+    align-items: center;
+    justify-content: space-between;
+}
+
+Toolbar .toolbar-title {
+    font-size: 18;
+}
+
+Toolbar .log-section {
+    flex-direction: row;
+    align-items: center;
+}
+
+Toolbar Button {
+    font-size: 13;
+    padding: 10;
+}
+
+Toolbar Toggle {
+    align-items: center;
+}
+
+Toolbar Toggle Label {
+    min-width: 0;
+    margin-left: 10;
+
+    font-size: 13;
+}
+
+Toolbar Toggle VisualElement {
+    margin: 2;
+}
+
+Toolbar TextField {
+    width: 80;
+}
+
+Toolbar TextField Label {
+    min-width: 15;
+    font-size: 13;
+}
+
+Toolbar TextField TextElement {
+    margin: 2;
+}
+
+.log {
+    height: 100%;
+    
+    padding: 10;
+    
+    font-size: 15;
+    
+    background-color: var(--descant-color-default);
+}
+
+.log TextElement {
+    margin-bottom: 5;
+    padding: 5;
+}
+
+.log-element-a { background-color: var(--descant-color-background); }
+.log-element-b { background-color: var(--descant-color-light); }

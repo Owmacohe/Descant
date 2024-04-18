@@ -3,11 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DescantComponents;
+using Descant.Components;
+using Descant.Utilities;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace DescantEditor
+namespace Descant.Editor
 {
     public class DescantNodeComponentVisualElement : VisualElement
     {

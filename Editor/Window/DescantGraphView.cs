@@ -1,14 +1,13 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
-using System.Linq;
-using DescantComponents;
+using Descant.Components;
+using Descant.Utilities;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Event = DescantComponents.Event;
 
-namespace DescantEditor
+namespace Descant.Editor
 {
     /// <summary>
     /// The custom GraphView component of the editor, housing the nodes, groups, and connections
@@ -84,7 +83,7 @@ namespace DescantEditor
             
             AddGridBackground(); // Initializing the background
             AddManipulators(); // Initializing the context manu manipulators
-            AddStyleSheet(); // Initializing the stylesheet
+            DescantEditorUtilities.AddStyleSheet(styleSheets, "DescantGraphEditorStyleSheet"); // Initializing the stylesheet
             
             // Adding a callback for when the mouse leaves the graph view
             RegisterCallback(new EventCallback<MouseLeaveEvent>(callback =>
@@ -107,11 +106,10 @@ namespace DescantEditor
 
                 for (int ii = 0; ii < i.Choices.Count; ii++)
                     temp.AddChoice(ii + 1, i.Choices[ii]);
-                
+
                 foreach (var ij in i.NodeComponents)
-                    temp.AddComponent(
-                        DescantComponentUtilities.GetTrimmedTypeName(ij.GetType()), ij);
-                
+                    temp.AddComponent(DescantComponentUtilities.GetTrimmedTypeName(ij.GetType()), ij);
+
                 AddElement(temp);
             }
 
@@ -220,21 +218,6 @@ namespace DescantEditor
             this.AddManipulator(new RectangleSelector());
             
             AddContextMenuManipulators();
-        }
-        
-        /// <summary>
-        /// Initializes the stylesheet for this GraphView
-        /// </summary>
-        void AddStyleSheet()
-        {
-            StyleSheet styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/com.owmacohe.descant/Assets/DescantGraphEditorStyleSheet.uss");
-            if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Packages/Descant-1.1.2/Assets/DescantGraphEditorStyleSheet.uss");
-            if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Assets/com.owmacohe.descant/Assets/DescantGraphEditorStyleSheet.uss");
-            if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Assets/Descant-1.1.2/Assets/DescantGraphEditorStyleSheet.uss");
-            if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Assets/Packages/com.owmacohe.descant/Assets/DescantGraphEditorStyleSheet.uss");
-            if (styleSheet == null) styleSheet = (StyleSheet)EditorGUIUtility.Load("Assets/Packages/Descant-1.1.2/Assets/DescantGraphEditorStyleSheet.uss");
-            
-            styleSheets.Add(styleSheet);
         }
         
         # region Contextual Menus

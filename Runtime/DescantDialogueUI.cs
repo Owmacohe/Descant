@@ -1,18 +1,25 @@
 using System;
-using DescantComponents;
-using DescantEditor;
+using Descant.Components;
+using Descant.Editor;
+using Descant.Utilities;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace DescantRuntime
+namespace Descant.Runtime
 {
     public class DescantDialogueUI : MonoBehaviour
     {
+        [SerializeField, Tooltip("Whether to display Debug.Log messages from Log Components")] bool verbose = true;
+        
+        [Header("Player")]
         [SerializeField, Tooltip("The parent UI object for the player's choices (ideally a LayoutGroup)")] Transform choices;
         [SerializeField, Tooltip("The player choice prefab to be spawned with the choice text")] GameObject choice;
         [SerializeField, Tooltip("The player's portrait image")] Image playerPortrait;
+        
+        [Header("NPC")]
         [SerializeField, Tooltip("The NPC response text")] TMP_Text response;
         [SerializeField, Tooltip("The NPC's portrait image")] Image npcPortrait;
         
@@ -27,10 +34,10 @@ namespace DescantRuntime
         // (also used to make sure that the Update method doesn't just keep checking after the dialogue is done)
         bool hasEnded;
 
-        bool typing;
+        bool typing; // Whether the typewriter is currently typing (i.e. it hasn't finished typing yet)
         string targetTypewriterText; // The full text that the typewriter is typing out
         int typewriterIndex; // The index in the target text that the typewriter is currently at
-        float currentTypewriterSpeed;
+        float currentTypewriterSpeed; // The current speed that the typewriter is typing at
 
         Sprite[] portraits; // The current array of all possible actor portraits during the dialogue
 
@@ -106,7 +113,7 @@ namespace DescantRuntime
             background.SetActive(false);
             waitForClick = false;
 
-            dialogueController.HasEnded = true;
+            dialogueController.EndDialogue();
             hasEnded = true;
             
             OnEnd?.Invoke();
@@ -168,7 +175,7 @@ namespace DescantRuntime
                 Destroy(choices.GetChild(i).gameObject);
             
             // Getting the next node in the path from the DescantDialogueController
-            DescantNodeInvokeResult temp = dialogueController.Next(choiceIndex);
+            DescantNodeInvokeResult temp = dialogueController.Next(choiceIndex, verbose);
             
             // Stopping if there are no more nodes
             if (temp == null)

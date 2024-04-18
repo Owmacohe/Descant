@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace DescantEditor
+namespace Descant.Editor
 {
     public static class DescantEditorUtilities
     {
@@ -70,22 +71,6 @@ namespace DescantEditor
         }
 
         #endregion
-        
-        /// <summary>
-        /// Gets a DescantGraph object from the instanceID of a file
-        /// </summary>
-        /// <param name="instanceID">The instanceID of the file being checked</param>
-        /// <returns>The graph object (null if the selection is not a DescantGraph)</returns>
-        public static DescantGraph GetObjectFromInstanceID(int instanceID)
-        {
-            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(instanceID, out string guid, out long _);
-            
-            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-            Object asset = AssetDatabase.LoadAssetAtPath(assetPath, typeof(Object));
-
-            if (asset.GetType() == typeof(DescantGraph)) return (DescantGraph) asset;
-            return null;
-        }
 
         /// <summary>
         /// Checks to see if two lists of some type are equal
@@ -105,6 +90,36 @@ namespace DescantEditor
                     return false;
             
             return true;
+        }
+        
+        /// <summary>
+        /// Adds a stylesheet to an editor
+        /// </summary>
+        public static void AddStyleSheet(VisualElementStyleSheetSet styleSheetSet, string name)
+        {
+            // All the possible paths that a stylesheet could be located at
+            string[] paths =
+            {
+                "Packages/com.owmacohe.descant/Resources/",
+                "Packages/Descant-1.1.3/Resources/",
+                
+                "Assets/com.owmacohe.descant/Resources/",
+                "Assets/Descant-1.1.3/Resources/",
+                
+                "Assets/com.owmacohe.descant/Resources/",
+                "Assets/Packages/Descant-1.1.3/Resources/"
+            };
+
+            StyleSheet styleSheet = null;
+
+            // Trying all the possible paths and stopping when we find it
+            foreach (var i in paths)
+            {
+                styleSheet = (StyleSheet)EditorGUIUtility.Load(i + name + ".uss");
+                if (styleSheet != null) break;
+            }
+            
+            if (styleSheet != null) styleSheetSet.Add(styleSheet);
         }
         
         #endif

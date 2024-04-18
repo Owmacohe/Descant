@@ -1,6 +1,8 @@
 ﻿using System;
+using UnityEngine;
+using Descant.Utilities;
 
-namespace DescantComponents
+namespace Descant.Components
 {
     /// <summary>
     /// Descant node Component parent class
@@ -11,7 +13,7 @@ namespace DescantComponents
         /// <summary>
         /// Whether this Component is currently collapsed in the UI
         /// </summary>
-        public bool Collapsed;
+        [HideInInspector] public bool Collapsed;
 
         /// <summary>
         /// Called when the node to which this Component is attached is reached in the dialogue
