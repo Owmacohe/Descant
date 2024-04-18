@@ -1,3 +1,5 @@
+![Descant logo](Media/Logo/Descant_Logo_C_200.png)
+
 # Descant
 
 *dess • can’t*
@@ -7,8 +9,12 @@
 > 3. a discourse on a theme.
 
 
+<img src="Media/Screenshots/editor.png" alt="Descant Dialogue Editor">
 
-![Descant logo](Media/Logo/Descant_Logo_C_200.png)
+<div style="display:flex; flex-direction:row;">
+  <img src="Media/Screenshots/actor.png" alt="Descant Actor" style="width:49%">
+  <img src="Media/Screenshots/game.png" alt="Sample UI implementation" style="width:49%">
+</div>
 
 
 
