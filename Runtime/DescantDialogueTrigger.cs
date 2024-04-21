@@ -15,11 +15,6 @@ namespace Descant.Runtime
         [SerializeField, Tooltip("The player's DescantActor")] DescantActor player;
         [SerializeField, Tooltip("The NPC DescantActor being interacted with")] DescantActor NPC;
         [SerializeField, Tooltip("Any more extra NPCs that the Descant Graph references")] DescantActor[] extraActors;
-        
-        [Header("Portraits")]
-        [SerializeField, Tooltip("A list of portraits that can be applied to actors during the dialogue")] Sprite[] portraits;
-        [SerializeField, Tooltip("The name of the player's default portrait")] string playerPortraitName;
-        [SerializeField, Tooltip("The name of the NPC's default portrait")] string npcPortraitName;
 
         void Start()
         {
@@ -35,10 +30,7 @@ namespace Descant.Runtime
                 graph,
                 player,
                 NPC, 
-                extraActors,
-                portraits,
-                playerPortraitName,
-                npcPortraitName
+                extraActors
             );
         }
     }

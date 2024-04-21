@@ -284,7 +284,23 @@ DescantResponseNode #contents .response TextElement {
 
 .node_component .node_component_row {
     flex-direction: row;
+    align-items: center;
     justify-content: space-between;
+}
+
+.node_component .node_component_row_order {
+    min-width: 25;
+    height: 25;
+    
+    padding: 2;
+}
+
+.node_component .node_component_row_order TextInput {
+    min-width: 0;
+}
+
+.node_component .node_component_row_order TextElement {
+    padding: 2;
 }
 
 .node_component .node_component_group_name {

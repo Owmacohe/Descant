@@ -44,29 +44,19 @@ namespace Descant.Components
         public List<KeyValuePair<int, string>> Text;
         
         /// <summary>
-        /// The list of current DescantActors
+        /// The current player DescantActor
+        /// </summary>
+        public DescantActor Player;
+        
+        /// <summary>
+        /// The current NPC DescantActor
+        /// </summary>
+        public DescantActor NPC;
+        
+        /// <summary>
+        /// The list of all current DescantActors
         /// </summary>
         public List<DescantActor> Actors;
-        
-        /// <summary>
-        /// The current name of the player's portrait
-        /// </summary>
-        public string PlayerPortrait;
-        
-        /// <summary>
-        /// Whether the player's portrait is currently enabled
-        /// </summary>
-        public bool PlayerPortraitEnabled;
-        
-        /// <summary>
-        /// The current name of the NPC's portrait
-        /// </summary>
-        public string NPCPortrait;
-        
-        /// <summary>
-        /// Whether the NPC's portrait is currently enabled
-        /// </summary>
-        public bool NPCPortraitEnabled;
 
         /// <summary>
         /// Parameterized constructor
@@ -74,25 +64,19 @@ namespace Descant.Components
         /// <param name="text">
         /// The list of texts to display for the current node (as well index for their position when displayed)
         /// </param>
-        /// <param name="actors">The list of current DescantActors</param>
-        /// <param name="playerPortrait">The current name of the player's portrait</param>
-        /// <param name="playerPortraitEnabled">Whether the player's portrait is currently enabled</param>
-        /// <param name="npcPortrait">The current name of the NPC's portrait</param>
-        /// <param name="npcPortraitEnabled">Whether the NPC's portrait is currently enabled</param>
+        /// <param name="player">The current player DescantActor</param>
+        /// <param name="npc">The current NPC DescantActor</param>
+        /// <param name="actors">The list of all current DescantActors</param>
         public DescantNodeInvokeResult(
             List<KeyValuePair<int, string>> text,
-            List<DescantActor> actors,
-            string playerPortrait,
-            bool playerPortraitEnabled,
-            string npcPortrait,
-            bool npcPortraitEnabled)
+            DescantActor player,
+            DescantActor npc,
+            List<DescantActor> actors)
         {
             Text = text;
+            Player = player;
+            NPC = npc;
             Actors = actors;
-            PlayerPortrait = playerPortrait;
-            PlayerPortraitEnabled = playerPortraitEnabled;
-            NPCPortrait = npcPortrait;
-            NPCPortraitEnabled = npcPortraitEnabled;
         }
     }
 }

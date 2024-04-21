@@ -15,9 +15,9 @@ MonoBehaviour:
   Autosave: 0
   Typewriter: 1
   TypewriterSpeed: 1
-  ChoiceNodeID: 5
+  ChoiceNodeID: 6
   ResponseNodeID: 6
-  EndNodeID: 3
+  EndNodeID: 5
   GroupID: 4
   ChoiceNodes:
   - Name: ChoiceNode
@@ -57,7 +57,7 @@ MonoBehaviour:
   - Name: ResponseNode
     Type: Response
     ID: 1
-    Position: {x: 1632, y: -270}
+    Position: {x: 1632, y: -291}
     NodeComponents: []
     Response: 'You can download it at: <i>https://github.com/owmacohe/descant</i>.
       It''s free! I have {Test_NPC:Money} dollars.'
@@ -104,11 +104,11 @@ MonoBehaviour:
     ID: 2
     Position: {x: 1632, y: 581}
     NodeComponents:
-    - rid: 7632772672291864713
+    - rid: 7632772813772292225
   Groups:
   - Name: Answers
     ID: 0
-    Position: {x: 1607, y: -329}
+    Position: {x: 1607, y: -350}
     Nodes:
     - Response
     - Response
@@ -117,7 +117,7 @@ MonoBehaviour:
     NodeIDs: 01000000020000000300000002000000
   - Name: Start
     ID: 1
-    Position: {x: -25, y: -59}
+    Position: {x: -25.00003, y: -59}
     Nodes:
     - Response
     - Start
@@ -222,12 +222,12 @@ MonoBehaviour:
       data:
         Collapsed: 0
         Message: Third ending
-    - rid: 7632772672291864713
-      type: {class: Log, ns: Descant.Components, asm: omch.descant.components}
-      data:
-        Collapsed: 0
-        Message: Second ending
     - rid: 7632772672291864714
       type: {class: RandomizedChoice, ns: Descant.Components, asm: omch.descant.components}
       data:
         Collapsed: 0
+    - rid: 7632772813772292225
+      type: {class: Log, ns: Descant.Components, asm: omch.descant.components}
+      data:
+        Collapsed: 0
+        Message: First ending

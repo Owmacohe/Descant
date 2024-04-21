@@ -42,10 +42,6 @@ namespace Descant.Runtime
         [HideInInspector] public string CurrentType; // The string NodeType type of the runtime node being accessed
         [HideInInspector] public List<RuntimeNode> Nodes = new List<RuntimeNode>(); // The list of RuntimeNodes derived from the data
         [HideInInspector] public List<DescantActor> Actors = new List<DescantActor>(); // The list of DescantActors derived from the data
-        [HideInInspector] public string PlayerPortrait; // The name of the current player portrait
-        [HideInInspector] public bool PlayerPortraitEnabled; // Whether the player portrait should be enabled
-        [HideInInspector] public string NPCPortrait; // The name of the current NPC portrait
-        [HideInInspector] public bool NPCPortraitEnabled; // Whether the NPC portrait should be enabled
 
         DescantActor player; // The player DescantActor for this dialogue
         DescantActor NPC; // The NPC DescantActor for this dialogue
@@ -67,7 +63,7 @@ namespace Descant.Runtime
         /// <param name="p">The dialogue's player to be loaded</param>
         /// <param name="npc">The dialogue's NPC to be loaded</param>
         /// <param name="a">The dialogue's extra actors to be loaded</param>
-        public void Initialize(DescantGraph g, DescantActor p, DescantActor npc, DescantActor[] a, string pp, string npcp)
+        public void Initialize(DescantGraph g, DescantActor p, DescantActor npc, DescantActor[] a)
         {
             #if UNITY_EDITOR
             AssetDatabase.Refresh();
@@ -85,6 +81,9 @@ namespace Descant.Runtime
             if (p != null)
             {
                 player = p;
+
+                // Setting the first portrait by default
+                if (player.Portraits.Length > 0) player.Portrait = player.Portraits[0];
                 
                 if (!Actors.Contains(player)) Actors.Add(player);
             }
@@ -93,6 +92,9 @@ namespace Descant.Runtime
             if (npc != null)
             {
                 NPC = npc;
+
+                // Setting the first portrait by default
+                if (NPC.Portraits.Length > 0) NPC.Portrait = NPC.Portraits[0];
                 
                 if (!Actors.Contains(NPC)) Actors.Add(NPC);
             }
@@ -101,12 +103,6 @@ namespace Descant.Runtime
             if (saver == null) saver = gameObject.AddComponent<RuntimeSerializedObjectSaver>();
             
             log = Resources.Load<DescantLogData>("Default Log (DO NOT DELETE)"); // Accessing the log file
-
-            // Initializing the actor portrait info
-            PlayerPortrait = pp;
-            PlayerPortraitEnabled = true;
-            NPCPortrait = npcp;
-            NPCPortraitEnabled = true;
         }
 
         /// <summary>
@@ -237,11 +233,9 @@ namespace Descant.Runtime
             // Creating a new results object to be passed in and out of the Components
             DescantNodeInvokeResult currentResult = new DescantNodeInvokeResult(
                 new List<KeyValuePair<int, string>>(),
-                Actors,
-                PlayerPortrait,
-                PlayerPortraitEnabled,
-                NPCPortrait,
-                NPCPortraitEnabled
+                player,
+                NPC,
+                Actors
             );
 
             // Invoking the StartNode's components if we're at the beginning of the dialogue
@@ -293,10 +287,6 @@ namespace Descant.Runtime
             
             // Invoking the Components for the new node, and setting the actors and their portraits accordingly
             currentResult = InvokeComponents(currentResult, verbose);
-            PlayerPortrait = currentResult.PlayerPortrait;
-            PlayerPortraitEnabled = currentResult.PlayerPortraitEnabled;
-            NPCPortrait = currentResult.NPCPortrait;
-            NPCPortraitEnabled = currentResult.NPCPortraitEnabled;
 
             // Making sure to assign and save the SerializedObjects properly
             for (int i = 0; i < Actors.Count; i++)

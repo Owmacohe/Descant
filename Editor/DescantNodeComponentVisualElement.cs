@@ -13,21 +13,25 @@ namespace Descant.Editor
     public class DescantNodeComponentVisualElement : VisualElement
     {
         /// <summary>
-        /// The name of this Component
-        /// </summary>
-        public string Name { get; }
-        
-        /// <summary>
         /// The Component that this visual element is representing
         /// </summary>
         public DescantComponent Component { get; }
+
+        /// <summary>
+        /// A callback that triggers once the VisualElements for this Component have all been drawn
+        /// </summary>
+        public event Action Drawn;
+        
+        string componentName; // The trimmed name corresponding to this component
+        int index; // The index of this Component within its DescantNode's list of Components
         
         DescantGraphView graphView; // The DescantGraphView (used for saving)
         DescantNode node; // The node that this Component is attached to
         
         List<VisualElement> paramRows; // The list of rows of parameters for this Component
         List<string> paramRowGroups; // The list of names of rows of parameters for this Component
-        
+
+        TextField order;
         VisualElement collapsible; // The section of the Component that is collapsible
         Button collapsibleButton; // The button used to collapse/expand the Component
 
@@ -36,28 +40,33 @@ namespace Descant.Editor
         /// </summary>
         /// <param name="graph">The DescantGraphView (used for saving)</param>
         /// <param name="descantNode">The node that the Component is attached to</param>
-        /// <param name="name">The name of the Component</param>
+        /// <param name="componentName">The name of the Component</param>
+        /// <param name="index">The starting index of this Component within its DescantNode's list of Components</param>
         /// <param name="component">The Component that the visual element is representing</param>
         public DescantNodeComponentVisualElement(
             DescantGraphView graph,
             DescantNode descantNode,
-            string name,
+            string componentName,
+            int index,
             DescantComponent component)
         {
             graphView = graph;
             node = descantNode;
-            Name = name;
+            this.componentName = componentName;
+            this.index = index;
 
             // If the Component is null (i.e. it's being created for the first time), we create a new instance of it
             if (component == null)
             {
                 List<Type> types = DescantComponentUtilities.GetComponentTypes();
-                var temp = types[DescantComponentUtilities.GetTrimmedComponentTypes(types).IndexOf(Name)];
+                var temp = types[DescantComponentUtilities.GetTrimmedComponentTypes(types).IndexOf(this.componentName)];
                 
                 Component = (DescantComponent) Activator.CreateInstance(temp);
             }
             else Component = component; // Otherwise we just use the previously saved copy
         }
+        
+        #region Draw
 
         /// <summary>
         /// Initializes this Component's VisualElements
@@ -80,16 +89,65 @@ namespace Descant.Editor
             top_row.Add(top_row_left);
             paramRows.Add(top_row_left);
             paramRowGroups.Add("");
-            
-            // Adding the removal button
-            Button removeComponent = new Button();
-            removeComponent.text = "X";
-            removeComponent.clicked += RemoveComponent;
-            top_row_left.Add(removeComponent);
+
+            // Adding the order field
+            order = new TextField();
+            order.AddToClassList("node_component_row_order");
+            order.multiline = false;
+            order.value = index.ToString();
+            top_row_left.Add(order);
+
+            if (Component.GetType() != typeof(RandomizedChoice))
+            {
+                // Adding a small callback to prevent large and unnecessary indices to be entered into the order field
+                order.RegisterValueChangedCallback(evt =>
+                {
+                    try
+                    {
+                        int parsed = int.Parse(order.value);
+
+                        if (parsed < 0) order.value = "0";
+                        else if (parsed >= node.VisualComponents.Count)
+                            order.value = (node.VisualComponents.Count - 1).ToString();
+                    }
+                    catch { }
+                });
+
+                // Callback to parse and rearrange the Components once the user presses enter
+                // in the order field after entering a new index for the Component
+                order.RegisterCallback(new EventCallback<KeyDownEvent>(evt =>
+                {
+                    if (evt.keyCode.Equals(KeyCode.Return))
+                    {
+                        int parsed;
+
+                        try
+                        {
+                            parsed = int.Parse(order.value);
+
+                            if (parsed < 0) parsed = 0;
+                            else if (parsed >= node.VisualComponents.Count)
+                            {
+                                parsed = node.VisualComponents.Count - 1;
+
+                                if (parsed == index) order.value = parsed.ToString();
+                            }
+                        }
+                        catch
+                        {
+                            parsed = 0;
+                        }
+
+                        if (parsed != index) node.RearrangeComponent(this, parsed);
+                    }
+                }));
+            }
+            // Hiding the index if it's a RandomizedNode
+            else order.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
             
             // Adding the name
             TextElement name = new TextElement();
-            name.text = Name;
+            name.text = componentName;
             top_row_left.Add(name);
 
             // Adding the collapsible section
@@ -242,6 +300,10 @@ namespace Descant.Editor
                                 case "ListChangeType":
                                     i.SetValue(Component, DescantComponentUtilities.ParseEnum<ListChangeType>(callback.newValue));
                                     break;
+                                
+                                case "PortraitChangeType":
+                                    i.SetValue(Component, DescantComponentUtilities.ParseEnum<PortraitChangeType>(callback.newValue));
+                                    break;
                             }
 
                             graphView.Editor.CheckAndSave(); // Check for autosave
@@ -266,13 +328,34 @@ namespace Descant.Editor
                 collapsibleButton.tooltip = "collapse/expand";
                 collapsibleButton.text = "v";
                 collapsibleButton.clicked += ToggleCollapseComponent;
-                top_row.Add(collapsibleButton);
+                top_row_left.Insert(1, collapsibleButton);
             
                 if (Component.Collapsed) ToggleCollapseComponent();
             }
+            
+            // Adding the removal button
+            Button removeButton = new Button();
+            removeButton.tooltip = "remove";
+            removeButton.text = "X";
+            removeButton.clicked += RemoveComponent;
+            top_row.Add(removeButton);
+            
+            Drawn?.Invoke();
         }
+        
+        #endregion
 
         #region Utility methods
+        
+        /// <summary>
+        /// Quick method to set this Component's index within its DescantNode's list of Components
+        /// </summary>
+        /// <param name="index">The new index to be set</param>
+        public void SetOrder(int index)
+        {
+            this.index = index;
+            order.value = index.ToString();
+        }
         
         /// <summary>
         /// Somewhat involved method for adding new elements to Component parameter rows
@@ -366,14 +449,17 @@ namespace Descant.Editor
         /// </summary>
         void RemoveComponent()
         {
-            node.ComponentCounts[Name]--; // Decrementing the Component's node's count for this particular type of Component
+            node.VisualComponents.Remove(this);
+            node.ComponentCounts[componentName]--; // Decrementing the Component's node's count for this particular type of Component
 
             // Now that we've removed it from the count, can future nodes of this type be added?
-            if (node.ComponentCounts[Name] < DescantComponentUtilities.GetComponentMaximum(Name))
+            if (node.ComponentCounts[componentName] < DescantComponentUtilities.GetComponentMaximum(componentName))
             {
-                node.ComponentDropdown.choices.Add(Name);
+                node.ComponentDropdown.choices.Add(componentName);
                 node.ComponentDropdown.choices.Sort();
             }
+            
+            node.UpdateComponents();
             
             DescantEditorUtilities.RemoveElement(this); // Removing the actual Component from the hierarchy
             

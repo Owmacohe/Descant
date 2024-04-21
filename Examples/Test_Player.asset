@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49fd40c39f0449118e62758ae3bb230e, type: 3}
   m_Name: Test_Player
   m_EditorClassIdentifier: 
+  PortraitEnabled: 1
+  Portrait: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  Portraits:
+  - {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
   StatisticKeys:
   - Health
   StatisticValues:
-  - 20
+  - 19
   Topics:
   - Descant
   - Secret

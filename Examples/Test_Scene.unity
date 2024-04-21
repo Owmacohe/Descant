@@ -517,12 +517,6 @@ MonoBehaviour:
   player: {fileID: 11400000, guid: aa50e7fd76a0a8c4ba679f3a8ac2fe0e, type: 2}
   NPC: {fileID: 11400000, guid: ac3d79085608abb479f9d21705ca4a30, type: 2}
   extraActors: []
-  portraits:
-  - {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
-  playerPortraitName: Knob
-  npcPortraitName: UISprite
 --- !u!1 &421364685
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,6 +11,21 @@ namespace Descant.Components
     public class DescantActor : ScriptableObject
     {
         /// <summary>
+        /// Whether or not to show the actor's portrait during runtime
+        /// </summary>
+        public bool PortraitEnabled;
+
+        /// <summary>
+        /// The actor's currently set portrait (Portraits[0] by default)
+        /// </summary>
+        [HideInInspector] public Sprite Portrait;
+        
+        /// <summary>
+        /// All the possible portraits that this Actor can switch between (the first Sprite is used by default)
+        /// </summary>
+        public Sprite[] Portraits;
+        
+        /// <summary>
         /// The actor's statistics dictionary keys
         /// (C# Dictionaries can't be [Serialized], so we use two Lists instead)
         /// </summary>
@@ -42,24 +57,7 @@ namespace Descant.Components
         /// <summary>
         /// The number of times that the player has attempted to start a dialogue with the actor
         /// </summary>
-        public int DialogueAttempts;
-        
-        /// <summary>
-        /// Parameterized constructor
-        /// (most of the DescantActor's properties are set after
-        /// it has been initialized, as part of the saving process)
-        /// </summary>
-        /// <param name="name">The name of the actor</param>
-        public DescantActor(string name)
-        {
-            StatisticKeys = new List<string>();
-            StatisticValues = new List<float>();
-            
-            Topics = new List<string>();
-
-            RelationshipKeys = new List<string>();
-            RelationshipValues = new List<float>();
-        }
+        [HideInInspector] public int DialogueAttempts;
 
         /// <summary>
         /// Overridden ToString method

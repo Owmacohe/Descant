@@ -8,28 +8,29 @@ namespace Descant.Components
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Any)]
     public class PortraitChange : DescantComponent
     {
-        [Inline] public bool PlayerPortrait;
+        [Inline] public string ActorName;
         
         [ParameterGroup("Change to perform")] public PortraitChangeType ChangeType;
-        [ParameterGroup("Change to perform")] public string PortraitName;
+        [ParameterGroup("Change to perform")] public int PortraitIndex;
         
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
+            DescantActor actor = DescantComponentUtilities.GetActor(this, result.Actors, ActorName);
+
+            if (actor == null) return result;
+            
             switch (ChangeType)
             {
                 case PortraitChangeType.Set:
-                    if (PlayerPortrait) result.PlayerPortrait = PortraitName;
-                    else result.NPCPortrait = PortraitName;
+                    actor.Portrait = actor.Portraits[PortraitIndex];
                     break;
                 
                 case PortraitChangeType.Enable:
-                    if (PlayerPortrait) result.PlayerPortraitEnabled = true;
-                    else result.NPCPortraitEnabled = true;
+                    actor.PortraitEnabled = true;
                     break;
                 
                 case PortraitChangeType.Disable:
-                    if (PlayerPortrait) result.PlayerPortraitEnabled = false;
-                    else result.NPCPortraitEnabled = false;
+                    actor.PortraitEnabled = false;
                     break;
             }
             

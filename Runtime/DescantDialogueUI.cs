@@ -39,8 +39,6 @@ namespace Descant.Runtime
         int typewriterIndex; // The index in the target text that the typewriter is currently at
         float currentTypewriterSpeed; // The current speed that the typewriter is typing at
 
-        Sprite[] portraits; // The current array of all possible actor portraits during the dialogue
-
         /// <summary>
         /// A callback that triggers when the dialogue begins
         /// (don't forget to unsubscribe when you're done!)
@@ -83,11 +81,9 @@ namespace Descant.Runtime
         public void Initialize(
             DescantGraph graph,
             DescantActor player, DescantActor npc, DescantActor[] extraActors,
-            Sprite[] portraits, string playerPortrait, string npcPortrait,
             bool display = true)
         {
-            this.portraits = portraits;
-            dialogueController.Initialize(graph, player, npc, extraActors, playerPortrait, npcPortrait);
+            dialogueController.Initialize(graph, player, npc, extraActors);
 
             currentTypewriterSpeed = dialogueController.TypewriterSpeed;
             
@@ -185,12 +181,12 @@ namespace Descant.Runtime
             }
             
             // Setting the actor portraits accordingly
-            playerPortrait.sprite = GetPortrait(dialogueController.PlayerPortrait);
-            npcPortrait.sprite = GetPortrait(dialogueController.NPCPortrait);
+            playerPortrait.sprite = temp.Player.Portrait;
+            npcPortrait.sprite = temp.NPC.Portrait;
             
             // Enabling/disabling the portraits based on whether they're null and/or enabled/disabled
-            playerPortrait.gameObject.SetActive(playerPortrait.sprite != null && dialogueController.PlayerPortraitEnabled);
-            npcPortrait.gameObject.SetActive(npcPortrait.sprite != null && dialogueController.NPCPortraitEnabled);
+            playerPortrait.gameObject.SetActive(playerPortrait.sprite != null && temp.Player.PortraitEnabled);
+            npcPortrait.gameObject.SetActive(npcPortrait.sprite != null && temp.NPC.PortraitEnabled);
 
             // Displaying the ResponseNodes...
             if (temp.Text.Count == 1 && dialogueController.Current.Data.Type.Equals("Response"))
@@ -256,20 +252,6 @@ namespace Descant.Runtime
             }
             
             OnDisplay?.Invoke();
-        }
-        
-        /// <summary>
-        /// Quick method to check through all the available actor portraits to find teh one with the given name
-        /// </summary>
-        /// <param name="name">The name of the portrait image being searched for</param>
-        /// <returns>The portrait image</returns>
-        Sprite GetPortrait(string name)
-        {
-            foreach (var i in portraits)
-                if (i.name == name)
-                    return i;
-
-            return null;
         }
 
         #endregion

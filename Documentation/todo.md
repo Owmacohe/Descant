@@ -29,3 +29,21 @@
 - ~~Create an online Component documentation website~~
 - Ctrl-S saving functionality for editors
 - Save panned position in `Descant Graph Editor`
+
+
+
+## Workshop Feedback
+- ~~Tie portraits to Actors~~
+- ~~Bug where changeportrait dropdown can't be changed~~
+- ~~Allow Components to be rearranged~~
+- Make it more obvious what data is being referenced by components
+  - Allow actors and other data to be dragged and dropped
+  - Show thumbnails
+  - Indicate that scripts and methods are there when typing in the components
+- Add If Node
+- Make a video tutorial
+- ~~Make `RandomizedNode` automatically last~~
+- Create a search functionality in the graph editor
+- Make the Log less busy
+- Add a note-taking function
+- Typewriter speed-changing functionality

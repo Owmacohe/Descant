@@ -106,9 +106,10 @@ namespace Descant.Editor
 
                 for (int ii = 0; ii < i.Choices.Count; ii++)
                     temp.AddChoice(ii + 1, i.Choices[ii]);
-
-                foreach (var ij in i.NodeComponents)
-                    temp.AddComponent(DescantComponentUtilities.GetTrimmedTypeName(ij.GetType()), ij);
+                
+                for (int ij = 0; ij < i.NodeComponents.Count; ij++)
+                    temp.AddComponent(DescantComponentUtilities.GetTrimmedTypeName(
+                        i.NodeComponents[ij].GetType()), ij, i.NodeComponents[ij]);
 
                 AddElement(temp);
             }
@@ -119,9 +120,9 @@ namespace Descant.Editor
                 var temp = CreateResponseNode(j.Position, j.Name, j.ID);
                 DescantEditorUtilities.FindAllElements<TextField>(temp)[1].value = j.Response;
                 
-                foreach (var ji in j.NodeComponents)
-                    temp.AddComponent(
-                        DescantComponentUtilities.GetTrimmedTypeName(ji.GetType()), ji);
+                for (int ji = 0; ji < j.NodeComponents.Count; ji++)
+                    temp.AddComponent(DescantComponentUtilities.GetTrimmedTypeName(
+                        j.NodeComponents[ji].GetType()), ji, j.NodeComponents[ji]);
                 
                 AddElement(temp);
             }
@@ -135,9 +136,9 @@ namespace Descant.Editor
                     data.StartNode.ID
                 );
                 
-                foreach (var k in data.StartNode.NodeComponents)
-                    temp.AddComponent(
-                        DescantComponentUtilities.GetTrimmedTypeName(k.GetType()), k);
+                for (int k = 0; k < data.StartNode.NodeComponents.Count; k++)
+                    temp.AddComponent(DescantComponentUtilities.GetTrimmedTypeName(
+                        data.StartNode.NodeComponents[k].GetType()), k, data.StartNode.NodeComponents[k]);
                 
                 AddElement(temp);
             }
@@ -150,9 +151,9 @@ namespace Descant.Editor
             {
                 DescantEndNode temp = CreateEndNode(l.Position, l.Name, l.ID);
                 
-                foreach (var li in l.NodeComponents)
-                    temp.AddComponent(
-                        DescantComponentUtilities.GetTrimmedTypeName(li.GetType()), li);
+                for (int li = 0; li < l.NodeComponents.Count; li++)
+                    temp.AddComponent(DescantComponentUtilities.GetTrimmedTypeName(
+                        l.NodeComponents[li].GetType()), li, l.NodeComponents[li]);
                 
                 AddElement(temp);
             }
@@ -474,7 +475,6 @@ namespace Descant.Editor
                 if (startPort == port) return;
                 if (startPort.node == port.node) return;
                 if (startPort.direction == port.direction) return;
-                if (startPort.name == port.name && startPort.name != "Response") return;
                 
                 compatiblePorts.Add(port);
             });

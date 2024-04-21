@@ -45,6 +45,15 @@ namespace Descant.Editor
         /// Used by Descant graph nodes to update their IDs and save when changes have been made to them
         /// </summary>
         protected DescantGraphView GraphView;
+
+        /// <summary>
+        /// A list of all DescantNodeComponentVisualElement components currently
+        /// generated and added in the Descant Graph Editor
+        /// </summary>
+        [HideInInspector] public List<DescantNodeComponentVisualElement> VisualComponents =
+            new List<DescantNodeComponentVisualElement>();
+        
+        #region Initialization
         
         /// <summary>
         /// Parameterized constructor
@@ -137,7 +146,7 @@ namespace Descant.Editor
                 string componentName = callback.newValue;
 
                 if (componentName != "Add Component")
-                    AddComponent(componentName, null);
+                    AddComponent(componentName, VisualComponents.Count, null);
                 
                 ComponentDropdown.value = "Add Component";
                 
@@ -153,15 +162,20 @@ namespace Descant.Editor
             evt.menu.AppendAction("Delete", actionEvent => { RemoveNode(); });
         }
         
+        #endregion
+        
+        #region Components
+
         /// <summary>
         /// Creates and adds a new DescantNodeComponentVisualElement to this node
         /// </summary>
         /// <param name="componentName">The name of the Component type to add</param>
+        /// <param name="componentIndex">The index among Components that this new one should be added at</param>
         /// <param name="component">
         /// The DescantNodeComponent object that the VisualElement will be representing
         /// (if null, the DescantNodeComponentVisualElement will create a new instance of it)
         /// </param>
-        public void AddComponent(string componentName, DescantComponent component)
+        public void AddComponent(string componentName, int componentIndex, DescantComponent component)
         {
             // Updating the count for this Component type
             if (!ComponentCounts.ContainsKey(componentName)) ComponentCounts.Add(componentName, 1);
@@ -176,14 +190,57 @@ namespace Descant.Editor
                 GraphView, 
                 this,
                 componentName,
+                componentIndex,
                 component
             );
-                    
+            
+            // Adding to the DescantNodeComponentVisualElement list and updating the order
+            // (in case there are any RandomizedNodes in there)
+            VisualComponents.Add(temp);
+            temp.Drawn += UpdateComponents;
+            
             extensionContainer.Add(temp);
             temp.Draw();
                     
             RefreshExpandedState();
         }
+
+        /// <summary>
+        /// Repositions a DescantNodeComponentVisualElement's place within the lsit
+        /// </summary>
+        /// <param name="component">The Component VisualElement to be repositioned</param>
+        /// <param name="index">The index it should be moved it</param>
+        /// <param name="update">
+        /// Whether or not to update all other Components in the list in regards to this change (true by default)
+        /// </param>
+        public void RearrangeComponent(DescantNodeComponentVisualElement component, int index, bool update = true)
+        {
+            // removing and inserting it in the list
+            VisualComponents.Remove(component);
+            VisualComponents.Insert(index, component);
+            
+            extensionContainer.Insert(2 + index, component); // Removing and inserting it in the Node
+
+            if (update) UpdateComponents();
+        }
+
+        /// <summary>
+        /// Checks through the DescantNodeComponentVisualElements, making sure that
+        /// RandomizedChoices are at the end, and that all of their order indices are set correctly
+        /// </summary>
+        public void UpdateComponents()
+        {
+            for (int i = 0; i < VisualComponents.Count; i++)
+                if (i < VisualComponents.Count - 1 && VisualComponents[i].Component.GetType() == typeof(RandomizedChoice))
+                    RearrangeComponent(VisualComponents[i], VisualComponents.Count - 1, false);
+            
+            for (int j = 0; j < VisualComponents.Count; j++)
+            {
+                VisualComponents[j].SetOrder(j);
+            }
+        }
+        
+        #endregion
         
         /// <summary>
         /// Method to remove the node from the hierarchy, and perform all the necessary checks afterwards

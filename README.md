@@ -24,18 +24,16 @@
 
 ## Overview
 
-**Descant** is a **Unity** dialogue system plugin. The [Unity Asset Store](https://assetstore.unity.com) is [chock full](Documentation/system_review.xlsx) of many such types of plugins, ranging from [feature-rich](https://assetstore.unity.com/packages/tools/behavior-ai/dialogue-system-for-unity-11672), to [ultra-minimalist](https://assetstore.unity.com/packages/tools/visual-scripting/conversa-dialogue-system-192549), to [downright bad](https://assetstore.unity.com/packages/tools/c5-dialogue-system-14881). **Descant** aims to hit the sweet spot between quality UI, powerful features, and easy-to-lean functionality, while also addressing many of the game-specific consequences of the standard dialogue manager setup. Besides acting as a standard tool for creating, saving, and actualizing non-linear game dialogue, it also pushes the envelope by adding optional dialogue-enhancing node components that introduce features to break away from the overused and underwhelming trends seen in many interactive fiction games. These enhancements act similar to **Unity**’s standard `GameObject` `Component` system, and can be applied at-will to nodes. This modular approach is so-far not explored in the world of Unity dialogue systems. The project will be free *(and collaborative open-source)* forever. Feel free to send me a message or submit a pull request if you want to make any changes.
+**Descant** is a **Unity 2022.3.x** dialogue system plugin. The [Unity Asset Store](https://assetstore.unity.com) is [chock full](Documentation/system_review.xlsx) of many such types of plugins, ranging from [feature-rich](https://assetstore.unity.com/packages/tools/behavior-ai/dialogue-system-for-unity-11672), to [ultra-minimalist](https://assetstore.unity.com/packages/tools/visual-scripting/conversa-dialogue-system-192549), to [downright bad](https://assetstore.unity.com/packages/tools/c5-dialogue-system-14881). **Descant** aims to hit the sweet spot between quality UI, powerful features, and easy-to-lean functionality, while also addressing many of the game-specific consequences of the standard dialogue manager setup. Besides acting as a standard tool for creating, saving, and actualizing non-linear game dialogue, it also pushes the envelope by adding optional dialogue-enhancing node components that introduce features to break away from the overused and underwhelming trends seen in many interactive fiction games. These enhancements act similar to **Unity**’s standard `GameObject` `Component` system, and can be applied at-will to nodes. This modular approach is so-far not explored in the world of Unity dialogue systems. The project will be free *(and collaborative open-source)* forever. Feel free to send me a message or submit a pull request if you want to make any changes.
 
 
 
 ## Installation
 
 1. Install the latest release from the [GitHub repository](https://github.com/Owmacohe/Descant/releases), unzip it, and place the folder into your Unity project's `Packages` folder.
-2. Within your Unity project, navigate to the **Package Manager** window.
-3. Within the **Package Manager**, click on the **+** icon in the top left, and select **Add package from disk…**
-4. Navigate to the zipped **Descant** folder, and within that folder, select `package.json`.
-5. A sample scene can be found at: `Descant/Examples/Test_Scene.unity`.
-6. Opening this scene may prompt you to install **Text Mesh Pro**. Simple click on **Import TMP Essentials** to do so.
+2. return to Unity, and the package should automatically be recognized and visible in the **Package Manager**.
+3. A sample scene can be found at: `Descant/Examples/Test_Scene.unity`.
+4. Opening this scene may prompt you to install **Text Mesh Pro**. Simple click on **Import TMP Essentials** to do so.
 
 
 
@@ -47,7 +45,7 @@
 - **Descant Actors**
   - **Descant Actors** can be created by right clicking, and selecting `Create/Descant Actor`.
   - **Descant Actors** can be edited by right clicking on a `Descant Actor` file, and selecting `Edit Descant Actor`.
-- **Descant Logs** don't need to be crated or modified manually by the player at all. A single `DescantLogData` file exists in the `Descant/Resources` folder. Please don't delete it!
+- **Descant Logs** don't need to be created or modified manually by the player at all. A single `DescantLogData` file exists in the `Descant/Resources` folder. Please don't delete it!
 
 
 
