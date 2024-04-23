@@ -19,15 +19,15 @@
 }
 
 Toolbar {
-    height: 40;
-    padding: 8;
+    height: 40px;
+    padding: 8px;
     
     align-items: center;
     justify-content: space-between;
 }
 
 Toolbar .toolbar-title {
-    font-size: 18;
+    font-size: 18px;
 }
 
 Toolbar .log-section {
@@ -36,8 +36,8 @@ Toolbar .log-section {
 }
 
 Toolbar Button {
-    font-size: 13;
-    padding: 10;
+    font-size: 13px;
+    padding: 10px;
 }
 
 Toolbar Toggle {
@@ -46,41 +46,41 @@ Toolbar Toggle {
 
 Toolbar Toggle Label {
     min-width: 0;
-    margin-left: 10;
+    margin-left: 10px;
 
-    font-size: 13;
+    font-size: 13px;
 }
 
 Toolbar Toggle VisualElement {
-    margin: 2;
+    margin: 2px;
 }
 
 Toolbar TextField {
-    width: 80;
+    width: 80px;
 }
 
 Toolbar TextField Label {
-    min-width: 15;
-    font-size: 13;
+    min-width: 15px;
+    font-size: 13px;
 }
 
 Toolbar TextField TextElement {
-    margin: 2;
+    margin: 2px;
 }
 
 .log {
     height: 100%;
     
-    padding: 10;
+    padding: 10px;
     
-    font-size: 15;
+    font-size: 15px;
     
     background-color: var(--descant-color-default);
 }
 
 .log TextElement {
-    margin-bottom: 5;
-    padding: 5;
+    margin-bottom: 5px;
+    padding: 5px;
 }
 
 .log-element-a { background-color: var(--descant-color-background); }

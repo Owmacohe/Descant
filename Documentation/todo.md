@@ -24,11 +24,11 @@
 - Create a proper video tutorial
 - Add `DescantIfNode`
 - ~~Make script calling easier~~
-- Make autosave better (removed temporarily)
+- ~~Make autosave better (removed temporarily)~~
 - ~~Create log system~~
 - ~~Create an online Component documentation website~~
 - Ctrl-S saving functionality for editors
-- Save panned position in `Descant Graph Editor`
+- ~~Save panned position in `Descant Graph Editor`~~
 
 
 
@@ -43,7 +43,7 @@
 - Add If Node
 - Make a video tutorial
 - ~~Make `RandomizedNode` automatically last~~
-- Create a search functionality in the graph editor
+- ~~Create a search functionality in the graph editor~~
 - Make the Log less busy
-- Add a note-taking function
+- ~~Add a note-taking function~~
 - Typewriter speed-changing functionality

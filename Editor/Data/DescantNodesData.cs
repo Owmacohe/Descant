@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace Descant.Editor
 {
+    #region DescantNodeData
+    
     /// <summary>
     /// Parent class to hold the data for saving and loading Descant nodes
     /// </summary>
@@ -38,6 +40,11 @@ namespace Descant.Editor
         [SerializeReference] public List<DescantComponent> NodeComponents;
 
         /// <summary>
+        /// The comments associated with this node
+        /// </summary>
+        public string Comments;
+
+        /// <summary>
         /// Parameterized constructor
         /// </summary>
         /// <param name="name">The custom name of the node</param>
@@ -45,18 +52,21 @@ namespace Descant.Editor
         /// <param name="id">The type of this node</param>
         /// <param name="position">The node's current position</param>
         /// <param name="nodeComponents">The list of Components attached to the node</param>
+        /// <param name="comments">The comments associated with this node</param>
         protected DescantNodeData(
             string name,
             string type,
             int id,
             Vector2 position,
-            List<DescantComponent> nodeComponents)
+            List<DescantComponent> nodeComponents,
+            string comments)
         {
             Name = name;
             Type = type;
             ID = id;
             Position = position;
             NodeComponents = nodeComponents;
+            Comments = comments;
         }
 
         /// <summary>
@@ -78,6 +88,11 @@ namespace Descant.Editor
             return Equals((DescantNodeData)other);
         }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name, Type, ID, Position, NodeComponents, Comments);
+        }
+
         #if UNITY_EDITOR
         /// <summary>
         /// Custom Equals method
@@ -90,7 +105,8 @@ namespace Descant.Editor
                 Name == other.Name &&
                 ID == other.ID &&
                 Position == other.Position &&
-                DescantEditorUtilities.AreListsEqual(NodeComponents, other.NodeComponents);
+                DescantEditorUtilities.AreListsEqual(NodeComponents, other.NodeComponents) &&
+                Comments == other.Comments;
         }
         #endif
 
@@ -104,9 +120,15 @@ namespace Descant.Editor
             foreach (var i in NodeComponents)
                 temp += " " + i;
             
-            return GetType() + " (" + ID + Name + " " + Type + " " + Position + ") (" + (temp.Length > 1 ? temp.Substring(1) : "") + ")";
+            return GetType() + " (" + ID + Name + " " + Type + " " + Position + ") (" +
+                   (temp.Length > 1 ? temp.Substring(1) : "") + ") (" +
+                   Comments + ")";
         }
     }
+    
+    #endregion
+    
+    #region DescantChoiceNodeData
 
     /// <summary>
     /// Serializable class to hold the data for saving and loading Descant choice nodes
@@ -126,16 +148,18 @@ namespace Descant.Editor
         /// <param name="type">The unique identifier ID for the node</param>
         /// <param name="id">The type of this node</param>
         /// <param name="position">The node's current position</param>
-        /// <param name="nodeComponents">The list of Components attached to the node</param>
         /// <param name="choices">The list of possible choices that the player can make at the ChoiceNode</param>
+        /// <param name="nodeComponents">The list of Components attached to the node</param>
+        /// <param name="comments">The comments associated with this node</param>
         public DescantChoiceNodeData(
             string name,
             string type,
             int id,
             Vector2 position,
             List<string> choices,
-            List<DescantComponent> nodeComponents)
-            : base(name, type, id, position, nodeComponents)
+            List<DescantComponent> nodeComponents,
+            string comments)
+            : base(name, type, id, position, nodeComponents, comments)
         {
             Choices = choices;
         }
@@ -159,6 +183,11 @@ namespace Descant.Editor
             return Equals((DescantChoiceNodeData)other);
         }
         
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(base.GetHashCode(), Choices);
+        }
+
         #if UNITY_EDITOR
         /// <summary>
         /// Custom Equals method
@@ -187,6 +216,10 @@ namespace Descant.Editor
         }
     }
     
+    #endregion
+    
+    #region DescantResponseNodeData
+    
     /// <summary>
     /// Serializable class to hold the data for saving and loading Descant response nodes
     /// </summary>
@@ -205,16 +238,18 @@ namespace Descant.Editor
         /// <param name="type">The unique identifier ID for the node</param>
         /// <param name="id">The type of this node</param>
         /// <param name="position">The node's current position</param>
-        /// <param name="nodeComponents">The list of Components attached to the node</param>
         /// <param name="response">The response text at the ResponseNode</param>
+        /// <param name="nodeComponents">The list of Components attached to the node</param>
+        /// <param name="comments">The comments associated with this node</param>
         public DescantResponseNodeData(
             string name,
             string type,
             int id,
             Vector2 position,
             string response,
-            List<DescantComponent> nodeComponents)
-            : base(name, type, id, position, nodeComponents)
+            List<DescantComponent> nodeComponents,
+            string comments)
+            : base(name, type, id, position, nodeComponents, comments)
         {
             Response = response;
         }
@@ -238,6 +273,11 @@ namespace Descant.Editor
             return Equals((DescantResponseNodeData)other);
         }
         
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(base.GetHashCode(), Response);
+        }
+
         #if UNITY_EDITOR
         /// <summary>
         /// Custom Equals method
@@ -260,6 +300,10 @@ namespace Descant.Editor
             return base.ToString() + " (" + Response + ")";
         }
     }
+    
+    #endregion
+    
+    #region DescantStartNodeData and DescantEndNodeData
 
     /// <summary>
     /// Serializable class to hold the data for saving and loading Descant start nodes
@@ -274,12 +318,14 @@ namespace Descant.Editor
         /// <param name="type">The unique identifier ID for the node</param>
         /// <param name="position">The node's current position</param>
         /// <param name="nodeComponents">The list of Components attached to the node</param>
+        /// <param name="comments">The comments associated with this node</param>
         public DescantStartNodeData(
             string name,
             string type,
             Vector2 position,
-            List<DescantComponent> nodeComponents)
-            : base(name, type, 0, position, nodeComponents) { }
+            List<DescantComponent> nodeComponents,
+            string comments)
+            : base(name, type, 0, position, nodeComponents, comments) { }
     }
     
     /// <summary>
@@ -296,12 +342,16 @@ namespace Descant.Editor
         /// <param name="id">The type of this node</param>
         /// <param name="position">The node's current position</param>
         /// <param name="nodeComponents">The list of Components attached to the node</param>
+        /// <param name="comments">The comments associated with this node</param>
         public DescantEndNodeData(
             string name,
             string type,
             int id,
             Vector2 position,
-            List<DescantComponent> nodeComponents)
-            : base(name, type, id, position, nodeComponents) { }
+            List<DescantComponent> nodeComponents,
+            string comments)
+            : base(name, type, id, position, nodeComponents, comments) { }
     }
+    
+    #endregion
 }

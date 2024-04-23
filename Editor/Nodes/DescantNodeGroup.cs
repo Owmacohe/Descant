@@ -77,16 +77,29 @@ namespace Descant.Editor
             removeGroup.clicked += RemoveGroup;
             headerContainer.Add(removeGroup);
             
+            /*
             // Adding a callback for when the group is removed
             RegisterCallback(new EventCallback<MouseLeaveEvent>(callback =>
             {
                 GraphView.Editor.CheckAndSave(); // Check for autosave
             }));
+            */
 
             // Aligning the group's name to the center
             headerContainer.style.flexDirection = FlexDirection.Row;
             headerContainer.style.alignItems = Align.Center;
             headerContainer.style.justifyContent = Justify.Center;
+            
+            // Initializing the comments
+            TextField comments = new TextField("Comments:");
+            comments.AddToClassList("comments");
+            comments.multiline = true;
+            contentContainer.Add(comments);
+            
+            comments.RegisterValueChangedCallback(evt =>
+            {
+                GraphView.Editor.CheckAndSave();
+            });
         }
 
         /// <summary>

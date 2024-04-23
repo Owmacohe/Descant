@@ -181,7 +181,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: 'This scene can be used to quickly test Descant graphs and actors. Simply
-    assign the appropriate graph, actor, and/or portrait data to the <b>DescantDialogueTrigger</b>
+    assign the appropriate graph and actor files to the <b>DescantDialogueTrigger</b>
     script (on the <i>Start Button</i> in the <i>Start Canvas</i>).
 
 

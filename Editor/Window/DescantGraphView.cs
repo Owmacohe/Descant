@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
+using System.Linq;
 using Descant.Components;
 using Descant.Utilities;
 using UnityEditor;
@@ -94,6 +95,9 @@ namespace Descant.Editor
             // Generating all the data that has been previously loaded into the editor
             DescantGraph data = Editor.data;
 
+            // Initializing the panned and scrolled positions
+            UpdateViewTransform(data.PannedPosition, data.ScrolledScale);
+
             ChoiceNodeID = data.ChoiceNodeID;
             ResponseNodeID = data.ResponseNodeID;
             EndNodeID = data.EndNodeID;
@@ -110,6 +114,9 @@ namespace Descant.Editor
                 for (int ij = 0; ij < i.NodeComponents.Count; ij++)
                     temp.AddComponent(DescantComponentUtilities.GetTrimmedTypeName(
                         i.NodeComponents[ij].GetType()), ij, i.NodeComponents[ij]);
+                
+                List<TextField> fields = DescantEditorUtilities.FindAllElements<TextField>(temp);
+                fields[^1].value = i.Comments;
 
                 AddElement(temp);
             }
@@ -118,11 +125,15 @@ namespace Descant.Editor
             foreach (var j in data.ResponseNodes)
             {
                 var temp = CreateResponseNode(j.Position, j.Name, j.ID);
-                DescantEditorUtilities.FindAllElements<TextField>(temp)[1].value = j.Response;
+                List<TextField> fields = DescantEditorUtilities.FindAllElements<TextField>(temp);
+                
+                fields[1].value = j.Response;
                 
                 for (int ji = 0; ji < j.NodeComponents.Count; ji++)
                     temp.AddComponent(DescantComponentUtilities.GetTrimmedTypeName(
                         j.NodeComponents[ji].GetType()), ji, j.NodeComponents[ji]);
+
+                fields[^1].value = j.Comments;
                 
                 AddElement(temp);
             }
@@ -140,6 +151,9 @@ namespace Descant.Editor
                     temp.AddComponent(DescantComponentUtilities.GetTrimmedTypeName(
                         data.StartNode.NodeComponents[k].GetType()), k, data.StartNode.NodeComponents[k]);
                 
+                List<TextField> fields = DescantEditorUtilities.FindAllElements<TextField>(temp);
+                fields[^1].value = data.StartNode.Comments;
+                
                 AddElement(temp);
             }
             else AddElement(CreateStartNode(new Vector2(50, 70)));
@@ -155,6 +169,9 @@ namespace Descant.Editor
                     temp.AddComponent(DescantComponentUtilities.GetTrimmedTypeName(
                         l.NodeComponents[li].GetType()), li, l.NodeComponents[li]);
                 
+                List<TextField> fields = DescantEditorUtilities.FindAllElements<TextField>(temp);
+                fields[^1].value = l.Comments;
+                
                 AddElement(temp);
             }
 
@@ -165,6 +182,8 @@ namespace Descant.Editor
 
                 for (int mi = 0; mi < m.Nodes.Count; mi++)
                     temp.AddElement(FindNode(m.Nodes[mi], m.NodeIDs[mi]));
+
+                DescantEditorUtilities.FindAllElements<TextField>(temp)[^1].value = m.Comments;
                 
                 AddElement(temp);
             }

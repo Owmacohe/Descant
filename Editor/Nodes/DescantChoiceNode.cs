@@ -13,6 +13,7 @@ namespace Descant.Editor
     /// </summary>
     public class DescantChoiceNode : DescantNode
     {
+        // A list of the TextElements indicating the numbers of the choices
         List<TextElement> choiceNumbers = new List<TextElement>();
         
         /// <summary>
@@ -81,7 +82,8 @@ namespace Descant.Editor
         /// <summary>
         /// Adds a new possible choice to the list in the node
         /// </summary>
-        /// <param name="choice"></param>
+        /// <param name="index">The base-1 index of this choice</param>
+        /// <param name="choice">The text that should go in this choice's field</param>
         public void AddChoice(int index, string choice = "")
         {
             // Initializing the new choice's output port
@@ -135,7 +137,7 @@ namespace Descant.Editor
             // Refreshing the extensionContainer after new elements have been added to it
             RefreshExpandedState();
             
-            GraphView.Editor.CheckAndSave(); // Check for autosave
+            if (choice.Equals("")) GraphView.Editor.CheckAndSave(); // Check for autosave
         }
 
         /// <summary>

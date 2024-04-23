@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace Descant.Editor
 {
+    #region DescantGroupData
+    
     /// <summary>
     /// Serializable class to hold the data for saving and loading Descant groups
     /// </summary>
@@ -36,6 +38,11 @@ namespace Descant.Editor
         public List<int> NodeIDs;
 
         /// <summary>
+        /// The comments associated with this group
+        /// </summary>
+        public string Comments;
+
+        /// <summary>
         /// Parameterized constructor
         /// </summary>
         /// <param name="name">The group's custom name</param>
@@ -43,13 +50,15 @@ namespace Descant.Editor
         /// <param name="position">The group's position</param>
         /// <param name="nodes">The names of the nodes contained within the group</param>
         /// <param name="nodeIDs">The IDs of the nodes contained within the group</param>
-        public DescantGroupData(string name, int id, Vector2 position, List<string> nodes, List<int> nodeIDs)
+        /// <param name="comments">The comments associated with this group</param>
+        public DescantGroupData(string name, int id, Vector2 position, List<string> nodes, List<int> nodeIDs, string comments)
         {
             Name = name;
             ID = id;
             Position = position;
             Nodes = nodes;
             NodeIDs = nodeIDs;
+            Comments = comments;
         }
 
         /// <summary>
@@ -71,6 +80,11 @@ namespace Descant.Editor
             return Equals((DescantGroupData)other);
         }
         
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name, ID, Position, Nodes, NodeIDs, Comments);
+        }
+
         #if UNITY_EDITOR
         /// <summary>
         /// Custom Equals method
@@ -84,7 +98,8 @@ namespace Descant.Editor
                 ID == other.ID &&
                 Position == other.Position &&
                 DescantEditorUtilities.AreListsEqual(Nodes, other.Nodes) &&
-                DescantEditorUtilities.AreListsEqual(NodeIDs, other.NodeIDs);
+                DescantEditorUtilities.AreListsEqual(NodeIDs, other.NodeIDs) &&
+                Comments == other.Comments;
         }
         #endif
         
@@ -99,9 +114,14 @@ namespace Descant.Editor
                 temp += " " + NodeIDs[i] + Nodes[i];
             
             return GetType() + " (" + ID + Name + " " + Position + ") (" +
-                   (temp.Length > 1 ? temp.Substring(1) : "") + ")";
+                   (temp.Length > 1 ? temp.Substring(1) : "") + ") (" +
+                   Comments + " )";
         }
     }
+    
+    #endregion
+    
+    #region DescantConnectionData
     
     /// <summary>
     /// Serializable class to hold the data for saving and loading Descant node connections
@@ -190,6 +210,11 @@ namespace Descant.Editor
             return Equals((DescantConnectionData)other);
         }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(From, FromID, To, ToID, ChoiceIndex);
+        }
+
         #if UNITY_EDITOR
         /// <summary>
         /// Custom Equals method
@@ -213,4 +238,6 @@ namespace Descant.Editor
             return GetType() + " (" + FromID + From + " " + ToID + To + " " + ChoiceIndex + ")";
         }
     }
+    
+    #endregion
 }

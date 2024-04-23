@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
-using Object = UnityEngine.Object;
 
 namespace Descant.Editor
 {
@@ -69,6 +67,53 @@ namespace Descant.Editor
 
             return lst;
         }
+        
+        /// <summary>
+        /// Recursive method to find the first VisualElements of some class in the hierarchy of another
+        /// </summary>
+        /// <param name="element">The parent VisualElement being checked through</param>
+        /// <param name="className">The name of the class being looked for</param>
+        /// <returns>The first VisualElement of class 'className' that is found</returns>
+        public static VisualElement FindFirstElement(VisualElement element, string className)
+        {
+            // Searching through each child and its children before moving to the next
+            foreach (var i in element.Children())
+            {
+                if (i.ClassListContains(className)) return i; // Returning the current element if it matches
+                
+                // Checking all the children's children
+                // (only returning if they aren't null as so not to return null pre-emptively)
+                VisualElement temp = FindFirstElement(i, className);
+                if (temp != null) return temp;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Recursive method to find all the VisualElements of some class in the hierarchy of another
+        /// </summary>
+        /// <param name="element">The parent VisualElement being checked through</param>
+        /// <param name="className">The name of the class being looked for</param>
+        /// <returns>All the VisualElements of class 'className' that are found</returns>
+        public static List<VisualElement> FindAllElements(VisualElement element, string className)
+        {
+            List<VisualElement> lst = new List<VisualElement>();
+            
+            // Searching through each child and its children before moving to the next
+            foreach (var i in element.Children())
+            {
+                // Adding the current element to the list if it matches
+                if (i.ClassListContains(className)) lst.Add(i);
+                
+                // Checking all the children's children
+                // (then adding the results to the main list)
+                List<VisualElement> temp = FindAllElements(i, className);
+                foreach (var j in temp) lst.Add(j);
+            }
+
+            return lst;
+        }
 
         #endregion
 
@@ -101,13 +146,13 @@ namespace Descant.Editor
             string[] paths =
             {
                 "Packages/com.owmacohe.descant/Resources/",
-                "Packages/Descant-1.1.3/Resources/",
+                "Packages/Descant-1.1.4/Resources/",
                 
                 "Assets/com.owmacohe.descant/Resources/",
-                "Assets/Descant-1.1.3/Resources/",
+                "Assets/Descant-1.1.4/Resources/",
                 
                 "Assets/com.owmacohe.descant/Resources/",
-                "Assets/Packages/Descant-1.1.3/Resources/"
+                "Assets/Packages/Descant-1.1.4/Resources/"
             };
 
             StyleSheet styleSheet = null;

@@ -25,4 +25,4 @@ MonoBehaviour:
   - Test_Player
   RelationshipValues:
   - 0.5
-  DialogueAttempts: 2
+  DialogueAttempts: 0

@@ -52,6 +52,8 @@ namespace Descant.Editor
         /// </summary>
         [HideInInspector] public List<DescantNodeComponentVisualElement> VisualComponents =
             new List<DescantNodeComponentVisualElement>();
+
+        VisualElement componentParent = new VisualElement(); // A VisualElement to hold all of the added components
         
         #region Initialization
         
@@ -113,11 +115,13 @@ namespace Descant.Editor
                 removeNode.clicked += RemoveNode;
                 titleContainer.Insert(1, removeNode);
             
+                /*
                 // Adding a callback for when the node is removed
                 RegisterCallback(new EventCallback<MouseLeaveEvent>(callback =>
                 {
                     GraphView.Editor.CheckAndSave(); // Check for autosave
                 }));
+                */
             }
             
             // Getting a formatted list of all the types of Components that can be attached to this node 
@@ -151,6 +155,22 @@ namespace Descant.Editor
                 ComponentDropdown.value = "Add Component";
                 
                 GraphView.Editor.CheckAndSave(); // Check for autosave
+            });
+
+            // Initializing the component parent
+            componentParent = new VisualElement();
+            componentParent.AddToClassList("component_parent");
+            extensionContainer.Add(componentParent);
+
+            // Initializing the comments
+            TextField comments = new TextField("Comments:");
+            comments.AddToClassList("comments");
+            comments.multiline = true;
+            extensionContainer.Add(comments);
+
+            comments.RegisterValueChangedCallback(evt =>
+            {
+                GraphView.Editor.CheckAndSave();
             });
         }
 
@@ -199,7 +219,7 @@ namespace Descant.Editor
             VisualComponents.Add(temp);
             temp.Drawn += UpdateComponents;
             
-            extensionContainer.Add(temp);
+            componentParent.Add(temp);
             temp.Draw();
                     
             RefreshExpandedState();

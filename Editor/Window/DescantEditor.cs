@@ -1,10 +1,12 @@
 #if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Descant.Utilities;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Descant.Editor
@@ -27,8 +29,14 @@ namespace Descant.Editor
         
         Toggle autoSave; // The autosave toggle button in the toolbar
         TextElement unsaved; // The unsaved changes marker in the toolbar
+
+        Toggle advanced; // The advanced features toggle button in the toolbar
+
+        TextField search; // The field for inputting a search query
         
         bool GUICreated; // Whether a Descant graph is currently loaded into the editor
+
+        bool rightCtrl, leftCtrl; // Whether or not the right and left control/command keys are being held down
         
         [MenuItem("Window/Descant/Graph Editor"), MenuItem("Descant/Graph Editor")]
         public static void Open()
@@ -44,6 +52,18 @@ namespace Descant.Editor
             // (they're dependant on the data having been previously loaded)
             if (GUICreated)
             {
+                // Adding a callback to save when playing the game
+                EditorApplication.playModeStateChanged -= PlayCheckAndSave;
+                EditorApplication.playModeStateChanged += PlayCheckAndSave;
+
+                // Adding callbacks to get key inputs
+                rootVisualElement.focusable = true;
+                rootVisualElement.pickingMode = PickingMode.Position;
+                rootVisualElement.UnregisterCallback<KeyDownEvent>(GetKeyDown);
+                rootVisualElement.RegisterCallback<KeyDownEvent>(GetKeyDown);
+                rootVisualElement.UnregisterCallback<KeyUpEvent>(GetKeyUp);
+                rootVisualElement.RegisterCallback<KeyUpEvent>(GetKeyUp);
+                
                 AddGraphView();
                 AddToolbar();
                 
@@ -101,10 +121,15 @@ namespace Descant.Editor
             toolbar = new Toolbar();
             rootVisualElement.Add(toolbar);
 
+            VisualElement topRow = new VisualElement();
+            topRow.AddToClassList("toolbar-title");
+            topRow.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
+            toolbar.Add(topRow);
+
             // Initializing the title section
             VisualElement toolbarTitle = new VisualElement();
             toolbarTitle.AddToClassList("toolbar-title");
-            toolbar.Add(toolbarTitle);
+            topRow.Add(toolbarTitle);
 
             // Initializing the Descant graph's file name
             TextElement fileName = new TextElement();
@@ -122,7 +147,20 @@ namespace Descant.Editor
             // Initializing the save section
             VisualElement saveSection = new VisualElement();
             saveSection.AddToClassList("save-section");
-            toolbar.Add(saveSection);
+            topRow.Add(saveSection);
+            
+            // Initializing the advanced toggle
+            advanced = new Toggle("Show advanced features:");
+            advanced.value = data.Advanced;
+            saveSection.Add(advanced);
+
+            // Adding a callback for when the advanced toggle value is changed
+            advanced.RegisterValueChangedCallback(callback =>
+            {
+                SetAdvanced(advanced.value);
+                
+                Save();
+            });
 
             // Initializing the typewriter toggle
             typewriter = new Toggle("Typewriter:");
@@ -144,37 +182,115 @@ namespace Descant.Editor
                 Save();
             });
             
-            /*
             // Initializing the autosave toggle button
             autoSave = new Toggle("Autosave:");
             autoSave.value = data.Autosave;
             saveSection.Add(autoSave);
-            */
 
             // Initializing the save button
             Button save = new Button();
             save.clicked += Save;
             save.text = "Save";
             saveSection.Add(save);
-
-            /*
-            if (autoSave.value) save.visible = false;
+            
+            if (autoSave.value) save.style.display = autoSave.value
+                ? new StyleEnum<DisplayStyle>(DisplayStyle.None)
+                : new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
             
             // Adding a callback for when the autosave value is changed
             autoSave.RegisterValueChangedCallback(callback =>
             {
                 // Setting the save button's visibility based on the autosave button's value
-                save.visible = !autoSave.value;
+                save.style.display = autoSave.value
+                    ? new StyleEnum<DisplayStyle>(DisplayStyle.None)
+                    : new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
 
                 Save();
             });
-            */
             
             // Initializing the close button
             Button close = new Button();
             close.clicked += Unload;
             close.text = "Close";
             saveSection.Add(close);
+            
+            // Initializing the searchbar
+            search = new TextField("Search:");
+            search.multiline = false;
+            search.AddToClassList("search");
+            toolbar.Add(search);
+            
+            search.RegisterCallback<KeyDownEvent>(evt =>
+            {
+                // Clearing the search find if we find a match
+                if (evt.keyCode.Equals(KeyCode.Return) && !search.value.Equals(""))
+                    if (Search(search.value)) search.value = "";
+            });
+            
+            SetAdvanced(advanced.value);
+        }
+
+        /// <summary>
+        /// Method to loop through all DescantNodes to find the advanced feature sections and either show or hide them
+        /// (advanced features are Components, comments, and searching)
+        /// </summary>
+        /// <param name="visible">Whether to show or hide the features</param>
+        void SetAdvanced(bool visible)
+        {
+            foreach (var i in DescantEditorUtilities.FindAllElements(graphView, "node_component_dropdown"))
+                i.style.display = visible
+                    ? new StyleEnum<DisplayStyle>(DisplayStyle.Flex)
+                    : new StyleEnum<DisplayStyle>(DisplayStyle.None);
+            
+            foreach (var j in DescantEditorUtilities.FindAllElements(graphView, "component_parent"))
+                j.style.display = visible
+                    ? new StyleEnum<DisplayStyle>(DisplayStyle.Flex)
+                    : new StyleEnum<DisplayStyle>(DisplayStyle.None);
+            
+            foreach (var k in DescantEditorUtilities.FindAllElements(graphView, "comments"))
+                k.style.display = visible
+                    ? new StyleEnum<DisplayStyle>(DisplayStyle.Flex)
+                    : new StyleEnum<DisplayStyle>(DisplayStyle.None);
+
+            search.style.display = visible
+                ? new StyleEnum<DisplayStyle>(DisplayStyle.Flex)
+                : new StyleEnum<DisplayStyle>(DisplayStyle.None);
+        }
+
+        /// <summary>
+        /// Handles KeyDown events that occur within the editor
+        /// </summary>
+        void GetKeyDown(KeyDownEvent evt)
+        {
+            switch (evt.keyCode)
+            {
+                case KeyCode.RightCommand: case KeyCode.RightControl:
+                    rightCtrl = true; break;
+                
+                case KeyCode.LeftCommand: case KeyCode.LeftControl:
+                    leftCtrl = true; break;
+                
+                case KeyCode.S: if (rightCtrl || leftCtrl) Save(); break;
+                
+                case KeyCode.W: if (rightCtrl || leftCtrl) Unload(); break;
+                
+                //case KeyCode.Space: break;
+            }
+        }
+
+        /// <summary>
+        /// Handles KeyUp events that occur within the editor
+        /// </summary>
+        void GetKeyUp(KeyUpEvent evt)
+        {
+            switch (evt.keyCode)
+            {
+                case KeyCode.RightCommand: case KeyCode.RightControl:
+                    rightCtrl = false; break;
+                
+                case KeyCode.LeftCommand: case KeyCode.LeftControl:
+                    leftCtrl = false; break;
+            }
         }
         
         #endregion
@@ -192,6 +308,11 @@ namespace Descant.Editor
             // (the name and path are copied from the current data,
             // but everything else comes from the actual VisualElements)
             DescantGraph temp = CreateInstance<DescantGraph>();
+            temp.name = data.name;
+            temp.Autosave = autoSave.value;
+            temp.Advanced = advanced.value;
+            temp.PannedPosition = graphView.viewTransform.position;
+            temp.ScrolledScale = graphView.viewTransform.scale;
             temp.Typewriter = typewriter.value;
             temp.TypewriterSpeed = float.Parse(typewriterSpeed.value);
             temp.ChoiceNodeID = graphView.ChoiceNodeID;
@@ -203,6 +324,8 @@ namespace Descant.Editor
             // Checking through the current DescantChoiceNodes
             foreach (var i in graphView.ChoiceNodes)
             {
+                List<TextField> fields = DescantEditorUtilities.FindAllElements<TextField>(i);
+                
                 var choices = new List<string>();
                 var ports = DescantEditorUtilities.FindAllElements<Port>(i);
                 
@@ -263,7 +386,8 @@ namespace Descant.Editor
                     choices,
                     DescantEditorUtilities.FindAllElements<DescantNodeComponentVisualElement>(i)
                         .Select(visualElement => visualElement.Component)
-                        .ToList()
+                        .ToList(),
+                    fields[^1].value
                 ));
             }
 
@@ -308,13 +432,16 @@ namespace Descant.Editor
                     fields[1].value,
                     DescantEditorUtilities.FindAllElements<DescantNodeComponentVisualElement>(j)
                         .Select(visualElement => visualElement.Component)
-                        .ToList()
+                        .ToList(),
+                    fields[^1].value
                 ));
             }
 
             // Checking the current DescantStartNode
             if (graphView.StartNode != null)
             {
+                List<TextField> fields = DescantEditorUtilities.FindAllElements<TextField>(graphView.StartNode);
+                
                 var startPort = DescantEditorUtilities.FindFirstElement<Port>(graphView.StartNode);
                 
                 // Creating a DescantConnectionData object for the outgoing connection
@@ -337,13 +464,16 @@ namespace Descant.Editor
                     graphView.StartNode.GetPosition().position,
                     DescantEditorUtilities.FindAllElements<DescantNodeComponentVisualElement>(graphView.StartNode)
                         .Select(visualElement => visualElement.Component)
-                        .ToList()
+                        .ToList(),
+                    fields[^1].value
                 );
             }
 
             // Checking through the current DescantEndNodes
             foreach (var k in graphView.EndNodes)
             {
+                List<TextField> fields = DescantEditorUtilities.FindAllElements<TextField>(k);
+                
                 var ports = DescantEditorUtilities.FindAllElements<Port>(k);
                 
                 // Creating DescantConnectionData objects for each incoming connection
@@ -367,13 +497,16 @@ namespace Descant.Editor
                     k.GetPosition().position,
                     DescantEditorUtilities.FindAllElements<DescantNodeComponentVisualElement>(k)
                         .Select(visualElement => visualElement.Component)
-                        .ToList()
+                        .ToList(),
+                    fields[^1].value
                 ));
             }
 
             // Checking through the current DescantNodeGroups
             foreach (var l in graphView.Groups)
             {
+                List<TextField> fields = DescantEditorUtilities.FindAllElements<TextField>(l);
+                
                 var contained = l.containedElements;
                 var elements = new List<string>();
                 var elementIDs = new List<int>();
@@ -395,11 +528,12 @@ namespace Descant.Editor
 
                 // Creating the actual DescantNodeGroupData object
                 temp.Groups.Add(new DescantGroupData(
-                    DescantEditorUtilities.FindFirstElement<TextField>(l).value,
+                    fields[0].value,
                     l.ID,
                     l.GetPosition().position,
                     elements,
-                    elementIDs
+                    elementIDs,
+                    fields[^1].value
                 ));
             }
             
@@ -417,6 +551,9 @@ namespace Descant.Editor
             var temp = GetData();
 
             data.Autosave = temp.Autosave;
+            data.Advanced = temp.Advanced;
+            data.PannedPosition = temp.PannedPosition;
+            data.ScrolledScale = temp.ScrolledScale;
             data.Typewriter = temp.Typewriter;
             data.TypewriterSpeed = temp.TypewriterSpeed;
             data.ChoiceNodeID = temp.ChoiceNodeID;
@@ -449,9 +586,16 @@ namespace Descant.Editor
         }
 
         /// <summary>
+        /// Quick implementation of the CheckAndSave method used when the game is played
+        /// </summary>
+        void PlayCheckAndSave(PlayModeStateChange change)
+        {
+            if (change == PlayModeStateChange.ExitingEditMode) CheckAndSave();
+        }
+
+        /// <summary>
         /// Gathers and saves the data from the current graph view and toolbar
         /// </summary>
-        /// <param name="refresh">Whether to refresh the AssetDatabase after the data has been saved</param>
         void Save()
         {
             DescantEditorUtilities.FindFirstElement<TextElement>(toolbar).text = data.name;
@@ -484,11 +628,92 @@ namespace Descant.Editor
         /// </summary>
         void Unload()
         {
+            Save();
+            
             data = null;
             
             GUICreated = false;
             
             RemoveGUI();
+        }
+        
+        #endregion
+        
+        #region Search
+
+        /// <summary>
+        /// Default method to be called when searching for text in the graph
+        /// </summary>
+        /// <param name="query">The phrase that should be looked for</param>
+        /// <returns>Whether or not a field somewhere in the graph was found that contained the phrase</returns>
+        bool Search(string query)
+        {
+            string formattedQuery = query.Trim().ToLower();
+
+            if (SearchNodes(formattedQuery)) return true;
+            if (SearchGroups(formattedQuery)) return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Method to search through all DescantNodes within the graph
+        /// (see default Search() method for more info)
+        /// </summary>
+        /// <param name="query">The formatted phrase that should be looked for</param>
+        /// <returns>Whether or not a field somewhere in a DescantNode was found that contained the phrase</returns>
+        bool SearchNodes(string query)
+        {
+            foreach (var i in DescantEditorUtilities.FindAllElements<DescantNode>(graphView))
+                if (SearchElement(i, query)) return true;
+
+            return false;
+        }
+        
+        /// <summary>
+        /// Method to search through all DescantNodeGroups within the graph
+        /// (see default Search() method for more info)
+        /// </summary>
+        /// <param name="query">The formatted phrase that should be looked for</param>
+        /// <returns>Whether or not a field somewhere in a DescantNodeGroup was found that contained the phrase</returns>
+        bool SearchGroups(string query)
+        {
+            foreach (var i in DescantEditorUtilities.FindAllElements<DescantNodeGroup>(graphView))
+                if (SearchElement(i, query)) return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Method to search through all the TextFields of a VisualElement
+        /// (see default Search() method for more info)
+        /// </summary>
+        /// <param name="element">The element being searched through</param>
+        /// <param name="query">The formatted phrase that should be looked for</param>
+        /// <returns>Whether or not a field somewhere in the VisualElement was found that contained the phrase</returns>
+        bool SearchElement(VisualElement element, string query)
+        {
+            foreach (var i in DescantEditorUtilities.FindAllElements<TextField>(element))
+            {
+                string formattedValue = i.value.ToLower();
+
+                if (!formattedValue.Equals("") && formattedValue.Contains(query))
+                {
+                    SnapTo(i); // Snapping the view to the target element when its found
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Quick method to snap the Descant Graph's view to a particular VisualElement within the graph
+        /// </summary>
+        /// <param name="target">The element to be snapped to</param>
+        void SnapTo(VisualElement target)
+        {
+            graphView.UpdateViewTransform(target.transform.position, Vector3.one); // TODO: incorrect
         }
         
         #endregion

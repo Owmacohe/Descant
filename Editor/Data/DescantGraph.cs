@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Descant.Components;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Descant.Editor
 {
@@ -11,10 +12,27 @@ namespace Descant.Editor
     [Serializable, CreateAssetMenu(menuName = "Descant/Graph")]
     public class DescantGraph : ScriptableObject
     {
+        #region Properties
+        
         /// <summary>
         /// Whether to autosave the graph when in the Editor
         /// </summary>
         [HideInInspector] public bool Autosave;
+
+        /// <summary>
+        /// Whether to show or hide the advanced features when in the editor
+        /// </summary>
+        [HideInInspector] public bool Advanced;
+
+        /// <summary>
+        /// The position that the graph view has been panned to
+        /// </summary>
+        [HideInInspector] public Vector3 PannedPosition;
+
+        /// <summary>
+        /// The scale that the graph view has been scrolled to
+        /// </summary>
+        [HideInInspector] public Vector3 ScrolledScale;
 
         /// <summary>
         /// Whether or not to type out ResponseNode text one character at a time
@@ -76,6 +94,8 @@ namespace Descant.Editor
         /// The connections between Nodes in the graph
         /// </summary>
         [HideInInspector] public List<DescantConnectionData> Connections;
+        
+        #endregion
 
         /// <summary>
         /// Parameterized constructor
@@ -85,6 +105,9 @@ namespace Descant.Editor
         public DescantGraph()
         {
             Autosave = false;
+            Advanced = false;
+            PannedPosition = Vector3.zero;
+            ScrolledScale = Vector3.one;
             Typewriter = true;
             TypewriterSpeed = 1;
             ChoiceNodes = new List<DescantChoiceNodeData>();
@@ -95,7 +118,8 @@ namespace Descant.Editor
                 "StartNode",
                 "Start",
                 Vector2.zero,
-                new List<DescantComponent>()
+                new List<DescantComponent>(),
+                ""
             );
             
             EndNodes = new List<DescantEndNodeData>();
@@ -120,6 +144,29 @@ namespace Descant.Editor
             }
             
             return Equals((DescantGraph)other);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = new HashCode();
+            hashCode.Add(base.GetHashCode());
+            hashCode.Add(Autosave);
+            hashCode.Add(Advanced);
+            hashCode.Add(PannedPosition);
+            hashCode.Add(ScrolledScale);
+            hashCode.Add(Typewriter);
+            hashCode.Add(TypewriterSpeed);
+            hashCode.Add(ChoiceNodeID);
+            hashCode.Add(ResponseNodeID);
+            hashCode.Add(EndNodeID);
+            hashCode.Add(GroupID);
+            hashCode.Add(ChoiceNodes);
+            hashCode.Add(ResponseNodes);
+            hashCode.Add(StartNode);
+            hashCode.Add(EndNodes);
+            hashCode.Add(Groups);
+            hashCode.Add(Connections);
+            return hashCode.ToHashCode();
         }
 
         #if UNITY_EDITOR
@@ -158,7 +205,7 @@ namespace Descant.Editor
             foreach (var m in Connections)
                 temp += "\n\t" + m;
 
-            return GetType() + " (" + name + " " + Autosave + " " +
+            return GetType() + " (" + name + " " + Autosave + " " + Advanced + " " + Typewriter + " " + TypewriterSpeed + " " +
                    ChoiceNodeID + " " + ResponseNodeID + " " + EndNodeID + " " + GroupID + ")" +
                    (temp.Length > 1 ? temp : "");
         }
