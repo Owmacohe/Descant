@@ -7,6 +7,8 @@ namespace Descant.Editor
 {
     public static class DescantEditorUtilities
     {
+        public const string VERSION = "1.2.0";
+        
         #if UNITY_EDITOR
         
         #region VisualElements
@@ -146,13 +148,13 @@ namespace Descant.Editor
             string[] paths =
             {
                 "Packages/com.owmacohe.descant/Resources/",
-                "Packages/Descant-1.1.4/Resources/",
+                "Packages/Descant-" + VERSION + "/Resources/",
                 
                 "Assets/com.owmacohe.descant/Resources/",
-                "Assets/Descant-1.1.4/Resources/",
+                "Assets/Descant-" + VERSION + "/Resources/",
                 
                 "Assets/com.owmacohe.descant/Resources/",
-                "Assets/Packages/Descant-1.1.4/Resources/"
+                "Assets/Packages/Descant-" + VERSION + "/Resources/"
             };
 
             StyleSheet styleSheet = null;

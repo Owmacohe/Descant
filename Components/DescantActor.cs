@@ -24,35 +24,21 @@ namespace Descant.Components
         /// All the possible portraits that this Actor can switch between (the first Sprite is used by default)
         /// </summary>
         public Sprite[] Portraits;
-        
+
         /// <summary>
-        /// The actor's statistics dictionary keys
-        /// (C# Dictionaries can't be [Serialized], so we use two Lists instead)
+        /// The actor's statistics
         /// </summary>
-        public List<string> StatisticKeys;
-        
-        /// <summary>
-        /// The actor's statistics dictionary values
-        /// (C# Dictionaries can't be [Serialized], so we use two Lists instead)
-        /// </summary>
-        public List<float> StatisticValues;
+        public SerializableDictionary<string, float> Statistics;
         
         /// <summary>
         /// The actor's topics list
         /// </summary>
         public List<string> Topics;
-        
+
         /// <summary>
-        /// The actor's relationships dictionary keys
-        /// (C# Dictionaries can't be [Serialized], so we use two Lists instead)
+        /// The actor's relationship values
         /// </summary>
-        public List<string> RelationshipKeys;
-        
-        /// <summary>
-        /// The actor's relationships dictionary values
-        /// (C# Dictionaries can't be [Serialized], so we use two Lists instead)
-        /// </summary>
-        public List<float> RelationshipValues;
+        public SerializableDictionary<string, float> Relationships;
         
         /// <summary>
         /// The number of times that the player has attempted to start a dialogue with the actor
@@ -66,8 +52,8 @@ namespace Descant.Components
         {
             string statistics = "";
 
-            for (int i = 0; i < StatisticKeys.Count; i++)
-                statistics += " (" + StatisticKeys[i] + " " + StatisticValues[i] + ")";
+            foreach (var i in Statistics)
+                statistics += "(" + i.Key + " : " + i.Value + ")";
             
             string topics = "";
 
@@ -75,9 +61,9 @@ namespace Descant.Components
                 topics += " " + j;
             
             string relationships = "";
-
-            for (int i = 0; i < RelationshipKeys.Count; i++)
-                relationships += " (" + RelationshipKeys[i] + " " + RelationshipValues[i] + ")";
+            
+            foreach (var k in Relationships)
+                statistics += "(" + k.Key + " : " + k.Value + ")";
 
             return GetType() +
                " (" + (statistics.Length > 0 ? statistics.Substring(1) : "") + ")" +

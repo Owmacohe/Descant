@@ -1,6 +1,7 @@
 ﻿// Please see https://omch.tech/descant/#relationshipchange for documentation
 
 using System;
+using System.Linq;
 using Descant.Utilities;
 
 namespace Descant.Components
@@ -8,36 +9,29 @@ namespace Descant.Components
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Any)]
     public class RelationshipChange : DescantComponent
     {
-        [ParameterGroup("Actors")] public string FirstActorName;
-        [ParameterGroup("Actors")] public string SecondActorName;
+        [ParameterGroup("Actors")] public DescantActor FirstActor;
+        [ParameterGroup("Actors")] public DescantActor SecondActor;
         
         [ParameterGroup("Operation to perform")] public OperationType OperationType;
         [ParameterGroup("Operation to perform")] public float OperationValue;
 
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            DescantActor actor = DescantComponentUtilities.GetActor(this, result.Actors, FirstActorName);
-
-            if (actor == null) return result;
-
-            if (!actor.RelationshipKeys.Contains(SecondActorName))
-            {
-                actor.RelationshipKeys.Add(SecondActorName);
-                actor.RelationshipValues.Add(0);
-            }
+            if (!FirstActor.Relationships.Keys.Contains(SecondActor.name))
+                FirstActor.Relationships.Add(SecondActor.name, 0);
             
             switch (OperationType)
             {
                 case OperationType.IncreaseBy:
-                    actor.RelationshipValues[actor.RelationshipKeys.IndexOf(SecondActorName)] += OperationValue;
+                    FirstActor.Relationships[SecondActor.name] += OperationValue;
                     break;
                 
                 case OperationType.DecreaseBy:
-                    actor.RelationshipValues[actor.RelationshipKeys.IndexOf(SecondActorName)] -= OperationValue;
+                    FirstActor.Relationships[SecondActor.name] -= OperationValue;
                     break;
                 
                 case OperationType.Set:
-                    actor.RelationshipValues[actor.RelationshipKeys.IndexOf(SecondActorName)] = OperationValue;
+                    FirstActor.Relationships[SecondActor.name] = OperationValue;
                     break;
             }
 

@@ -32,7 +32,7 @@ namespace Descant.Editor
         {
             base.Draw(); // Making sure that the parent has been drawn
             
-            style.width = 350;
+            style.minWidth = 350;
             
             // Initializing the output port
             Port output = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(bool));

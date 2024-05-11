@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Descant.Components;
 using Descant.Editor;
 using Descant.Utilities;
@@ -343,14 +344,20 @@ namespace Descant.Runtime
                 if (text[i] == '{' && text.Substring(i).Contains('}'))
                 {
                     // Getting the injection text (minus the brackets),
-                    // and splitting it into actor name and statistic name
+                    // and splitting it into actor name and property name
                     string injection = text.Substring(i + 1, text.Substring(i).IndexOf('}') - 1);
                     var split = injection.Split(':');
                     
-                    // Appending the statistic value
+                    // Appending the property value
                     foreach (var j in Actors)
+                    {
                         if (j.name == split[0])
-                            temp += j.StatisticValues[j.StatisticKeys.IndexOf(split[1])];
+                        {
+                            if (j.Statistics.Keys.Contains(split[1])) temp += j.Statistics[split[1]];
+                            else if (j.Topics.Contains(split[1])) temp += j.Topics[j.Topics.IndexOf(split[1])];
+                            else if (j.Relationships.Keys.Contains(split[1])) temp += j.Relationships[split[1]];
+                        }
+                    }
 
                     i += injection.Length + 1; // Skipping ahead to avoid adding any of the injection text
                 }

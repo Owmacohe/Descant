@@ -27,7 +27,7 @@
 - ~~Make autosave better (removed temporarily)~~
 - ~~Create log system~~
 - ~~Create an online Component documentation website~~
-- Ctrl-S saving functionality for editors
+- ~~Ctrl-S saving functionality for editors~~
 - ~~Save panned position in `Descant Graph Editor`~~
 
 
@@ -37,7 +37,7 @@
 - ~~Bug where changeportrait dropdown can't be changed~~
 - ~~Allow Components to be rearranged~~
 - Make it more obvious what data is being referenced by components
-  - Allow actors and other data to be dragged and dropped
+  - Allow ~~actors~~ and other data to be dragged and dropped
   - Show thumbnails
   - Indicate that scripts and methods are there when typing in the components
 - Add If Node

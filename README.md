@@ -14,11 +14,7 @@
 
 
 <img src="Media/Screenshots/editor.png" alt="Descant Dialogue Editor">
-
-<div style="display:flex; flex-direction:row;">
-  <img src="Media/Screenshots/actor.png" alt="Descant Actor" style="width:49%">
-  <img src="Media/Screenshots/game.png" alt="Sample UI implementation" style="width:49%">
-</div>
+<img src="Media/Screenshots/game.png" alt="Sample UI implementation">
 
 
 
@@ -31,9 +27,9 @@
 ## Installation
 
 1. Install the latest release from the [GitHub repository](https://github.com/Owmacohe/Descant/releases), unzip it, and place the folder into your Unity project's `Packages` folder.
-2. return to Unity, and the package should automatically be recognized and visible in the **Package Manager**.
+2. Return to Unity, and the package should automatically be recognized and visible in the **Package Manager**.
 3. A sample scene can be found at: `Descant/Examples/Test_Scene.unity`.
-4. Opening this scene may prompt you to install **Text Mesh Pro**. Simple click on **Import TMP Essentials** to do so.
+4. Opening this scene may prompt you to install **Text Mesh Pro**. Simply click on **Import TMP Essentials** to do so.
 
 
 
@@ -44,35 +40,34 @@
   - **Descant Graphs** can be edited by right clicking on a `Descant Graph` file, and selecting `Edit Descant Graph`.
 - **Descant Actors**
   - **Descant Actors** can be created by right clicking, and selecting `Create/Descant Actor`.
-  - **Descant Actors** can be edited by right clicking on a `Descant Actor` file, and selecting `Edit Descant Actor`.
+  - **Descant Actors** can be edited through the **Inspector**.
 - **Descant Logs** don't need to be created or modified manually by the player at all. A single `DescantLogData` file exists in the `Descant/Resources` folder. Please don't delete it!
 
 
 
 ## Usage
 - **Descant Graphs**
-  1. The **Descant Graph Editor** can be opened with `Tools/Descant/Graph Editor` or by creating/editing a **Descant Graph** file.
+  1. The **Descant Graph Editor** can be opened from the toolbar with `Descant/Graph Editor` or by creating/editing a **Descant Graph** file.
   2. Use middle-click to pan around in the editor.
   3. New nodes can be created by right-clicking within the grid.
   4. Connections between nodes can be created by left-clicking on nodes’ ports, and dragging to create a connection line to another port.
   5. `ChoiceNode`s represent player choices at certain moments within the dialogue, and `ResponseNode`s represent the NPC’s responses or statements.
-  6. If you want to have a `DescantActor`’s statistic show up within a `ChoiceNode` or `ResponseNode`'s text, write `{actor_name:statistic_name}`, and **Descant** will inject the statistic right into it. *(see the below for more info on `DescantActor`s)*.
+  6. If you want to have a `DescantActor`’s property (statistic, topic, or relationship value) to show up within a `ChoiceNode` or `ResponseNode`'s text, write `{actor_name:property_name}`, and **Descant** will inject the first property it finds with the name `property_name` right into it. *(see the below for more info on `DescantActor`s)*.
   7. The `StartNode` represents the place where a given dialogue begins, and `EndNode`s represent where it can end.
   8. More complex functionality can be added to nodes by adding `Components` (see the [Component documentation](https://omch.tech/descant) for more info on each default component, as well as how to write your own).
 - **Descant Actors**
-  1. The **Descant Actor Editor** can be opened with `Tools/Descant/Descant Actor Editor` or by creating/editing a **Descant Actor** file.
-  2. New **Statistics**, **Topics**, and **Relationships** can be added with their respective **Add** buttons.
+  1. **Descant Actor**s represent the player and any NPCs that they might talk to. **Descant Actor**s are not necessary when using **Descant**.
+  2. New **Statistics**, **Topics**, and **Relationships** can be added in the **Inspector** for each **Descant Actor**.
      - **Statistics** are variables that pertain to actors *(e.g. health, level, stamina, etc.)*
      - **Topics** are concepts that the actors may learn during dialogue *(e.g. names of characters, locations, events, etc.)*
      - **Relationships** are values quantifiably that represent how actors feel about each other.
-  3. The **Dialogue attempts** represents the number of times that this actor has been talked to by the player.
 - **Runtime**
   1. Drag the `ConversationUI` prefab from the `Descant/Assets` folder into your Unity scene *(you may have as many `ConversationUI`s as you want in the same scene, and you may modify their text and UI styles as much as you want, so long as the `DescantConversationUI`'s inspector assignments don’t get broken)*.
   2. Add an `Event System` object to your scene *(`Create/UI/Event System`)*, if you don't already have one.
   3. Add a `DescantDialogueTrigger` script to a GameObject of your choice, and assign its fields *(hover over each field to see a popup of its description) (you may have as many `DescantDialogueTrigger`s as you want in the same scene)*.
   4. At some point while the game is running, call the `Display()` method in the `DescantDialogueTrigger` script to begin the dialogue *(e.g. when the player presses `[E]`, when a `Button` is clicked, etc.)*.
 - **Logs**
-  1. The **Descant Log** can be opened with `Tools/Descant/Log`.
+  1. The **Descant Log** can be opened from the toolbar with `Descant/Log`.
   2. Turn the `Capture` toggle on to start capturing events as they happen at runtime.
   3. The log only saves the last played dialogue.
   4. Please don't delete the log file located at `Descant/Resources`!
@@ -98,3 +93,9 @@
 - [Emily Short's Interactive Storytelling](https://emshort.blog/how-to-play/writing-if/my-articles/conversation)
 - [A Gossip Virtual Social Network for Non Playable Characters in Role Play Games](https://ieeexplore.ieee.org/document/6680108?part=1)
 - [NiEngine](https://github.com/StephanieRct/NiEngine)
+
+
+
+## Acknowledgements
+- Unity's [UI Toolkit framework](https://docs.unity3d.com/Manual/UIElements.html)
+- Eduard Malkhasyan's [Serializable Dictionary in Unity](https://github.com/EduardMalkhasyan/Serializable-Dictionary-Unity)

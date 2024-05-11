@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Autosave: 0
   Advanced: 1
-  PannedPosition: {x: 85, y: 301, z: 0}
-  ScrolledScale: {x: 0.25, y: 0.25, z: 1}
+  PannedPosition: {x: -345, y: 72, z: 0}
+  ScrolledScale: {x: 0.7561437, y: 0.7561437, z: 1}
   Typewriter: 1
   TypewriterSpeed: 1
   ChoiceNodeID: 6
@@ -29,6 +29,7 @@ MonoBehaviour:
     Position: {x: 973, y: -15}
     NodeComponents:
     - rid: 7632772672291864709
+    - rid: 2479963032036049265
     - rid: 7632772672291864714
     Comments: 
     Choices:
@@ -59,8 +60,8 @@ MonoBehaviour:
     Position: {x: 400, y: -15}
     NodeComponents: []
     Comments: 
-    Response: 'Welcome to <color="blue">Descant</color>! How can I help you? Your
-      health is: {Test_Player:Health}.'
+    Response: Welcome to <color="blue">Descant</color>! How can I help you? Your
+      health is {Test_Player:Health}, by the way.
   - Name: ResponseNode
     Type: Response
     ID: 1
@@ -123,7 +124,7 @@ MonoBehaviour:
   Groups:
   - Name: Answers
     ID: 0
-    Position: {x: 1606.9999, y: -350}
+    Position: {x: 1607, y: -350}
     Nodes:
     - Response
     - Response
@@ -133,7 +134,7 @@ MonoBehaviour:
     Comments: 
   - Name: Start
     ID: 1
-    Position: {x: -53.999977, y: -74}
+    Position: {x: -54.00003, y: -74.00001}
     Nodes:
     - Response
     - Start
@@ -142,7 +143,7 @@ MonoBehaviour:
     Comments: 
   - Name: QuickEnding
     ID: 2
-    Position: {x: 2288, y: -209.99991}
+    Position: {x: 2288.0002, y: -210}
     Nodes:
     - Choice
     - End
@@ -150,7 +151,7 @@ MonoBehaviour:
     Comments: 
   - Name: LongEnding
     ID: 3
-    Position: {x: 2288, y: 228.00002}
+    Position: {x: 2288.0002, y: 228.00003}
     Nodes:
     - Choice
     - Response
@@ -221,6 +222,16 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 2479963032036049265
+      type: {class: LockedChoice, ns: Descant.Components, asm: omch.descant.components}
+      data:
+        Collapsed: 0
+        Actor: {fileID: 11400000, guid: aa50e7fd76a0a8c4ba679f3a8ac2fe0e, type: 2}
+        ChoiceNumber: 4
+        VariableType: 0
+        VariableName: WantsHelp
+        ComparisonType: 3
+        Comparison: 1
     - rid: 7632772672291864709
       type: {class: Log, ns: Descant.Components, asm: omch.descant.components}
       data:

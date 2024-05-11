@@ -8,7 +8,7 @@ using Descant.Utilities;
 namespace Descant.Components
 {
     [Serializable, MaxQuantity(1), NodeType(DescantNodeType.Choice)]
-    public class RandomizedChoice : DescantComponent // TODO: make this always last
+    public class RandomizedChoice : DescantComponent
     {
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {

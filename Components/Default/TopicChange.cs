@@ -8,7 +8,7 @@ namespace Descant.Components
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Response)]
     public class TopicChange : DescantComponent
     {
-        [Inline] public string ActorName;
+        [Inline] public DescantActor Actor;
         
         [ParameterGroup("Topic to change")] public string TopicName;
         
@@ -16,17 +16,13 @@ namespace Descant.Components
 
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            DescantActor actor = DescantComponentUtilities.GetActor(this, result.Actors, ActorName);
-
-            if (actor == null) return result;
-
             switch (ChangeType)
             {
                 case ListChangeType.Add:
-                    if (!actor.Topics.Contains(TopicName)) actor.Topics.Add(TopicName);
+                    if (!Actor.Topics.Contains(TopicName)) Actor.Topics.Add(TopicName);
                     break;
                 case ListChangeType.Remove:
-                    if (actor.Topics.Contains(TopicName)) actor.Topics.Remove(TopicName);
+                    if (Actor.Topics.Contains(TopicName)) Actor.Topics.Remove(TopicName);
                     break;
             }
             

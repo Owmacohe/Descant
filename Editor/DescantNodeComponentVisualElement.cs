@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Descant.Components;
 using Descant.Utilities;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -147,12 +148,16 @@ namespace Descant.Editor
             
             // Adding the name
             TextElement name = new TextElement();
+            name.AddToClassList("node_component_name");
             name.text = componentName;
             top_row_left.Add(name);
 
             // Adding the collapsible section
             collapsible = new VisualElement();
             Add(collapsible);
+            
+            PropertyField test = new PropertyField();
+            Add(test);
 
             // Creating the first (default) row
             ScrollView paramRow1 = new ScrollView();
@@ -198,18 +203,18 @@ namespace Descant.Editor
                     var componentValue = i.GetValue(Component); // The current value of this parameter
                     
                     // If the parameter type is one that can just be filled in with a field...
-                    if (i.FieldType == typeof(float) || i.FieldType == typeof(int) || i.FieldType == typeof(string))
+                    if (i.FieldType == typeof(string))
                     {
                         // Adding a new field
-                        TextField temp = new TextField();
-                        temp.label = label;
-                        CheckAndAddParamLine(temp, i);
+                        TextField field = new TextField();
+                        field.label = label;
+                        CheckAndAddParamLine(field, i);
 
                         // Setting the field's value
-                        if (componentValue != null) temp.value = componentValue.ToString();
+                        if (componentValue != null) field.value = componentValue.ToString();
 
                         // When the field's value is changed...
-                        temp.RegisterValueChangedCallback(callback =>
+                        field.RegisterValueChangedCallback(callback =>
                         {
                             // Checking to see if the field should be filtered, and if so, doing that
                             try
@@ -221,7 +226,7 @@ namespace Descant.Editor
                             }
                             catch
                             {
-                                temp.value = DescantUtilities.FilterText(temp.value, i.FieldType != typeof(string));
+                                field.value = DescantUtilities.FilterText(field.value, i.FieldType != typeof(string));
                             }
 
                             try
@@ -240,18 +245,141 @@ namespace Descant.Editor
                             graphView.Editor.CheckAndSave(); // Check for autosave
                         });
                     }
+                    // If the parameter type is a float...
+                    else if (i.FieldType == typeof(float))
+                    {
+                        FloatField field = new FloatField();
+                        field.label = label;
+                        CheckAndAddParamLine(field, i);
+                        
+                        // Setting the field's value
+                        if (componentValue != null) field.value = (float) componentValue;
+                        
+                        // When the field's value is changed...
+                        field.RegisterValueChangedCallback(callback =>
+                        {
+                            // Saving the change to the Component object
+                            i.SetValue(Component, callback.newValue);
+                            
+                            graphView.Editor.CheckAndSave(); // Check for autosave
+                        });
+                        
+                    }
+                    // If the parameter type is an int...
+                    else if (i.FieldType == typeof(int))
+                    {
+                        IntegerField field = new IntegerField();
+                        field.label = label;
+                        CheckAndAddParamLine(field, i);
+                        
+                        // Setting the field's value
+                        if (componentValue != null) field.value = (int) componentValue;
+                        
+                        // When the field's value is changed...
+                        field.RegisterValueChangedCallback(callback =>
+                        {
+                            // Saving the change to the Component object
+                            i.SetValue(Component, callback.newValue);
+                            
+                            graphView.Editor.CheckAndSave(); // Check for autosave
+                        });
+                        
+                    }
                     // If the parameter type is a boolean...
                     else if (i.FieldType == typeof(bool))
                     {
                         // Adding a new toggle
-                        Toggle temp = new Toggle();
-                        temp.label = label;
-                        CheckAndAddParamLine(temp, i);
+                        Toggle field = new Toggle();
+                        field.label = label;
+                        CheckAndAddParamLine(field, i);
 
                         // Setting the toggle's value
-                        if (componentValue != null) temp.value = (bool) componentValue;
+                        if (componentValue != null) field.value = (bool) componentValue;
                         
-                        temp.RegisterValueChangedCallback(callback =>
+                        // When the field's value is changed...
+                        field.RegisterValueChangedCallback(callback =>
+                        {
+                            // Saving the change to the Component object
+                            i.SetValue(Component, callback.newValue);
+                            
+                            graphView.Editor.CheckAndSave(); // Check for autosave
+                        });
+                    }
+                    // If the parameter type is a Vector2...
+                    else if (i.FieldType == typeof(Vector2))
+                    {
+                        // Adding a new field
+                        Vector2Field field = new Vector2Field();
+                        field.label = label;
+                        CheckAndAddParamLine(field, i);
+
+                        // Setting the field's value
+                        if (componentValue != null) field.value = (Vector2) componentValue;
+                        
+                        // When the field's value is changed...
+                        field.RegisterValueChangedCallback(callback =>
+                        {
+                            // Saving the change to the Component object
+                            i.SetValue(Component, callback.newValue);
+                            
+                            graphView.Editor.CheckAndSave(); // Check for autosave
+                        });
+                    }
+                    // If the parameter type is a Vector3...
+                    else if (i.FieldType == typeof(Vector3))
+                    {
+                        // Adding a new field
+                        Vector3Field field = new Vector3Field();
+                        field.label = label;
+                        CheckAndAddParamLine(field, i);
+
+                        // Setting the field's value
+                        if (componentValue != null) field.value = (Vector3) componentValue;
+                        
+                        // When the field's value is changed...
+                        field.RegisterValueChangedCallback(callback =>
+                        {
+                            // Saving the change to the Component object
+                            i.SetValue(Component, callback.newValue);
+                            
+                            graphView.Editor.CheckAndSave(); // Check for autosave
+                        });
+                    }
+                    // If the parameter type is a Color...
+                    else if (i.FieldType == typeof(Color))
+                    {
+                        // Adding a new field
+                        ColorField field = new ColorField();
+                        field.label = label;
+                        CheckAndAddParamLine(field, i);
+
+                        // Setting the field's value
+                        if (componentValue != null) field.value = (Color) componentValue;
+                        
+                        // When the field's value is changed...
+                        field.RegisterValueChangedCallback(callback =>
+                        {
+                            // Saving the change to the Component object
+                            i.SetValue(Component, callback.newValue);
+                            
+                            graphView.Editor.CheckAndSave(); // Check for autosave
+                        });
+                    }
+                    // If the parameter type is an Object...
+                    else if (i.FieldType.IsSubclassOf(typeof(UnityEngine.Object)))
+                    {
+                        // Adding a new field
+                        ObjectField field = new ObjectField();
+                        field.objectType = i.FieldType;
+                        field.allowSceneObjects = false;
+                        field.label = label;
+                        CheckAndAddParamLine(field, i);
+
+                        // Setting the field's value
+                        if (componentValue != null) field.value = (UnityEngine.Object) componentValue;
+                        
+                        // When the field's value is changed...
+                        field.RegisterValueChangedCallback(callback =>
                         {
                             // Saving the change to the Component object
                             i.SetValue(Component, callback.newValue);
@@ -267,44 +395,17 @@ namespace Descant.Editor
                         // Getting the full list of the enum's options
                         foreach (var j in i.FieldType.GetFields())
                             enumValues.Add(j.ToString().Substring(j.ToString().LastIndexOf(' ') + 1));
-                        
-                        // Adding a new dropdown
-                        PopupField<string> temp = new PopupField<string>(
-                            enumValues.GetRange(1, enumValues.Count - 1), 0);
-                        temp.label = label;
-                        CheckAndAddParamLine(temp, i);
-                        
-                        // Setting the dropdown's value
-                        if (componentValue != null) temp.value = componentValue.ToString();
-                        
-                        temp.RegisterValueChangedCallback(callback =>
-                        {
-                            string enumName = i.FieldType.Name;
 
+                        EnumField field = new EnumField();
+                        field.Init((Enum) componentValue);
+                        field.label = label;
+                        CheckAndAddParamLine(field, i);
+                        
+                        // When the field's value is changed...
+                        field.RegisterValueChangedCallback(callback =>
+                        {
                             // Saving the change to the Component object
-                            // (we need to know what kind of enum it is so we can parse it accordingly)
-                            switch (enumName.Substring(enumName.LastIndexOf('.') + 1))
-                            {
-                                case "VariableType":
-                                    i.SetValue(Component, DescantComponentUtilities.ParseEnum<VariableType>(callback.newValue));
-                                    break;
-                                
-                                case "ComparisonType":
-                                    i.SetValue(Component, DescantComponentUtilities.ParseEnum<ComparisonType>(callback.newValue));
-                                    break;
-                                
-                                case "OperationType":
-                                    i.SetValue(Component, DescantComponentUtilities.ParseEnum<OperationType>(callback.newValue));
-                                    break;
-                                
-                                case "ListChangeType":
-                                    i.SetValue(Component, DescantComponentUtilities.ParseEnum<ListChangeType>(callback.newValue));
-                                    break;
-                                
-                                case "PortraitChangeType":
-                                    i.SetValue(Component, DescantComponentUtilities.ParseEnum<PortraitChangeType>(callback.newValue));
-                                    break;
-                            }
+                            i.SetValue(Component, callback.newValue);
 
                             graphView.Editor.CheckAndSave(); // Check for autosave
                         });

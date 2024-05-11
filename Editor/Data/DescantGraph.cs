@@ -105,7 +105,7 @@ namespace Descant.Editor
         public DescantGraph()
         {
             Autosave = false;
-            Advanced = false;
+            Advanced = true;
             PannedPosition = Vector3.zero;
             ScrolledScale = Vector3.one;
             Typewriter = true;

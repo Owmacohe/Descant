@@ -239,7 +239,7 @@ namespace Descant.Editor
             VisualComponents.Remove(component);
             VisualComponents.Insert(index, component);
             
-            extensionContainer.Insert(2 + index, component); // Removing and inserting it in the Node
+            componentParent.Insert(index, component); // Removing and inserting it in the Node
 
             if (update) UpdateComponents();
         }

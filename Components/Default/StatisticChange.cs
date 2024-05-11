@@ -8,7 +8,7 @@ namespace Descant.Components
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Any)]
     public class StatisticChange : DescantComponent
     {
-        [Inline] public string ActorName;
+        [Inline] public DescantActor Actor;
         
         [ParameterGroup("Statistic to change")] public string StatisticName;
         
@@ -17,22 +17,18 @@ namespace Descant.Components
 
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            DescantActor actor = DescantComponentUtilities.GetActor(this, result.Actors, ActorName);
-
-            if (actor == null) return result;
-            
             switch (OperationType)
             {
                 case OperationType.IncreaseBy:
-                    actor.StatisticValues[actor.StatisticKeys.IndexOf(StatisticName)] += OperationValue;
+                    Actor.Statistics[StatisticName] += OperationValue;
                     break;
                 
                 case OperationType.DecreaseBy:
-                    actor.StatisticValues[actor.StatisticKeys.IndexOf(StatisticName)] -= OperationValue;
+                    Actor.Statistics[StatisticName] -= OperationValue;
                     break;
                 
                 case OperationType.Set:
-                    actor.StatisticValues[actor.StatisticKeys.IndexOf(StatisticName)] = OperationValue;
+                    Actor.Statistics[StatisticName] = OperationValue;
                     break;
             }
             

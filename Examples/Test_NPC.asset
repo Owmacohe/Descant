@@ -16,13 +16,17 @@ MonoBehaviour:
   Portrait: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   Portraits:
   - {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  StatisticKeys:
-  - Money
-  StatisticValues:
-  - 5
+  Statistics:
+    dictionaryList:
+    - Key: Money
+      Value: 5
+      index: 0
+      isKeyDuplicated: 0
   Topics: []
-  RelationshipKeys:
-  - Test_Player
-  RelationshipValues:
-  - 0.5
-  DialogueAttempts: 0
+  Relationships:
+    dictionaryList:
+    - Key: Test_Player
+      Value: 0.5
+      index: 0
+      isKeyDuplicated: 0
+  DialogueAttempts: 11

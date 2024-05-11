@@ -207,6 +207,39 @@ namespace Descant.Components
         }
         
         #endregion
+        
+        /// <summary>
+        /// Quickly compares two float values based on some comparison type
+        /// </summary>
+        /// <param name="variable">The main variable in question</param>
+        /// <param name="comparison">The value itr is being compared against</param>
+        /// <param name="comparisonType">How the values are being compared</param>
+        /// <returns>Whether the comparison succeeds or not</returns>
+        public static bool CompareVariable(float variable, float comparison, ComparisonType comparisonType)
+        {
+            switch (comparisonType)
+            {
+                case ComparisonType.LessThan:
+                    return variable < comparison;
+                
+                case ComparisonType.LessThanOrEqualTo:
+                    return variable <= comparison;
+                
+                case ComparisonType.EqualTo:
+                    return variable == comparison;
+                
+                case ComparisonType.GreaterThanOrEqualTo:
+                    return variable >= comparison;
+                
+                case ComparisonType.GreaterThan:
+                    return variable > comparison;
+                
+                case ComparisonType.NotEqualTo:
+                    return variable != comparison;
+                
+                default: return false;
+            }
+        }
 
         /// <summary>
         /// Gets an actor with a given name from the a list of actors
@@ -247,14 +280,9 @@ namespace Descant.Components
         /// <param name="actor">The actor to be assigned from</param>
         public static void AssignActor(DescantActor data, DescantActor actor)
         {
-            data.StatisticKeys = actor.StatisticKeys;
-            data.StatisticValues = actor.StatisticValues;
-
+            data.Statistics = actor.Statistics;
             data.Topics = actor.Topics;
-
-            data.RelationshipKeys = actor.RelationshipKeys;
-            data.RelationshipValues = actor.RelationshipValues;
-
+            data.Relationships = actor.Relationships;
             data.DialogueAttempts = actor.DialogueAttempts;
         }
     }

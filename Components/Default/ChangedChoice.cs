@@ -10,7 +10,7 @@ namespace Descant.Components
     [Serializable, MaxQuantity(float.PositiveInfinity), NodeType(DescantNodeType.Choice)]
     public class ChangedChoice : DescantComponent
     {
-        [Inline] public string ActorName;
+        [Inline] public DescantActor Actor;
         
         [ParameterGroup("Index of the choice to change (base 1)")] public int ChoiceNumber;
 
@@ -24,17 +24,13 @@ namespace Descant.Components
 
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            DescantActor actor = DescantComponentUtilities.GetActor(this, result.Actors, ActorName);
-
-            if (actor == null) return result;
-
-            if ((VariableType.Equals(VariableType.Statistic) && CompareVariable(
-                    actor.StatisticValues[actor.StatisticKeys.IndexOf(VariableName)], Comparison, ComparisonType)) ||
-                (VariableType.Equals(VariableType.Topic) && actor.Topics.Contains(VariableName)) ||
-                (VariableType.Equals(VariableType.Relationship) && CompareVariable(
-                    actor.RelationshipValues[actor.RelationshipKeys.IndexOf(VariableName)], Comparison, ComparisonType)) ||
-                (VariableType.Equals(VariableType.DialogueAttempts) && CompareVariable(
-                    actor.DialogueAttempts, Comparison, ComparisonType)))
+            if ((VariableType.Equals(VariableType.Statistic) && DescantComponentUtilities.CompareVariable(
+                    Actor.Statistics[VariableName], Comparison, ComparisonType)) ||
+                (VariableType.Equals(VariableType.Topic) && Actor.Topics.Contains(VariableName)) ||
+                (VariableType.Equals(VariableType.Relationship) && DescantComponentUtilities.CompareVariable(
+                    Actor.Relationships[VariableName], Comparison, ComparisonType)) ||
+                (VariableType.Equals(VariableType.DialogueAttempts) && DescantComponentUtilities.CompareVariable(
+                    Actor.DialogueAttempts, Comparison, ComparisonType)))
             {
                 result.Text[ChoiceNumber - 1] = new KeyValuePair<int, string>(
                     result.Text[ChoiceNumber - 1].Key,

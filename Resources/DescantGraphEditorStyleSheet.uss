@@ -47,6 +47,13 @@ Toolbar .toolbar-title {
     height: 30px;
 }
 
+.version {
+    margin-left: 15px;
+    
+    color: var(--descant-color-bright);
+    font-size: 12px;
+}
+
 Toolbar .toolbar-filename {
     font-size: 18px;
 }
@@ -133,8 +140,12 @@ DescantEndNode .node_component_dropdown VisualElement {
 }
 
 DescantChoiceNode .add_choice {
-    background-color: var(--descant-color-light);
+    margin: 5px;
+    padding: 3px;
+    
     color: #d2d2d2;
+    
+    background-color: var(--descant-color-light);
 }
 
 DescantResponseNode .node_component_dropdown {
@@ -288,6 +299,10 @@ DescantResponseNode #contents .response TextElement {
     margin-bottom: 15px;
 }
 
+.node_component .node_component_name {
+    min-width: 40px;
+}
+
 .node_component .node_component_group {
     flex-direction: column;
     
@@ -327,12 +342,55 @@ DescantResponseNode #contents .response TextElement {
     align-self: center;
 }
 
-.node_component TextField,
-.node_component PopupField, .node_component Toggle {
-    background-color: var(--descant-color-background);
+.node_component TextField {
+    height: 35px;
+    
     padding: 5px;
     
+    background-color: var(--descant-color-background);
+}
+
+.node_component FloatField,
+.node_component IntegerField,
+.node_component Toggle,
+.node_component Vector2Field,
+.node_component Vector3Field,
+.node_component ColorField,
+.node_component ObjectField,
+.node_component EnumField {
     height: 35px;
+    width: auto;
+
+    padding: 5px;
+
+    background-color: var(--descant-color-background);
+}
+
+.node_component IntegerField,
+.node_component Toggle,
+.node_component ColorField,
+.node_component ObjectField,
+.node_component EnumField {
+    align-items: center;
+}
+
+.node_component Vector2Field FloatField,
+.node_component Vector3Field FloatField {
+    height: 30px;
+    
+    min-width: 50px;
+}
+
+.node_component ColorField IMGUIContainer {
+    width: 150px;
+}
+
+.node_component ObjectField ObjectFieldDisplay {
+    max-width: 150px;
+}
+
+.node_component EnumField VisualElement {
+    background-color: var(--descant-color-light);
 }
 
 .node_component TextElement {
@@ -346,7 +404,7 @@ DescantResponseNode #contents .response TextElement {
 }
 
 .node_component TextField TextElement {
-    font-size: 12px;
+    font-size: 15px;
 }
 
 .node_component Label {

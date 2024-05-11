@@ -37,6 +37,10 @@ namespace Descant.Editor
         bool GUICreated; // Whether a Descant graph is currently loaded into the editor
 
         bool rightCtrl, leftCtrl; // Whether or not the right and left control/command keys are being held down
+
+        string lastSearch; // The last searched query in the search bar
+        List<GraphElement> foundElements = new List<GraphElement>(); // The last found elements that had a field that contained the query
+        int foundElementIndex; // The current index within the found elements that we have snapped to
         
         [MenuItem("Window/Descant/Graph Editor"), MenuItem("Descant/Graph Editor")]
         public static void Open()
@@ -141,8 +145,13 @@ namespace Descant.Editor
             unsaved = new TextElement();
             unsaved.AddToClassList("toolbar-unsaved");
             unsaved.text = "*";
-            unsaved.visible = false;
+            unsaved.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
             toolbarTitle.Add(unsaved);
+
+            TextElement version = new TextElement();
+            version.AddToClassList("version");
+            version.text = "Descant v" + DescantEditorUtilities.VERSION;
+            toolbarTitle.Add(version);
 
             // Initializing the save section
             VisualElement saveSection = new VisualElement();
@@ -213,6 +222,8 @@ namespace Descant.Editor
             close.clicked += Unload;
             close.text = "Close";
             saveSection.Add(close);
+
+            lastSearch = ""; // Making sure that the lastSearch value is empty when the editor is reloaded
             
             // Initializing the searchbar
             search = new TextField("Search:");
@@ -223,8 +234,44 @@ namespace Descant.Editor
             search.RegisterCallback<KeyDownEvent>(evt =>
             {
                 // Clearing the search find if we find a match
-                if (evt.keyCode.Equals(KeyCode.Return) && !search.value.Equals(""))
-                    if (Search(search.value)) search.value = "";
+                if (evt.keyCode.Equals(KeyCode.Return))
+                {
+                    if (!search.value.Equals(""))
+                    {
+                        // If this is a new search query, we find all the field that contain it
+                        if (!search.value.Equals(lastSearch))
+                        {
+                            // Finding the fields and setting the label accordingly
+                            foundElements = Search(search.value);
+                            search.label = "(1/" + foundElements.Count + ") Search:";
+
+                            // Snapping to the first result
+                            if (foundElements.Count > 0)
+                            {
+                                lastSearch = search.value;
+
+                                SnapTo(foundElements[foundElementIndex]);   
+                            }
+                        }
+                        // If this is a continued query, we snap to the next one
+                        else
+                        {
+                            foundElementIndex++;
+                            if (foundElementIndex >= foundElements.Count) foundElementIndex = 0;
+                            
+                            // Updating the label accordingly
+                            search.label = "(" + (foundElementIndex + 1) + "/" + foundElements.Count + ") Search:";
+
+                            SnapTo(foundElements[foundElementIndex]); // Snapping to the next result
+                        }
+                    }
+                    else search.label = "Search:";
+                }
+            });
+
+            search.RegisterValueChangedCallback(callback =>
+            {
+                if (callback.newValue.Equals("")) search.label = "Search:";
             });
             
             SetAdvanced(advanced.value);
@@ -581,7 +628,7 @@ namespace Descant.Editor
                 if (autoSave.value) Save();
                 // Getting a copy of the current data to compare it with the saved data
                 else if (!data.Equals(GetData()))
-                    unsaved.visible = true;
+                    unsaved.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
             }
         }
 
@@ -599,7 +646,7 @@ namespace Descant.Editor
         void Save()
         {
             DescantEditorUtilities.FindFirstElement<TextElement>(toolbar).text = data.name;
-            unsaved.visible = false;
+            unsaved.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
 
             AssignData();
 
@@ -628,7 +675,7 @@ namespace Descant.Editor
         /// </summary>
         void Unload()
         {
-            Save();
+            CheckAndSave();
             
             data = null;
             
@@ -645,15 +692,20 @@ namespace Descant.Editor
         /// Default method to be called when searching for text in the graph
         /// </summary>
         /// <param name="query">The phrase that should be looked for</param>
-        /// <returns>Whether or not a field somewhere in the graph was found that contained the phrase</returns>
-        bool Search(string query)
+        /// <returns>A list of all DescantNodes and DescantNodeGroups that have a field that contained the phrase</returns>
+        List<GraphElement> Search(string query)
         {
+            List<GraphElement> elements = new List<GraphElement>();
+            
             string formattedQuery = query.Trim().ToLower();
 
-            if (SearchNodes(formattedQuery)) return true;
-            if (SearchGroups(formattedQuery)) return true;
+            foreach (var i in SearchNodes(formattedQuery))
+                elements.Add(i);
+            
+            foreach (var j in SearchGroups(formattedQuery))
+                elements.Add(j);
 
-            return false;
+            return elements;
         }
 
         /// <summary>
@@ -661,13 +713,16 @@ namespace Descant.Editor
         /// (see default Search() method for more info)
         /// </summary>
         /// <param name="query">The formatted phrase that should be looked for</param>
-        /// <returns>Whether or not a field somewhere in a DescantNode was found that contained the phrase</returns>
-        bool SearchNodes(string query)
+        /// <returns>A list of all DescantNodes that have a field that contained the phrase</returns>
+        List<DescantNode> SearchNodes(string query)
         {
+            List<DescantNode> nodes = new List<DescantNode>();
+            
             foreach (var i in DescantEditorUtilities.FindAllElements<DescantNode>(graphView))
-                if (SearchElement(i, query)) return true;
+                if (SearchElement(i, query))
+                    nodes.Add(i);
 
-            return false;
+            return nodes;
         }
         
         /// <summary>
@@ -675,13 +730,16 @@ namespace Descant.Editor
         /// (see default Search() method for more info)
         /// </summary>
         /// <param name="query">The formatted phrase that should be looked for</param>
-        /// <returns>Whether or not a field somewhere in a DescantNodeGroup was found that contained the phrase</returns>
-        bool SearchGroups(string query)
+        /// <returns>A list of all DescantNodeGroups that have a field that contained the phrase</returns>
+        List<DescantNodeGroup> SearchGroups(string query)
         {
+            List<DescantNodeGroup> groups = new List<DescantNodeGroup>();
+            
             foreach (var i in DescantEditorUtilities.FindAllElements<DescantNodeGroup>(graphView))
-                if (SearchElement(i, query)) return true;
+                if (SearchElement(i, query))
+                    groups.Add(i);
 
-            return false;
+            return groups;
         }
 
         /// <summary>
@@ -698,10 +756,7 @@ namespace Descant.Editor
                 string formattedValue = i.value.ToLower();
                 
                 if (!formattedValue.Equals("") && formattedValue.Contains(query))
-                {
-                    SnapTo(element, i); // Snapping the view to the target element when its found
                     return true;
-                }
             }
 
             return false;
@@ -711,8 +766,7 @@ namespace Descant.Editor
         /// Quick method to snap the Descant Graph's view to a particular VisualElement within the graph
         /// </summary>
         /// <param name="target">The element to be snapped to</param>
-        /// <param name="field">The TextField that the search query was found in</param>
-        void SnapTo(GraphElement target, TextField field)
+        void SnapTo(GraphElement target)
         {
             Rect temp = target.GetPosition();
             

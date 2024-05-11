@@ -39,7 +39,7 @@ namespace Descant.Editor
                 GraphView.EndNodeID++;
             }
             
-            style.width = 350;
+            style.minWidth = 350;
             
             // Initializing the input port
             Port input = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, typeof(bool));

@@ -9,7 +9,7 @@ namespace Descant.Components
     [Serializable, MaxQuantity(Single.PositiveInfinity), NodeType(DescantNodeType.Any)]
     public class StatisticReveal : DescantComponent
     {
-        [Inline] public string ActorName;
+        [Inline] public DescantActor Actor;
         
         [ParameterGroup("Statistic to reveal")] public string StatisticName;
         
@@ -19,16 +19,12 @@ namespace Descant.Components
 
         public override DescantNodeInvokeResult Invoke(DescantNodeInvokeResult result)
         {
-            DescantActor actor = DescantComponentUtilities.GetActor(this, result.Actors, ActorName);
-
-            if (actor == null || ScriptName == "" || MethodName == "") return result;
-
             if (DescantComponentUtilities.InvokeFromObjectOrScript(
                 this,
                 ObjectTag,
                 ScriptName,
                 MethodName,
-                actor.StatisticValues[actor.StatisticKeys.IndexOf(StatisticName)].ToString()
+                Actor.Statistics[StatisticName].ToString()
             )) return result;
             
             DescantComponentUtilities.MissingMethodError(this, ScriptName, MethodName);

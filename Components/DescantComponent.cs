@@ -42,39 +42,6 @@ namespace Descant.Components
         {
             return true;
         }
-        
-        /// <summary>
-        /// Quickly compares two float values based on some comparison type
-        /// </summary>
-        /// <param name="variable">The main variable in question</param>
-        /// <param name="comparison">The value itr is being compared against</param>
-        /// <param name="comparisonType">How the values are being compared</param>
-        /// <returns>Whether the comparison succeeds or not</returns>
-        protected static bool CompareVariable(float variable, float comparison, ComparisonType comparisonType)
-        {
-            switch (comparisonType)
-            {
-                case ComparisonType.LessThan:
-                    return variable < comparison;
-                
-                case ComparisonType.LessThanOrEqualTo:
-                    return variable <= comparison;
-                
-                case ComparisonType.EqualTo:
-                    return variable == comparison;
-                
-                case ComparisonType.GreaterThanOrEqualTo:
-                    return variable >= comparison;
-                
-                case ComparisonType.GreaterThan:
-                    return variable > comparison;
-                
-                case ComparisonType.NotEqualTo:
-                    return variable != comparison;
-                
-                default: return false;
-            }
-        }
 
         /// <summary>
         /// Overridden Equals method
@@ -93,6 +60,11 @@ namespace Descant.Components
             }
             
             return Equals((DescantComponent)other);
+        }
+
+        public override int GetHashCode()
+        {
+            return Collapsed.GetHashCode();
         }
 
         /// <summary>
