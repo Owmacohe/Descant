@@ -299,7 +299,7 @@ namespace Descant.Runtime
             for (int j = 0; j < currentResult.Text.Count; j++)
             {
                 var temp = currentResult.Text[j];
-                currentResult.Text[j] = new KeyValuePair<int, string>(temp.Key, CheckForStatistics(temp.Value));
+                currentResult.Text[j] = new KeyValuePair<int, string>(temp.Key, CheckForActorProperties(temp.Value));
             }
             
             return currentResult.Text.Count == 0 ? null : currentResult; // Stopping if there are no choices
@@ -328,11 +328,12 @@ namespace Descant.Runtime
         }
 
         /// <summary>
-        /// Method to check through a string, replacing all instances of DescantActor statistic injections
+        /// Method to check through a string, replacing all instances of DescantActor property injections
+        /// (statistics, topics, and relationships)
         /// </summary>
         /// <param name="text">A DescantChoiceNode's or DescantResponseNode's text to be checked through</param>
-        /// <returns>The string, with the injection replaced with its corresponding statistic</returns>
-        string CheckForStatistics(string text)
+        /// <returns>The string, with the injection replaced with its corresponding property</returns>
+        string CheckForActorProperties(string text)
         {
             string temp = "";
             

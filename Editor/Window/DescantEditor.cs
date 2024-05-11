@@ -691,15 +691,15 @@ namespace Descant.Editor
         /// <param name="element">The element being searched through</param>
         /// <param name="query">The formatted phrase that should be looked for</param>
         /// <returns>Whether or not a field somewhere in the VisualElement was found that contained the phrase</returns>
-        bool SearchElement(VisualElement element, string query)
+        bool SearchElement(GraphElement element, string query)
         {
             foreach (var i in DescantEditorUtilities.FindAllElements<TextField>(element))
             {
                 string formattedValue = i.value.ToLower();
-
+                
                 if (!formattedValue.Equals("") && formattedValue.Contains(query))
                 {
-                    SnapTo(i); // Snapping the view to the target element when its found
+                    SnapTo(element, i); // Snapping the view to the target element when its found
                     return true;
                 }
             }
@@ -711,9 +711,16 @@ namespace Descant.Editor
         /// Quick method to snap the Descant Graph's view to a particular VisualElement within the graph
         /// </summary>
         /// <param name="target">The element to be snapped to</param>
-        void SnapTo(VisualElement target)
+        /// <param name="field">The TextField that the search query was found in</param>
+        void SnapTo(GraphElement target, TextField field)
         {
-            graphView.UpdateViewTransform(target.transform.position, Vector3.one); // TODO: incorrect
+            Rect temp = target.GetPosition();
+            
+            graphView.UpdateViewTransform(
+                -temp.position
+                + new Vector2(30, 110),
+                Vector3.one
+            );
         }
         
         #endregion

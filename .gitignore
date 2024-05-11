@@ -74,3 +74,4 @@ crashlytics-build.properties
 # Descant
 *.DS_Store
 *.afdesign
+*.afdesign.meta

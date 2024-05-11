@@ -32,7 +32,7 @@ namespace Descant.Editor
             // Searching through each child and its children before moving to the next
             foreach (var i in element.Children())
             {
-                if (i.GetType() == typeof(T)) return (T)i; // Returning the current element if it matches
+                if (i.GetType() == typeof(T) || i.GetType().IsSubclassOf(typeof(T))) return (T)i; // Returning the current element if it matches
                 
                 // Checking all the children's children
                 // (only returning if they aren't null as so not to return null pre-emptively)
@@ -57,7 +57,7 @@ namespace Descant.Editor
             foreach (var i in element.Children())
             {
                 // Adding the current element to the list if it matches
-                if (i.GetType() == typeof(T)) lst.Add((T)i);
+                if (i.GetType() == typeof(T) || i.GetType().IsSubclassOf(typeof(T))) lst.Add((T)i);
                 
                 // Checking all the children's children
                 // (then adding the results to the main list)
