@@ -3,7 +3,6 @@ using Descant.Components;
 using Descant.Editor;
 using Descant.Utilities;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -74,9 +73,6 @@ namespace Descant.Runtime
         /// <param name="player">The dialogue's player to be loaded</param>
         /// <param name="npc">The dialogue's NPC to be loaded</param>
         /// <param name="extraActors">The dialogue's extra actors to be loaded</param>
-        /// <param name="portraits">The array of all possible actor portraits during the dialogue</param>
-        /// <param name="playerPortrait">The name of the player's default portrait</param>
-        /// <param name="npcPortrait">The name of the NPC's default portrait</param>
         /// <param name="display">Whether to immediately display the UI after its been Initialized</param>
         public void Initialize(
             DescantGraph graph,
@@ -188,8 +184,10 @@ namespace Descant.Runtime
             playerPortrait.gameObject.SetActive(playerPortrait.sprite != null && temp.Player.PortraitEnabled);
             npcPortrait.gameObject.SetActive(npcPortrait.sprite != null && temp.NPC.PortraitEnabled);
 
+            string currentNodeType = dialogueController.Current.Data.Type;
+
             // Displaying the ResponseNodes...
-            if (temp.Text.Count == 1 && dialogueController.Current.Data.Type.Equals("Response"))
+            if (currentNodeType.Equals("Response"))
             {
                 // Either starting the typewriter or just sticking the text right in
                 if (dialogueController.Typewriter) StartTypewriter(temp.Text[0].Value);
@@ -213,8 +211,9 @@ namespace Descant.Runtime
                 
                 switch (next[0].Data.Type)
                 {
-                    // If the next is an End or Response node, we show the click message
+                    // If the next is a Response, If, or End node, we show the click message
                     case "Response":
+                    case "If":
                     case "End":
                         SetClickMessage(true);
                         break;
@@ -227,7 +226,7 @@ namespace Descant.Runtime
                 }
             }
             // Displaying the ChoiceNodes...
-            else
+            else if (currentNodeType.Equals("Choice"))
             {
                 foreach (var j in temp.Text)
                 {
@@ -235,7 +234,7 @@ namespace Descant.Runtime
                     GameObject tempChoice = Instantiate(choice, choices);
                     
                     // Setting the text of the choice
-                    tempChoice.GetComponentInChildren<TMP_Text>().text = j.Value; 
+                    tempChoice.GetComponentInChildren<TMP_Text>().text = j.Value;
                     
                     // Copying the current index to a copy variable so that it can be used in the listener below
                     // (absolutely no idea why this must be done, but it must)
@@ -249,6 +248,11 @@ namespace Descant.Runtime
                     
                     OnAddChoice?.Invoke(tempChoice.GetComponent<Button>());
                 }
+            }
+            else if (currentNodeType.Equals("If"))
+            {
+                // Displaying the correct next node depending on the checked result
+                DisplayNode(((DescantIfNodeData) dialogueController.Current.Data).IfComponent.Check() ? 0 : 1);
             }
             
             OnDisplay?.Invoke();

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Descant.Components;
 using Descant.Utilities;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -364,6 +365,7 @@ namespace Descant.Editor
             temp.TypewriterSpeed = float.Parse(typewriterSpeed.value);
             temp.ChoiceNodeID = graphView.ChoiceNodeID;
             temp.ResponseNodeID = graphView.ResponseNodeID;
+            temp.IfNodeID = graphView.IfNodeID;
             temp.EndNodeID = graphView.EndNodeID;
             temp.GroupID = graphView.GroupID;
             temp.StartNode = null;
@@ -378,22 +380,7 @@ namespace Descant.Editor
                 
                 for (int ii = 0; ii < ports.Count; ii++)
                 {
-                    if (ii == 0)
-                    {
-                        // Creating DescantConnectionData objects for each incoming connection
-                        foreach (var iii in ports[ii].connections)
-                        {
-                            DescantNode outputNode = (DescantNode)iii.output.node;
-                    
-                            temp.Connections.Add(new DescantConnectionData(
-                                outputNode.Type.ToString(),
-                                outputNode.ID,
-                                i.Type.ToString(),
-                                i.ID
-                            ));
-                        }
-                    }
-                    else
+                    if (ii > 0)
                     {
                         // Saving the text for each choice
                         choices.Add(DescantEditorUtilities.FindFirstElement<TextField>(ports[ii]).value);
@@ -444,27 +431,14 @@ namespace Descant.Editor
                 List<TextField> fields = DescantEditorUtilities.FindAllElements<TextField>(j);
                 var ports = DescantEditorUtilities.FindAllElements<Port>(j);
 
-                // Creating DescantConnectionData objects for each incoming connection
-                foreach (var ji in ports[0].connections)
-                {
-                    DescantNode outputNode = (DescantNode)ji.output.node;
-                    
-                    temp.Connections.Add(new DescantConnectionData(
-                        outputNode.Type.ToString(),
-                        outputNode.ID,
-                        j.Type.ToString(),
-                        j.ID
-                    ));
-                }
-
                 // Creating a DescantConnectionData object for the outgoing connection
                 if (ports[1].connections.Any())
                 {
                     DescantNode inputNode = (DescantNode)ports[1].connections.ElementAt(0).input.node;
                 
                     temp.Connections.Add(new DescantConnectionData(
-                        inputNode.Type.ToString(),
-                        inputNode.ID,
+                        j.Type.ToString(),
+                        j.ID,
                         inputNode.Type.ToString(),
                         inputNode.ID
                     ));
@@ -478,6 +452,50 @@ namespace Descant.Editor
                     j.GetPosition().position,
                     fields[1].value,
                     DescantEditorUtilities.FindAllElements<DescantNodeComponentVisualElement>(j)
+                        .Select(visualElement => visualElement.Component)
+                        .ToList(),
+                    fields[^1].value
+                ));
+            }
+            
+            // Checking through the current DescantIfNodes
+            foreach (var k in graphView.IfNodes)
+            {
+                List<TextField> fields = DescantEditorUtilities.FindAllElements<TextField>(k);
+                var ports = DescantEditorUtilities.FindAllElements<Port>(k);
+                
+                for (int ki = 0; ki < ports.Count; ki++)
+                {
+                    if (ki > 0)
+                    {
+                        // Creating DescantConnectionData objects for each outgoing connection
+                        if (ports[ki].connections.Any())
+                        {
+                            DescantNode inputNode = (DescantNode)ports[ki].connections.ElementAt(0).input.node;
+                    
+                            temp.Connections.Add(new DescantConnectionData(
+                                k.Type.ToString(),
+                                k.ID,
+                                inputNode.Type.ToString(),
+                                inputNode.ID,
+                                ki
+                            ));
+                        }
+                    }
+                }
+
+                List<DescantNodeComponentVisualElement> components =
+                    DescantEditorUtilities.FindAllElements<DescantNodeComponentVisualElement>(k);
+                
+                // Creating the actual DescantIfNodeData object
+                temp.IfNodes.Add(new DescantIfNodeData(
+                    DescantEditorUtilities.FindFirstElement<TextField>(k).value,
+                    k.Type.ToString(),
+                    k.ID,
+                    k.GetPosition().position,
+                    (IfComponent)components[0].Component,
+                    components
+                        .Where(element => element.Component.GetType() != typeof(IfComponent))
                         .Select(visualElement => visualElement.Component)
                         .ToList(),
                     fields[^1].value
@@ -523,19 +541,6 @@ namespace Descant.Editor
                 
                 var ports = DescantEditorUtilities.FindAllElements<Port>(k);
                 
-                // Creating DescantConnectionData objects for each incoming connection
-                foreach (var ji in ports[0].connections)
-                {
-                    DescantNode outputNode = (DescantNode)ji.output.node;
-                    
-                    temp.Connections.Add(new DescantConnectionData(
-                        outputNode.Type.ToString(),
-                        outputNode.ID,
-                        k.Type.ToString(),
-                        k.ID
-                    ));
-                }
-                
                 // Creating the actual DescantEndNodeData object
                 temp.EndNodes.Add(new DescantEndNodeData(
                     DescantEditorUtilities.FindFirstElement<TextField>(k).value,
@@ -565,6 +570,7 @@ namespace Descant.Editor
                     // (we don't want any 'pointers' to non-saved nodes)
                     if (graphView.ChoiceNodes.Contains(li) ||
                         graphView.ResponseNodes.Contains(li) ||
+                        graphView.IfNodes.Contains(li) ||
                         graphView.StartNode.Equals(li) ||
                         graphView.EndNodes.Contains(li))
                     {
@@ -605,11 +611,13 @@ namespace Descant.Editor
             data.TypewriterSpeed = temp.TypewriterSpeed;
             data.ChoiceNodeID = temp.ChoiceNodeID;
             data.ResponseNodeID = temp.ResponseNodeID;
+            data.IfNodeID = temp.IfNodeID;
             data.EndNodeID = temp.EndNodeID;
             data.GroupID = temp.GroupID;
 
             data.ChoiceNodes = temp.ChoiceNodes;
             data.ResponseNodes = temp.ResponseNodes;
+            data.IfNodes = temp.IfNodes;
             data.StartNode = temp.StartNode;
             data.EndNodes = temp.EndNodes;
 

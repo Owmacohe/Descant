@@ -22,7 +22,7 @@
 ## Hard
 
 - Create a proper video tutorial
-- Add `DescantIfNode`
+- ~~Add `DescantIfNode`~~
 - ~~Make script calling easier~~
 - ~~Make autosave better (removed temporarily)~~
 - ~~Create log system~~
@@ -40,7 +40,7 @@
   - Allow ~~actors~~ and other data to be dragged and dropped
   - Show thumbnails
   - Indicate that scripts and methods are there when typing in the components
-- Add If Node
+- ~~Add If Node~~
 - Make a video tutorial
 - ~~Make `RandomizedNode` automatically last~~
 - ~~Create a search functionality in the graph editor~~

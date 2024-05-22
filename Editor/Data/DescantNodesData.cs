@@ -303,6 +303,93 @@ namespace Descant.Editor
     
     #endregion
     
+    #region DescantIfNodeData
+    
+    /// <summary>
+    /// Serializable class to hold the data for saving and loading Descant if nodes
+    /// </summary>
+    [Serializable]
+    public class DescantIfNodeData : DescantNodeData
+    {
+        /// <summary>
+        /// The component used to determine which path the dialogue will take after the node
+        /// </summary>
+        [SerializeReference] public IfComponent IfComponent;
+
+        /// <summary>
+        /// Parameterized constructor
+        /// </summary>
+        /// <param name="name">The custom name of the node</param>
+        /// <param name="type">The unique identifier ID for the node</param>
+        /// <param name="id">The type of this node</param>
+        /// <param name="position">The node's current position</param>
+        /// <param name="ifComponent">
+        /// The component used to determine which path the dialogue will take after the node
+        /// </param>
+        /// <param name="nodeComponents">The list of Components attached to the node</param>
+        /// <param name="comments">The comments associated with this node</param>
+        public DescantIfNodeData(
+            string name,
+            string type,
+            int id,
+            Vector2 position,
+            IfComponent ifComponent,
+            List<DescantComponent> nodeComponents,
+            string comments)
+            : base(name, type, id, position, nodeComponents, comments)
+        {
+            IfComponent = ifComponent;
+        }
+        
+        /// <summary>
+        /// Overridden Equals method
+        /// </summary>
+        /// <param name="other">The object being compared against</param>
+        /// <returns>Whether the other object has the same data as this one</returns>
+        public override bool Equals(object other)
+        {
+            try
+            {
+                _ = (DescantIfNodeData) other;
+            }
+            catch
+            {
+                return false;
+            }
+            
+            return Equals((DescantIfNodeData)other);
+        }
+        
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(base.GetHashCode(), IfComponent.GetHashCode());
+        }
+
+        #if UNITY_EDITOR
+        /// <summary>
+        /// Custom Equals method
+        /// </summary>
+        /// <param name="other">The data object being compared against</param>
+        /// <returns>Whether the other DescantIfNodeData has the same data as this one</returns>
+        public bool Equals(DescantIfNodeData other)
+        {
+            return
+                base.Equals(other) &&
+                IfComponent.Equals(other.IfComponent);
+        }
+        #endif
+        
+        /// <summary>
+        /// Overridden ToString method
+        /// </summary>
+        public override string ToString()
+        {
+            return base.ToString() + " (" + IfComponent + ")";
+        }
+    }
+    
+    #endregion
+    
     #region DescantStartNodeData and DescantEndNodeData
 
     /// <summary>

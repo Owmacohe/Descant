@@ -33,6 +33,12 @@ namespace Descant.Editor
         public int ResponseNodeID { get; set; }
         
         /// <summary>
+        /// The number used to instantiate each new DescantIfNode with a unique ID
+        /// (so that it can be told apart from other nodes with the same type and name)
+        /// </summary>
+        public int IfNodeID { get; set; }
+        
+        /// <summary>
         /// The number used to instantiate each new DescantEndNode with a unique ID
         /// (so that it can be told apart from other nodes with the same type and name)
         /// </summary>
@@ -53,6 +59,11 @@ namespace Descant.Editor
         /// The list of all DescantResponseNodes in the graph
         /// </summary>
         public List<DescantResponseNode> ResponseNodes = new List<DescantResponseNode>();
+        
+        /// <summary>
+        /// The list of all DescantIfNodes in the graph
+        /// </summary>
+        public List<DescantIfNode> IfNodes = new List<DescantIfNode>();
         
         /// <summary>
         /// The list of all DescantStartNodes in the graph
@@ -100,6 +111,7 @@ namespace Descant.Editor
 
             ChoiceNodeID = data.ChoiceNodeID;
             ResponseNodeID = data.ResponseNodeID;
+            IfNodeID = data.IfNodeID;
             EndNodeID = data.EndNodeID;
             GroupID = data.GroupID;
 
@@ -137,6 +149,21 @@ namespace Descant.Editor
                 
                 AddElement(temp);
             }
+            
+            // Generating the DescantIfNodes
+            foreach (var k in data.IfNodes)
+            {
+                DescantIfNode temp = CreateIfNode(k.Position, k.IfComponent, k.Name, k.ID);
+                
+                for (int ki = 0; ki < k.NodeComponents.Count; ki++)
+                    temp.AddComponent(DescantComponentUtilities.GetTrimmedTypeName(
+                        k.NodeComponents[ki].GetType()), ki, k.NodeComponents[ki]);
+                
+                List<TextField> fields = DescantEditorUtilities.FindAllElements<TextField>(temp);
+                fields[^1].value = k.Comments;
+                
+                AddElement(temp);
+            }
 
             // Generating the DescantStartNode (creating a new one if there isn't one present in the file)
             if (data.StartNode != null)
@@ -147,9 +174,9 @@ namespace Descant.Editor
                     data.StartNode.ID
                 );
                 
-                for (int k = 0; k < data.StartNode.NodeComponents.Count; k++)
+                for (int startComponentsIndex = 0; startComponentsIndex < data.StartNode.NodeComponents.Count; startComponentsIndex++)
                     temp.AddComponent(DescantComponentUtilities.GetTrimmedTypeName(
-                        data.StartNode.NodeComponents[k].GetType()), k, data.StartNode.NodeComponents[k]);
+                        data.StartNode.NodeComponents[startComponentsIndex].GetType()), startComponentsIndex, data.StartNode.NodeComponents[startComponentsIndex]);
                 
                 List<TextField> fields = DescantEditorUtilities.FindAllElements<TextField>(temp);
                 fields[^1].value = data.StartNode.Comments;
@@ -197,7 +224,9 @@ namespace Descant.Editor
                     var to = FindNode(n.To, n.ToID);
 
                     int fromPortIndex = from.Type.Equals(DescantNodeType.Start) ? 0 : 1;
-                    if (from.Type.Equals(DescantNodeType.Choice)) fromPortIndex = n.ChoiceIndex;
+                    
+                    if (from.Type.Equals(DescantNodeType.Choice) || from.Type.Equals(DescantNodeType.If))
+                        fromPortIndex = n.FromIndex;
 
                     Port fromPort = DescantEditorUtilities.FindAllElements<Port>(from)[fromPortIndex];
                     Port toPort = DescantEditorUtilities.FindFirstElement<Port>(to);
@@ -249,6 +278,7 @@ namespace Descant.Editor
         {
             this.AddManipulator(CreateNodeContextualMenu("Add Choice Node", DescantNodeType.Choice));
             this.AddManipulator(CreateNodeContextualMenu("Add Response Node", DescantNodeType.Response));
+            this.AddManipulator(CreateNodeContextualMenu("Add If Node", DescantNodeType.If));
             this.AddManipulator(CreateNodeContextualMenu("Add Start Node", DescantNodeType.Start));
             this.AddManipulator(CreateNodeContextualMenu("Add End Node", DescantNodeType.End));
 
@@ -289,6 +319,11 @@ namespace Descant.Editor
                             
                             case DescantNodeType.Response:
                                 AddElement(CreateResponseNode(contentViewContainer.WorldToLocal(
+                                    actionEvent.eventInfo.localMousePosition)));
+                                break;
+                            
+                            case DescantNodeType.If:
+                                AddElement(CreateIfNode(contentViewContainer.WorldToLocal(
                                     actionEvent.eventInfo.localMousePosition)));
                                 break;
                             
@@ -386,6 +421,30 @@ namespace Descant.Editor
 
             return responseNode;
         }
+
+        /// <summary>
+        /// Creates a new DescantIfNode
+        /// </summary>
+        /// <param name="nodePosition">The position at which to create the node</param>
+        /// <param name="ifComponent">The component used to determine which path the dialogue will take after the node</param>
+        /// <param name="nodeName">The custom name of the node (default if ignored)</param>
+        /// <param name="nodeID">The ID of the node (default if ignored)</param>
+        /// <returns>The newly-created node</returns>
+        DescantIfNode CreateIfNode(Vector2 nodePosition, IfComponent ifComponent = null, string nodeName = "", int nodeID = -1)
+        {
+            var ifNode = new DescantIfNode(this, nodePosition)
+            {
+                Name = nodeName,
+                ID = nodeID,
+                IfComponent = ifComponent
+            };
+
+            ifNode.Draw();
+            
+            IfNodes.Add(ifNode);
+
+            return ifNode;
+        }
         
         /// <summary>
         /// Creates a new DescantStartNode
@@ -454,6 +513,7 @@ namespace Descant.Editor
             foreach (var i in selection)
                 if (i.GetType() == typeof(DescantChoiceNode) ||
                     i.GetType() == typeof(DescantResponseNode) ||
+                    i.GetType() == typeof(DescantIfNode) ||
                     i.GetType() == typeof(DescantStartNode) ||
                     i.GetType() == typeof(DescantEndNode))
                     group.AddElement((GraphElement)i);
@@ -520,12 +580,16 @@ namespace Descant.Editor
             foreach (var j in ResponseNodes)
                 if (NodeMatches(j, nodeType, nodeID))
                     return j;
+            
+            foreach (var k in IfNodes)
+                if (NodeMatches(k, nodeType, nodeID))
+                    return k;
 
             if (NodeMatches(StartNode, nodeType, nodeID)) return StartNode;
             
-            foreach (var k in EndNodes)
-                if (NodeMatches(k, nodeType, nodeID))
-                    return k;
+            foreach (var l in EndNodes)
+                if (NodeMatches(l, nodeType, nodeID))
+                    return l;
 
             return null;
         }

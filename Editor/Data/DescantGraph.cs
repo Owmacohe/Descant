@@ -54,6 +54,11 @@ namespace Descant.Editor
         /// A unique ID number that will be applied to the next-created ResponseNode
         /// </summary>
         [HideInInspector] public int ResponseNodeID;
+
+        /// <summary>
+        /// A unique ID number that will be applied to the next-created IfNode
+        /// </summary>
+        [HideInInspector] public int IfNodeID;
         
         /// <summary>
         /// A unique ID number that will be applied to the next-created EndNode
@@ -74,6 +79,11 @@ namespace Descant.Editor
         /// The ResponseNodes in the graph
         /// </summary>
         public List<DescantResponseNodeData> ResponseNodes;
+
+        /// <summary>
+        /// The IfNodes in the graph
+        /// </summary>
+        public List<DescantIfNodeData> IfNodes;
         
         /// <summary>
         /// The StartNode in the graph
@@ -112,6 +122,7 @@ namespace Descant.Editor
             TypewriterSpeed = 1;
             ChoiceNodes = new List<DescantChoiceNodeData>();
             ResponseNodes = new List<DescantResponseNodeData>();
+            IfNodes = new List<DescantIfNodeData>();
             
             // We assume that we'll replace this later, but just in case we don't, we create a default StartNode
             StartNode = new DescantStartNodeData(
@@ -162,6 +173,7 @@ namespace Descant.Editor
             hashCode.Add(GroupID);
             hashCode.Add(ChoiceNodes);
             hashCode.Add(ResponseNodes);
+            hashCode.Add(IfNodes);
             hashCode.Add(StartNode);
             hashCode.Add(EndNodes);
             hashCode.Add(Groups);
@@ -193,17 +205,20 @@ namespace Descant.Editor
             
             foreach (var j in ResponseNodes)
                 temp += "\n\t" + j;
+            
+            foreach (var k in IfNodes)
+                temp += "\n\t" + k;
 
             temp += "\n\t" + StartNode;
             
-            foreach (var k in EndNodes)
-                temp += "\n\t" + k;
-            
-            foreach (var l in Groups)
+            foreach (var l in EndNodes)
                 temp += "\n\t" + l;
             
-            foreach (var m in Connections)
+            foreach (var m in Groups)
                 temp += "\n\t" + m;
+            
+            foreach (var n in Connections)
+                temp += "\n\t" + n;
 
             return GetType() + " (" + name + " " + Autosave + " " + Advanced + " " + Typewriter + " " + TypewriterSpeed + " " +
                    ChoiceNodeID + " " + ResponseNodeID + " " + EndNodeID + " " + GroupID + ")" +
@@ -221,8 +236,9 @@ namespace Descant.Editor
                 for (int j = i + 1; j < Connections.Count; j++)
                 {
                     if (Connections[j].Equals(Connections[i]) ||
-                        Connections[j].IllegalChoiceFrom() ||
-                        Connections[j].ToItself())
+                        Connections[j].IllegalChoiceOrIf() ||
+                        Connections[j].ToItself() ||
+                        Connections[j].To.Equals("null"))
                         Connections.RemoveAt(j);
                 }
             }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Descant.Editor
 {
@@ -140,6 +141,11 @@ namespace Descant.Editor
         public int FromID;
         
         /// <summary>
+        /// The index of the port that this connection is coming from (base 1)
+        /// </summary>
+        public int FromIndex;
+        
+        /// <summary>
         /// The name of the node the connection is going to
         /// </summary>
         public string To;
@@ -148,11 +154,6 @@ namespace Descant.Editor
         /// The ID of the node the connection is going to
         /// </summary>
         public int ToID;
-        
-        /// <summary>
-        /// The index of the port that this connection is coming from (base 1 for ChoiceNodes and ResponseNodes)
-        /// </summary>
-        public int ChoiceIndex;
 
         /// <summary>
         /// Parameterized constructor
@@ -161,31 +162,29 @@ namespace Descant.Editor
         /// <param name="fromID">The ID of the node the connection is coming from</param>
         /// <param name="to">The name of the node the connection is going to</param>
         /// <param name="toID">The ID of the node the connection is going to</param>
-        /// <param name="choiceIndex">
+        /// <param name="fromIndex">
         /// The index of the port that this connection is coming from (base 1 for ChoiceNodes and ResponseNodes)
         /// </param>
-        public DescantConnectionData(string from, int fromID, string to, int toID, int choiceIndex = 0)
+        public DescantConnectionData(string from, int fromID, string to, int toID, int fromIndex = 0)
         {
             From = from;
             FromID = fromID;
+            FromIndex = fromIndex;
             To = to;
             ToID = toID;
-            ChoiceIndex = choiceIndex;
         }
         
         /// <summary>
-        /// Checks to make sure that the connection isn't an illegal one coming from a Choice node's input port
+        /// Checks to make sure that the connection isn't an illegal one coming from a Choice or If node's input port
         /// </summary>
-        /// <returns>Whether this connection is illegally coming from a Choice node's input port</returns>
-        public bool IllegalChoiceFrom()
+        public bool IllegalChoiceOrIf()
         {
-            return From.Trim() == "Choice" && ChoiceIndex == 0;
+            return (From.Equals("Choice") || From.Equals("If")) && FromIndex == 0;
         }
 
         /// <summary>
         /// Determines whether the connection points to itself
         /// </summary>
-        /// <returns></returns>
         public bool ToItself()
         {
             return From == To && FromID == ToID;
@@ -212,7 +211,7 @@ namespace Descant.Editor
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(From, FromID, To, ToID, ChoiceIndex);
+            return HashCode.Combine(From, FromID, FromIndex, To, ToID);
         }
 
         #if UNITY_EDITOR
@@ -225,8 +224,8 @@ namespace Descant.Editor
         {
             return
                 From == other.From && FromID == other.FromID &&
-                To == other.To && ToID == other.ToID &&
-                ChoiceIndex == other.ChoiceIndex;
+                FromIndex == other.FromIndex &&
+                To == other.To && ToID == other.ToID;
         }
         #endif
 
@@ -235,7 +234,7 @@ namespace Descant.Editor
         /// </summary>
         public override string ToString()
         {
-            return GetType() + " (" + FromID + From + " " + ToID + To + " " + ChoiceIndex + ")";
+            return GetType() + " (" + FromID + From + " " + FromIndex + " " + ToID + To + ")";
         }
     }
     

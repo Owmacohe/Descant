@@ -53,8 +53,9 @@
   4. Connections between nodes can be created by left-clicking on nodes’ ports, and dragging to create a connection line to another port.
   5. `ChoiceNode`s represent player choices at certain moments within the dialogue, and `ResponseNode`s represent the NPC’s responses or statements.
   6. If you want to have a `DescantActor`’s property (statistic, topic, or relationship value) to show up within a `ChoiceNode` or `ResponseNode`'s text, write `{actor_name:property_name}`, and **Descant** will inject the first property it finds with the name `property_name` right into it. *(see the below for more info on `DescantActor`s)*.
-  7. The `StartNode` represents the place where a given dialogue begins, and `EndNode`s represent where it can end.
-  8. More complex functionality can be added to nodes by adding `Components` (see the [Component documentation](https://omch.tech/descant) for more info on each default component, as well as how to write your own).
+  7. `IfNode`s represent junctions in the flow of the dialogue, and can be used quite powerfully. They function similarly to `Components` (see below), and are thus not recommended for beginners.
+  8. The `StartNode` represents the place where a given dialogue begins, and `EndNode`s represent where it can end.
+  9. More complex functionality can be added to nodes by adding `Components` (see the [Component documentation](https://omch.tech/descant) for more info on each default component, as well as how to write your own).
 - **Descant Actors**
   1. **Descant Actor**s represent the player and any NPCs that they might talk to. **Descant Actor**s are not necessary when using **Descant**.
   2. New **Statistics**, **Topics**, and **Relationships** can be added in the **Inspector** for each **Descant Actor**.

@@ -10,6 +10,9 @@
     --response-highlight: darkgoldenrod;
     --response-background: rgba(164, 123, 19, 0.4);
 
+    --if-highlight: darkorchid;
+    --if-background: rgba(153, 50, 204, 0.4);
+
     --start-highlight: mediumseagreen;
     --start-background: rgba(46, 134, 85, 0.4);
 
@@ -127,6 +130,10 @@ DescantResponseNode .node_component_dropdown VisualElement {
     background-color: var(--response-highlight);
 }
 
+DescantIfNode .node_component_dropdown VisualElement {
+    background-color: var(--if-highlight);
+}
+
 DescantStartNode .node_component_dropdown VisualElement {
     background-color: var(--start-highlight);
 }
@@ -148,8 +155,18 @@ DescantChoiceNode .add_choice {
     background-color: var(--descant-color-light);
 }
 
+DescantChoiceNode .node_component_dropdown {
+    background-color: var(--choice-highlight);
+    color: var(--descant-color-background);
+}
+
 DescantResponseNode .node_component_dropdown {
     background-color: var(--response-highlight);
+    color: var(--descant-color-background);
+}
+
+DescantIfNode .node_component_dropdown {
+    background-color: var(--if-highlight);
     color: var(--descant-color-background);
 }
 
@@ -180,6 +197,10 @@ DescantChoiceNode #title, DescantChoiceNode #contents {
 
 DescantResponseNode #title, DescantResponseNode #contents {
     background-color: var(--response-background);
+}
+
+DescantIfNode #title, DescantIfNode #contents {
+    background-color: var(--if-background);
 }
 
 DescantStartNode #title, DescantStartNode #contents {
@@ -216,12 +237,20 @@ DescantResponseNode .node-name {
     color: var(--response-highlight);
 }
 
+DescantIfNode .node-name {
+    color: var(--if-highlight);
+}
+
 DescantStartNode .node-name {
     color: var(--start-highlight);
 }
 
 DescantEndNode .node-name {
     color: var(--end-highlight);
+}
+
+#input, #output {
+    justify-content: center;
 }
 
 .names TextField {
@@ -238,11 +267,6 @@ DescantStartNode .names TextField, DescantEndNode .names TextField {
 
 DescantChoiceNode #output Label {
     font-size: 15px;
-}
-
-DescantChoiceNode #input {
-    width: 10px;
-    justify-content: center;
 }
 
 DescantChoiceNode #output {
@@ -269,6 +293,7 @@ DescantChoiceNode #output .choice_number {
 
 DescantChoiceNode #contents Button,
 DescantResponseNode #contents Button,
+DescantIfNode #contents Button,
 DescantStartNode #contents Button,
 DescantEndNode #contents Button {
     font-size: 18px;
@@ -290,6 +315,14 @@ DescantResponseNode #contents .response {
 DescantResponseNode #contents .response TextElement {
     font-size: 18px;
     margin: 2px;
+}
+
+DescantIfNode #contents #output Port {
+    margin: 8px;
+}
+
+DescantIfNode #contents #output TextElement {
+    font-size: 18px;
 }
 
 .node_component {

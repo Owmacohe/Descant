@@ -37,7 +37,7 @@ namespace Descant.Runtime
         }
     }
     
-    public class DescantDialogueController : MonoBehaviour // TODO: create log file
+    public class DescantDialogueController : MonoBehaviour
     {
         [HideInInspector] public RuntimeNode Current; // The current runtime node being accessed
         [HideInInspector] public string CurrentType; // The string NodeType type of the runtime node being accessed
@@ -173,6 +173,7 @@ namespace Descant.Runtime
             // Then synthesizing all the runtime nodes from its node list
             AddToRuntimeNodes(new List<DescantStartNodeData>() { descantGraph.StartNode });
             AddToRuntimeNodes(descantGraph.ChoiceNodes);
+            AddToRuntimeNodes(descantGraph.IfNodes);
             AddToRuntimeNodes(descantGraph.ResponseNodes);
             AddToRuntimeNodes(descantGraph.EndNodes);
 
@@ -283,6 +284,11 @@ namespace Descant.Runtime
                 case "Response":
                     currentResult.Text.Add(
                         new KeyValuePair<int, string>(0, ((DescantResponseNodeData)Current.Data).Response));
+                    break;
+                
+                case "If":
+                    currentResult.Text.Add(new KeyValuePair<int, string>(0, "True"));
+                    currentResult.Text.Add(new KeyValuePair<int, string>(1, "False"));
                     break;
             }
             

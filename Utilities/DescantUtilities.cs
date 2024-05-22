@@ -9,7 +9,7 @@ namespace Descant.Utilities
     /// <summary>
     /// Enum to list all of the types of DescantNodes
     /// </summary>
-    public enum DescantNodeType { Choice, Response, Start, End, Any }
+    public enum DescantNodeType { Choice, Response, If, Start, End, Any }
     
     public static class DescantUtilities
     {

@@ -36,6 +36,8 @@ namespace Descant.Editor
         VisualElement collapsible; // The section of the Component that is collapsible
         Button collapsibleButton; // The button used to collapse/expand the Component
 
+        bool HideTopRow; // Whether to hide the top row of the component
+
         /// <summary>
         /// The Component visual element representation constructor
         /// </summary>
@@ -44,12 +46,14 @@ namespace Descant.Editor
         /// <param name="componentName">The name of the Component</param>
         /// <param name="index">The starting index of this Component within its DescantNode's list of Components</param>
         /// <param name="component">The Component that the visual element is representing</param>
+        /// <param name="hideTopRow">Whether to hide the top row of the component</param>
         public DescantNodeComponentVisualElement(
             DescantGraphView graph,
             DescantNode descantNode,
             string componentName,
             int index,
-            DescantComponent component)
+            DescantComponent component,
+            bool hideTopRow = false)
         {
             graphView = graph;
             node = descantNode;
@@ -65,6 +69,8 @@ namespace Descant.Editor
                 Component = (DescantComponent) Activator.CreateInstance(temp);
             }
             else Component = component; // Otherwise we just use the previously saved copy
+
+            HideTopRow = hideTopRow;
         }
         
         #region Draw
@@ -83,6 +89,8 @@ namespace Descant.Editor
             VisualElement top_row = new VisualElement();
             top_row.AddToClassList("node_component_row");
             Add(top_row);
+
+            if (HideTopRow) top_row.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
 
             // Initializing the left-aligned section of the top row
             VisualElement top_row_left = new VisualElement();

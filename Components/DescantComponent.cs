@@ -92,7 +92,7 @@ namespace Descant.Components
     }
     
     /// <summary>
-    /// A DescantNode class attribute to indicate the maximum number of
+    /// A DescantComponent class attribute to indicate the maximum number of
     /// Components of the attached type that can be added to a DescantNode
     /// </summary>
     public class MaxQuantityAttribute : Attribute
@@ -103,7 +103,8 @@ namespace Descant.Components
     }
 
     /// <summary>
-    /// A DescantNode class attribute to indicate which type(s) of DescantNodes that the attached type can be added to
+    /// A DescantComponent class attribute to indicate which type(s) of
+    /// DescantNodes that the attached type can be added to
     /// </summary>
     public class NodeTypeAttribute : Attribute
     {
@@ -111,15 +112,21 @@ namespace Descant.Components
         
         public NodeTypeAttribute(DescantNodeType type) => Type = type;
     }
+
+    /// <summary>
+    /// A DescantComponent class attribute to indicate whether to show the
+    /// component in the DescantNodes' component dropdowns
+    /// </summary>
+    public class DontShowInEditorAttribute : Attribute { }
     
     /// <summary>
-    /// A DescantNode property attribute to indicate that the attached parameter
+    /// A DescantComponent property attribute to indicate that the attached parameter
     /// should be rendered inline with the name in the Descant Graph GUI
     /// </summary>
     public class InlineAttribute : Attribute { }
     
     /// <summary>
-    /// A DescantNode property attribute to indicate to which group/row
+    /// A DescantComponent property attribute to indicate to which group/row
     /// the attached parameter should be rendered in the Descant Graph GUI
     /// </summary>
     public class ParameterGroupAttribute : Attribute
@@ -130,7 +137,7 @@ namespace Descant.Components
     }
     
     /// <summary>
-    /// A DescantNode property attribute to indicate that the attached
+    /// A DescantComponent property attribute to indicate that the attached
     /// parameter should not be filtered in the Descant Graph GUI
     /// </summary>
     public class NoFilteringAttribute : Attribute { }

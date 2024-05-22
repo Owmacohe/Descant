@@ -128,15 +128,28 @@ namespace Descant.Editor
             List<string> nodeComponentNames = DescantComponentUtilities.GetTrimmedComponentTypes(
                 DescantComponentUtilities.GetComponentTypes()
                 .Where(type =>
+                {
+                    bool show = true;
+
+                    // Making sure that any Components marked to not be shown aren't
+                    try
                     {
-                        var tempType = (((NodeTypeAttribute) type.GetCustomAttributes(
-                            typeof(NodeTypeAttribute),
+                        string unused = ((DontShowInEditorAttribute) type.GetCustomAttributes(
+                            typeof(DontShowInEditorAttribute),
                             true
-                        ).FirstOrDefault())!).Type;
-                        
-                        return tempType.Equals(DescantNodeType.Any) || Type.Equals(tempType);
-                    })
-                .ToList());
+                        ).FirstOrDefault())!.ToString();
+
+                        show = false;
+                    }
+                    catch { }
+                    
+                    var tempType = (((NodeTypeAttribute) type.GetCustomAttributes(
+                        typeof(NodeTypeAttribute),
+                        true
+                    ).FirstOrDefault())!).Type;
+                    
+                    return show && (tempType.Equals(DescantNodeType.Any) || Type.Equals(tempType));
+                }).ToList());
             
             // Initializing the dropdown with the appropriate options from above
             ComponentDropdown = new PopupField<string>(nodeComponentNames, 0);
@@ -276,6 +289,7 @@ namespace Descant.Editor
             // Absolutely making sure that this node is no longer preserved in the DescantGraphView's lists
             if (Type.Equals(DescantNodeType.Choice)) GraphView.ChoiceNodes.Remove((DescantChoiceNode)this);
             else if (Type.Equals(DescantNodeType.Response)) GraphView.ResponseNodes.Remove((DescantResponseNode)this);
+            else if (Type.Equals(DescantNodeType.If)) GraphView.IfNodes.Remove((DescantIfNode)this);
             else if (Type.Equals(DescantNodeType.End)) GraphView.EndNodes.Remove((DescantEndNode)this);
             
             // If by some strange chance the Start node does get removed, it should be allowed to be added back in
