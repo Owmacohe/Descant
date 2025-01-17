@@ -54,6 +54,7 @@ namespace Descant.Runtime
         [HideInInspector] public bool HasEnded; // Whether the current dialogue has finished
         [HideInInspector] public bool Typewriter; // Whether the current dialogue is using a typewriter
         [HideInInspector] public float TypewriterSpeed; // The speed of the dialogue's typewriter (if it's using one)
+        [HideInInspector] public bool SpeakerName; // Whether the current dialogue is showing the speaker name
 
         #region Initialization
 
@@ -169,6 +170,7 @@ namespace Descant.Runtime
             
             Typewriter = descantGraph.Typewriter;
             TypewriterSpeed = descantGraph.TypewriterSpeed;
+            SpeakerName = descantGraph.SpeakerName;
             
             // Then synthesizing all the runtime nodes from its node list
             AddToRuntimeNodes(new List<DescantStartNodeData>() { descantGraph.StartNode });
@@ -247,6 +249,7 @@ namespace Descant.Runtime
             // If there's no next node in the path, stop and throw an error
             if (Current.Next == null ||
                 Current.Next.Count == 0 ||
+                choiceIndex >= Current.Next.Count ||
                 Current.Next[choiceIndex] == null)
             {
                 DescantUtilities.ErrorMessage(

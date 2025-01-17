@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Descant.Components;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Descant.Editor
 {
@@ -44,6 +43,11 @@ namespace Descant.Editor
         /// (see DescantDialogueUI::Type() for its application)
         /// </summary>
         public float TypewriterSpeed;
+        
+        /// <summary>
+        /// Whether or not to show the name of the actor when they are speaking
+        /// </summary>
+        public bool SpeakerName;
         
         /// <summary>
         /// A unique ID number that will be applied to the next-created ChoiceNode
@@ -120,6 +124,7 @@ namespace Descant.Editor
             ScrolledScale = Vector3.one;
             Typewriter = true;
             TypewriterSpeed = 1;
+            SpeakerName = false;
             ChoiceNodes = new List<DescantChoiceNodeData>();
             ResponseNodes = new List<DescantResponseNodeData>();
             IfNodes = new List<DescantIfNodeData>();
@@ -167,6 +172,7 @@ namespace Descant.Editor
             hashCode.Add(ScrolledScale);
             hashCode.Add(Typewriter);
             hashCode.Add(TypewriterSpeed);
+            hashCode.Add(SpeakerName);
             hashCode.Add(ChoiceNodeID);
             hashCode.Add(ResponseNodeID);
             hashCode.Add(EndNodeID);
@@ -220,7 +226,7 @@ namespace Descant.Editor
             foreach (var n in Connections)
                 temp += "\n\t" + n;
 
-            return GetType() + " (" + name + " " + Autosave + " " + Advanced + " " + Typewriter + " " + TypewriterSpeed + " " +
+            return GetType() + " (" + name + " " + Autosave + " " + Advanced + " " + Typewriter + " " + TypewriterSpeed + " " + SpeakerName + " " +
                    ChoiceNodeID + " " + ResponseNodeID + " " + EndNodeID + " " + GroupID + ")" +
                    (temp.Length > 1 ? temp : "");
         }

@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49fd40c39f0449118e62758ae3bb230e, type: 3}
   m_Name: Test_Player
   m_EditorClassIdentifier: 
+  DisplayName: Player
+  Colour: {r: 0, g: 0, b: 1, a: 1}
   PortraitEnabled: 1
   Portrait: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   Portraits:

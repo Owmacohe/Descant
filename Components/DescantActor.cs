@@ -11,6 +11,21 @@ namespace Descant.Components
     public class DescantActor : ScriptableObject
     {
         /// <summary>
+        /// The actor's display name
+        /// </summary>
+        public string DisplayName;
+
+        /// <summary>
+        /// The actor's associated colour
+        /// </summary>
+        public Color Colour;
+
+        /// <summary>
+        /// The actor's display name, formatted bold with colour applied
+        /// </summary>
+        public String FormattedDisplayName => $"<b><color=#{ColorUtility.ToHtmlStringRGBA(Colour)}>{DisplayName}</color></b>";
+        
+        /// <summary>
         /// Whether or not to show the actor's portrait during runtime
         /// </summary>
         public bool PortraitEnabled;

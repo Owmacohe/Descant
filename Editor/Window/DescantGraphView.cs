@@ -5,6 +5,7 @@ using Descant.Components;
 using Descant.Utilities;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -138,6 +139,8 @@ namespace Descant.Editor
             {
                 var temp = CreateResponseNode(j.Position, j.Name, j.ID);
                 List<TextField> fields = DescantEditorUtilities.FindAllElements<TextField>(temp);
+
+                DescantEditorUtilities.FindFirstElement<ObjectField>(temp).value = j.OverrideSpeaker;
                 
                 fields[1].value = j.Response;
                 

@@ -1,7 +1,9 @@
 ﻿#if UNITY_EDITOR
 using System.Linq;
+using Descant.Components;
 using Descant.Utilities;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -83,12 +85,26 @@ namespace Descant.Editor
                     });
                 }
             });
+            
+            // Initializing the override speaker field
+            ObjectField field = new ObjectField();
+            field.objectType = typeof(DescantActor);
+            field.allowSceneObjects = false;
+            field.label = "Override Speaker";
+            field.AddToClassList("override_speaker");
+            extensionContainer.Insert(0, field);
+            
+            // Adding a callback for when the override speaker field is changed
+            field.RegisterValueChangedCallback(callback =>
+            {
+                GraphView.Editor.CheckAndSave(); // Check for autosave
+            });
 
             // Initializing the big response text field
             TextField response = new TextField();
             response.multiline = true;
             response.AddToClassList("response");
-            extensionContainer.Insert(0, response);
+            extensionContainer.Insert(1, response);
 
             // Adding a callback for when the response text is changed
             response.RegisterValueChangedCallback(callback =>

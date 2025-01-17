@@ -306,6 +306,16 @@ DescantChoiceNode #contents #output Button {
     font-size: 18px;
 }
 
+DescantResponseNode #contents ObjectField {
+    height: 30px;
+    margin: 10px;
+}
+
+DescantResponseNode #contents ObjectField Label {
+    font-size: 18px;
+    margin-right: 20px;
+}
+
 DescantResponseNode #contents .response {
     min-height: 90px;
     padding: 5px;

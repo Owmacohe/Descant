@@ -27,6 +27,8 @@ namespace Descant.Editor
         
         Toggle typewriter; // The Toggle VisualElement for turning the typewriter on and off
         TextField typewriterSpeed; // The field for inputting the typewriter speed
+
+        Toggle speakerName; // The Toggle VisualElement for turning the speaker name on and off
         
         Toggle autoSave; // The autosave toggle button in the toolbar
         TextElement unsaved; // The unsaved changes marker in the toolbar
@@ -192,6 +194,17 @@ namespace Descant.Editor
                 Save();
             });
             
+            // Initializing the speaker name toggle
+            speakerName = new Toggle("Speaker Name:");
+            speakerName.value = data.SpeakerName;
+            saveSection.Add(speakerName);
+
+            // Adding a callback for when the speaker name toggle value is changed
+            speakerName.RegisterValueChangedCallback(callback =>
+            {
+                Save();
+            });
+            
             // Initializing the autosave toggle button
             autoSave = new Toggle("Autosave:");
             autoSave.value = data.Autosave;
@@ -299,6 +312,11 @@ namespace Descant.Editor
                 k.style.display = visible
                     ? new StyleEnum<DisplayStyle>(DisplayStyle.Flex)
                     : new StyleEnum<DisplayStyle>(DisplayStyle.None);
+            
+            foreach (var l in DescantEditorUtilities.FindAllElements(graphView, "override_speaker"))
+                l.style.display = visible
+                    ? new StyleEnum<DisplayStyle>(DisplayStyle.Flex)
+                    : new StyleEnum<DisplayStyle>(DisplayStyle.None);
 
             search.style.display = visible
                 ? new StyleEnum<DisplayStyle>(DisplayStyle.Flex)
@@ -363,6 +381,7 @@ namespace Descant.Editor
             temp.ScrolledScale = graphView.viewTransform.scale;
             temp.Typewriter = typewriter.value;
             temp.TypewriterSpeed = float.Parse(typewriterSpeed.value);
+            temp.SpeakerName = speakerName.value;
             temp.ChoiceNodeID = graphView.ChoiceNodeID;
             temp.ResponseNodeID = graphView.ResponseNodeID;
             temp.IfNodeID = graphView.IfNodeID;
@@ -443,6 +462,8 @@ namespace Descant.Editor
                         inputNode.ID
                     ));
                 }
+
+                var overrideActor = DescantEditorUtilities.FindFirstElement<ObjectField>(j).value;
                 
                 // Creating the actual DescantResponseNodeData object
                 temp.ResponseNodes.Add(new DescantResponseNodeData(
@@ -450,6 +471,7 @@ namespace Descant.Editor
                     j.Type.ToString(),
                     j.ID,
                     j.GetPosition().position,
+                    overrideActor == null ? null : (DescantActor)overrideActor,
                     fields[1].value,
                     DescantEditorUtilities.FindAllElements<DescantNodeComponentVisualElement>(j)
                         .Select(visualElement => visualElement.Component)
@@ -609,6 +631,7 @@ namespace Descant.Editor
             data.ScrolledScale = temp.ScrolledScale;
             data.Typewriter = temp.Typewriter;
             data.TypewriterSpeed = temp.TypewriterSpeed;
+            data.SpeakerName = temp.SpeakerName;
             data.ChoiceNodeID = temp.ChoiceNodeID;
             data.ResponseNodeID = temp.ResponseNodeID;
             data.IfNodeID = temp.IfNodeID;

@@ -227,10 +227,15 @@ namespace Descant.Editor
     public class DescantResponseNodeData : DescantNodeData
     {
         /// <summary>
+        /// An override for the currently-speaking actor
+        /// </summary>
+        public DescantActor OverrideSpeaker;
+        
+        /// <summary>
         /// The response text at the ResponseNode
         /// </summary>
         public string Response;
-        
+
         /// <summary>
         /// Parameterized constructor
         /// </summary>
@@ -238,6 +243,7 @@ namespace Descant.Editor
         /// <param name="type">The unique identifier ID for the node</param>
         /// <param name="id">The type of this node</param>
         /// <param name="position">The node's current position</param>
+        /// <param name="overrideSpeaker">An override for the currently-speaking actor</param>
         /// <param name="response">The response text at the ResponseNode</param>
         /// <param name="nodeComponents">The list of Components attached to the node</param>
         /// <param name="comments">The comments associated with this node</param>
@@ -246,11 +252,13 @@ namespace Descant.Editor
             string type,
             int id,
             Vector2 position,
+            DescantActor overrideSpeaker,
             string response,
             List<DescantComponent> nodeComponents,
             string comments)
             : base(name, type, id, position, nodeComponents, comments)
         {
+            OverrideSpeaker = overrideSpeaker;
             Response = response;
         }
 
@@ -275,7 +283,7 @@ namespace Descant.Editor
         
         public override int GetHashCode()
         {
-            return HashCode.Combine(base.GetHashCode(), Response);
+            return HashCode.Combine(base.GetHashCode(), OverrideSpeaker, Response);
         }
 
         #if UNITY_EDITOR
@@ -288,6 +296,7 @@ namespace Descant.Editor
         {
             return
                 base.Equals(other) &&
+                OverrideSpeaker == other.OverrideSpeaker &&
                 Response == other.Response;
         }
         #endif
@@ -297,7 +306,7 @@ namespace Descant.Editor
         /// </summary>
         public override string ToString()
         {
-            return base.ToString() + " (" + Response + ")";
+            return base.ToString() + " (" + (OverrideSpeaker == null ? "" : OverrideSpeaker.DisplayName) + " " + Response + ")";
         }
     }
     

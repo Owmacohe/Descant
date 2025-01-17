@@ -4,6 +4,7 @@ using Descant.Editor;
 using Descant.Utilities;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -38,29 +39,19 @@ namespace Descant.Runtime
         int typewriterIndex; // The index in the target text that the typewriter is currently at
         float currentTypewriterSpeed; // The current speed that the typewriter is typing at
 
-        /// <summary>
-        /// A callback that triggers when the dialogue begins
-        /// (don't forget to unsubscribe when you're done!)
-        /// </summary>
-        public event Action OnBegin;
+        [Header("Callbacks")]
         
-        /// <summary>
-        /// A callback that triggers when the next node in the dialogue is reached
-        /// (don't forget to unsubscribe when you're done!)
-        /// </summary>
-        public event Action OnDisplay;
+        [Tooltip("A callback that triggers when the dialogue begins")]
+        public UnityEvent OnBegin;
         
-        /// <summary>
-        /// A callback that triggers when ChoiceNodes are added to the UI
-        /// (don't forget to unsubscribe when you're done!)
-        /// </summary>
-        public event Action<Button> OnAddChoice;
+        [Tooltip("A callback that triggers when the next node in the dialogue is reached")]
+        public UnityEvent OnDisplay;
         
-        /// <summary>
-        /// A callback that triggers when the dialogue ends
-        /// (don't forget to unsubscribe when you're done!)
-        /// </summary>
-        public event Action OnEnd;
+        [Tooltip("A callback that triggers when ChoiceNodes are added to the UI")]
+        public UnityEvent<Button> OnAddChoice;
+        
+        [Tooltip("A callback that triggers when the dialogue ends")]
+        public UnityEvent OnEnd;
 
         #region Initialization
 
@@ -92,6 +83,10 @@ namespace Descant.Runtime
         public void BeginDialogue()
         {
             dialogueController.BeginDialogue();
+
+            response.text = "";
+            SetClickMessage(false);
+            
             DisplayNode();
             
             OnBegin?.Invoke();
@@ -177,8 +172,8 @@ namespace Descant.Runtime
             }
             
             // Setting the actor portraits accordingly
-            playerPortrait.sprite = temp.Player.Portrait;
-            npcPortrait.sprite = temp.NPC.Portrait;
+            playerPortrait.sprite = temp.Player != null ? temp.Player.Portrait : null;
+            npcPortrait.sprite = temp.NPC != null ? temp.NPC.Portrait : null;
             
             // Enabling/disabling the portraits based on whether they're null and/or enabled/disabled
             playerPortrait.gameObject.SetActive(playerPortrait.sprite != null && temp.Player.PortraitEnabled);
@@ -190,8 +185,19 @@ namespace Descant.Runtime
             if (currentNodeType.Equals("Response"))
             {
                 // Either starting the typewriter or just sticking the text right in
-                if (dialogueController.Typewriter) StartTypewriter(temp.Text[0].Value);
-                else response.text = temp.Text[0].Value;
+                if (dialogueController.Typewriter) StartTypewriter(temp.Text[0].Value, temp.NPC);
+                else
+                {
+                    var overrideSpeaker = ((DescantResponseNodeData) dialogueController.Current.Data).OverrideSpeaker;
+                    
+                    response.text = (dialogueController.SpeakerName || overrideSpeaker != null
+                        ? (overrideSpeaker == null
+                            ? temp.NPC != null
+                                ? temp.NPC.FormattedDisplayName
+                                : temp.Text[0].Value
+                            : overrideSpeaker.FormattedDisplayName) + ": "
+                        : "") + temp.Text[0].Value;
+                }
 
                 // Quickly checking to see what the next node is
                 var next = dialogueController.Current.Next;
@@ -221,7 +227,8 @@ namespace Descant.Runtime
                     // Otherwise, we display the next node (which will be a ChoiceNode)
                     default:
                         // Once the response text has been shown, we skip ahead to show the player's possible choices
-                        DisplayNode();
+                        // (we only do this if there is no typewriter)
+                        if (!dialogueController.Typewriter) DisplayNode();
                         break;
                 }
             }
@@ -276,13 +283,22 @@ namespace Descant.Runtime
         /// Starts the typewriter process to display text one character at a time into the Response section of the UI
         /// </summary>
         /// <param name="text">The text to be typed out</param>
-        void StartTypewriter(string text)
+        /// <param name="npc">The DescantActor associated with this response</param>
+        void StartTypewriter(string text, DescantActor npc)
         {
             typing = true;
 
             currentTypewriterSpeed = dialogueController.TypewriterSpeed;
             
-            response.text = "";
+            var overrideSpeaker = ((DescantResponseNodeData) dialogueController.Current.Data).OverrideSpeaker;
+            
+            response.text = dialogueController.SpeakerName || overrideSpeaker != null
+                ? (overrideSpeaker == null
+                    ? npc != null
+                        ? npc.FormattedDisplayName
+                        : ""
+                    : overrideSpeaker.FormattedDisplayName) + ": "
+                : "";
             
             targetTypewriterText = text;
             typewriterIndex = 0;
@@ -297,7 +313,7 @@ namespace Descant.Runtime
         void Type()
         {
             // Making sure we haven't reached the end yet
-            if (response.text != targetTypewriterText)
+            if (response.text != targetTypewriterText && typewriterIndex < targetTypewriterText.Length)
             {
                 char temp = targetTypewriterText[typewriterIndex]; // The next character to be typed
 
@@ -333,7 +349,14 @@ namespace Descant.Runtime
                 // Calling itself again after some amount of time (dependant on the typewriterSpeed)
                 Invoke(nameof(Type), (1f / currentTypewriterSpeed) / 10f);
             }
-            else typing = false;
+            else
+            {
+                typing = false;
+                
+                // Once the typewriter is finished, then we can display the choices
+                if (dialogueController.Current.Next[0].Data.Type == "Choice")
+                    DisplayNode();
+            }
         }
 
         #endregion

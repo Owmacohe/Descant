@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49fd40c39f0449118e62758ae3bb230e, type: 3}
   m_Name: Test_NPC
   m_EditorClassIdentifier: 
+  DisplayName: Non-Player Character
+  Colour: {r: 1, g: 0, b: 0, a: 1}
   PortraitEnabled: 1
   Portrait: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   Portraits:
@@ -29,4 +31,4 @@ MonoBehaviour:
       Value: 0.5
       index: 0
       isKeyDuplicated: 0
-  DialogueAttempts: 34
+  DialogueAttempts: 45
