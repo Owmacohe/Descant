@@ -3,6 +3,7 @@
 using System;
 using UnityEngine;
 using Descant.Utilities;
+using Object = UnityEngine.Object;
 
 namespace Descant.Components
 {
@@ -31,7 +32,7 @@ namespace Descant.Components
         {
             float percentage = (UnityEngine.Time.time - startTime) / Time;
             
-            foreach (var i in GameObject.FindObjectsOfType<MonoBehaviour>())
+            foreach (var i in Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None))
             {
                 if (ScriptName != "")
                 {

@@ -39,7 +39,7 @@ namespace Descant.Components
     public class DescantNodeInvokeResult
     {
         /// <summary>
-        /// The list of texts to display for the current node (as well index for their position when displayed)
+        /// The list of texts to display for the current node (as well as the index for their position when displayed)
         /// </summary>
         public List<KeyValuePair<int, string>> Text;
         

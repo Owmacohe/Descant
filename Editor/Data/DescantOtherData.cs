@@ -81,10 +81,7 @@ namespace Descant.Editor
             return Equals((DescantGroupData)other);
         }
         
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Name, ID, Position, Nodes, NodeIDs, Comments);
-        }
+        public override int GetHashCode() => HashCode.Combine(Name, ID, Position, Nodes, NodeIDs, Comments);
 
         #if UNITY_EDITOR
         /// <summary>
@@ -92,16 +89,12 @@ namespace Descant.Editor
         /// </summary>
         /// <param name="other">The data object being compared against</param>
         /// <returns>Whether the other DescantGroupData has the same data as this one</returns>
-        public bool Equals(DescantGroupData other)
-        {
-            return
-                Name == other.Name &&
-                ID == other.ID &&
-                Position == other.Position &&
-                DescantEditorUtilities.AreListsEqual(Nodes, other.Nodes) &&
-                DescantEditorUtilities.AreListsEqual(NodeIDs, other.NodeIDs) &&
-                Comments == other.Comments;
-        }
+        public bool Equals(DescantGroupData other) => Name == other.Name &&
+                                                      ID == other.ID &&
+                                                      Position == other.Position &&
+                                                      DescantEditorUtilities.AreListsEqual(Nodes, other.Nodes) &&
+                                                      DescantEditorUtilities.AreListsEqual(NodeIDs, other.NodeIDs) &&
+                                                      Comments == other.Comments;
         #endif
         
         /// <summary>
@@ -177,18 +170,12 @@ namespace Descant.Editor
         /// <summary>
         /// Checks to make sure that the connection isn't an illegal one coming from a Choice or If node's input port
         /// </summary>
-        public bool IllegalChoiceOrIf()
-        {
-            return (From.Equals("Choice") || From.Equals("If")) && FromIndex == 0;
-        }
+        public bool IllegalChoiceOrIf() => (From.Equals("Choice") || From.Equals("If")) && FromIndex == 0;
 
         /// <summary>
         /// Determines whether the connection points to itself
         /// </summary>
-        public bool ToItself()
-        {
-            return From == To && FromID == ToID;
-        }
+        public bool ToItself() => From == To && FromID == ToID;
         
         /// <summary>
         /// Overridden Equals method
@@ -209,10 +196,7 @@ namespace Descant.Editor
             return Equals((DescantConnectionData)other);
         }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(From, FromID, FromIndex, To, ToID);
-        }
+        public override int GetHashCode() => HashCode.Combine(From, FromID, FromIndex, To, ToID);
 
         #if UNITY_EDITOR
         /// <summary>
@@ -220,22 +204,15 @@ namespace Descant.Editor
         /// </summary>
         /// <param name="other">The data object being compared against</param>
         /// <returns>Whether the other DescantConnectionData has the same data as this one</returns>
-        public bool Equals(DescantConnectionData other)
-        {
-            return
-                From == other.From && FromID == other.FromID &&
-                FromIndex == other.FromIndex &&
-                To == other.To && ToID == other.ToID;
-        }
+        public bool Equals(DescantConnectionData other) => From == other.From && FromID == other.FromID &&
+                                                           FromIndex == other.FromIndex &&
+                                                           To == other.To && ToID == other.ToID;
         #endif
 
         /// <summary>
         /// Overridden ToString method
         /// </summary>
-        public override string ToString()
-        {
-            return GetType() + " (" + FromID + From + " " + FromIndex + " " + ToID + To + ")";
-        }
+        public override string ToString() => GetType() + " (" + FromID + From + " " + FromIndex + " " + ToID + To + ")";
     }
     
     #endregion

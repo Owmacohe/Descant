@@ -88,10 +88,7 @@ namespace Descant.Editor
             return Equals((DescantNodeData)other);
         }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Name, Type, ID, Position, NodeComponents, Comments);
-        }
+        public override int GetHashCode() => HashCode.Combine(Name, Type, ID, Position, NodeComponents, Comments);
 
         #if UNITY_EDITOR
         /// <summary>
@@ -183,10 +180,7 @@ namespace Descant.Editor
             return Equals((DescantChoiceNodeData)other);
         }
         
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(base.GetHashCode(), Choices);
-        }
+        public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), Choices);
 
         #if UNITY_EDITOR
         /// <summary>
@@ -281,10 +275,7 @@ namespace Descant.Editor
             return Equals((DescantResponseNodeData)other);
         }
         
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(base.GetHashCode(), OverrideSpeaker, Response);
-        }
+        public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), OverrideSpeaker, Response);
 
         #if UNITY_EDITOR
         /// <summary>
@@ -292,22 +283,17 @@ namespace Descant.Editor
         /// </summary>
         /// <param name="other">The data object being compared against</param>
         /// <returns>Whether the other DescantResponseNodeData has the same data as this one</returns>
-        public bool Equals(DescantResponseNodeData other)
-        {
-            return
-                base.Equals(other) &&
-                OverrideSpeaker == other.OverrideSpeaker &&
-                Response == other.Response;
-        }
+        public bool Equals(DescantResponseNodeData other) => base.Equals(other) &&
+                                                             OverrideSpeaker == other.OverrideSpeaker &&
+                                                             Response == other.Response;
         #endif
         
         /// <summary>
         /// Overridden ToString method
         /// </summary>
-        public override string ToString()
-        {
-            return base.ToString() + " (" + (OverrideSpeaker == null ? "" : OverrideSpeaker.DisplayName) + " " + Response + ")";
-        }
+        public override string ToString() => base.ToString() +
+                                             " (" + (OverrideSpeaker == null ? "" : OverrideSpeaker.DisplayName) +
+                                             " " + Response + ")";
     }
     
     #endregion
@@ -369,10 +355,7 @@ namespace Descant.Editor
             return Equals((DescantIfNodeData)other);
         }
         
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(base.GetHashCode(), IfComponent.GetHashCode());
-        }
+        public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), IfComponent.GetHashCode());
 
         #if UNITY_EDITOR
         /// <summary>
@@ -380,21 +363,14 @@ namespace Descant.Editor
         /// </summary>
         /// <param name="other">The data object being compared against</param>
         /// <returns>Whether the other DescantIfNodeData has the same data as this one</returns>
-        public bool Equals(DescantIfNodeData other)
-        {
-            return
-                base.Equals(other) &&
-                IfComponent.Equals(other.IfComponent);
-        }
+        public bool Equals(DescantIfNodeData other) => base.Equals(other) &&
+                                                       IfComponent.Equals(other.IfComponent);
         #endif
         
         /// <summary>
         /// Overridden ToString method
         /// </summary>
-        public override string ToString()
-        {
-            return base.ToString() + " (" + IfComponent + ")";
-        }
+        public override string ToString() => base.ToString() + " (" + IfComponent + ")";
     }
     
     #endregion

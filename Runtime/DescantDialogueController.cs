@@ -194,11 +194,8 @@ namespace Descant.Runtime
         /// </summary>
         /// <param name="lst">The data to be synthesized</param>
         /// <returns>The last runtime node in the list</returns>
-        void AddToRuntimeNodes<T>(List<T> lst) where T : DescantNodeData
-        {
-            foreach (var i in lst)
-                Nodes.Add(new RuntimeNode(i));
-        }
+        void AddToRuntimeNodes<T>(List<T> lst) where T : DescantNodeData =>
+            lst.ForEach(i => Nodes.Add(new RuntimeNode(i)));
 
         /// <summary>
         /// Finds a runtime node from the list

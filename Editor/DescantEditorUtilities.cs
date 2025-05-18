@@ -7,7 +7,7 @@ namespace Descant.Editor
 {
     public static class DescantEditorUtilities
     {
-        public const string VERSION = "1.2.1";
+        public const string VERSION = "1.2.3";
         
         #if UNITY_EDITOR
         

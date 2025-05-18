@@ -190,10 +190,7 @@ namespace Descant.Editor
         /// <summary>
         /// Overridden BuildContextualMenu method to make sure the Delete dropdown calls RemoveNode
         /// </summary>
-        public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
-        {
-            evt.menu.AppendAction("Delete", actionEvent => { RemoveNode(); });
-        }
+        public override void BuildContextualMenu(ContextualMenuPopulateEvent evt) => evt.menu.AppendAction("Delete", actionEvent => { RemoveNode(); });
         
         #endregion
         

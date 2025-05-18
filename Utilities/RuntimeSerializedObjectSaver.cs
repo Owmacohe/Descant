@@ -14,10 +14,7 @@ public class RuntimeSerializedObjectSaver : MonoBehaviour
     /// (the queue is used instead of directly saving so that the objects can be saved even during runtime)
     /// </summary>
     /// <param name="obj">The SerializedObject to be saved</param>
-    public void AddObjectToQueue(Object obj)
-    {
-        objectsToSave.Enqueue(obj);
-    }
+    public void AddObjectToQueue(Object obj) => objectsToSave.Enqueue(obj);
 
     #if UNITY_EDITOR
     void Update()

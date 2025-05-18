@@ -41,7 +41,8 @@ namespace Descant.Editor
         /// Project view contextual menu edit option for Descant Graph files
         /// </summary>
         [MenuItem("Assets/Edit Descant Graph")]
-        static void EditGraphFile() {
+        static void EditGraphFile()
+        {
             EditorWindow.GetWindow<DescantEditor>("Descant Graph Editor").Load(
                 GetAssetFromInstanceID<DescantGraph>(Selection.activeObject.GetInstanceID()));
         }
@@ -51,9 +52,7 @@ namespace Descant.Editor
         /// </summary>
         /// <returns>Whether the selected file is a Descant Graph file</returns>
         [MenuItem("Assets/Edit Descant Graph", true)]
-        static bool ConfirmEditGraphFile() {
-            return IsDescantGraphFile(Selection.activeObject.GetInstanceID());
-        }
+        static bool ConfirmEditGraphFile() => IsDescantGraphFile(Selection.activeObject.GetInstanceID());
     }
 }
 #endif

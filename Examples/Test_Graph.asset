@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Autosave: 0
   Advanced: 1
-  PannedPosition: {x: 75, y: 265, z: 0}
+  PannedPosition: {x: 205, y: 283, z: 0}
   ScrolledScale: {x: 0.65751624, y: 0.65751624, z: 1}
   Typewriter: 1
   TypewriterSpeed: 1
   SpeakerName: 0
   ChoiceNodeID: 7
   ResponseNodeID: 8
-  IfNodeID: 2
+  IfNodeID: 3
   EndNodeID: 8
   GroupID: 5
   ChoiceNodes:
@@ -60,7 +60,8 @@ MonoBehaviour:
     Type: Response
     ID: 0
     Position: {x: 400, y: -15}
-    NodeComponents: []
+    NodeComponents:
+    - rid: 5691516794154254442
     Comments: 
     OverrideSpeaker: {fileID: 11400000, guid: ac3d79085608abb479f9d21705ca4a30, type: 2}
     Response: Welcome to <color="blue">Descant</color>! How can I help you? Your
@@ -165,7 +166,7 @@ MonoBehaviour:
     Comments: 
   - Name: Start
     ID: 1
-    Position: {x: -53.999996, y: -73.99998}
+    Position: {x: -54, y: -74}
     Nodes:
     - Response
     - Start
@@ -182,7 +183,7 @@ MonoBehaviour:
     Comments: 
   - Name: LongEnding
     ID: 3
-    Position: {x: 2288, y: 227.99997}
+    Position: {x: 2288, y: 228}
     Nodes:
     - Choice
     - Response
@@ -300,6 +301,14 @@ MonoBehaviour:
       data:
         Collapsed: 0
         Message: Secret ending
+    - rid: 5691516794154254442
+      type: {class: StatisticChange, ns: Descant.Components, asm: omch.descant.components}
+      data:
+        Collapsed: 0
+        Actor: {fileID: 11400000, guid: aa50e7fd76a0a8c4ba679f3a8ac2fe0e, type: 2}
+        StatisticName: Health
+        OperationType: 0
+        OperationValue: 1
     - rid: 7632772672291864709
       type: {class: Log, ns: Descant.Components, asm: omch.descant.components}
       data:

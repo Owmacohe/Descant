@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Descant.Utilities;
 using UnityEngine;
 
 namespace Descant.Components
@@ -43,7 +44,7 @@ namespace Descant.Components
         /// <summary>
         /// The actor's statistics
         /// </summary>
-        public SerializableDictionary<string, float> Statistics;
+        public ListDictionary<string, float> Statistics;
         
         /// <summary>
         /// The actor's topics list
@@ -53,12 +54,12 @@ namespace Descant.Components
         /// <summary>
         /// The actor's relationship values
         /// </summary>
-        public SerializableDictionary<string, float> Relationships;
+        public ListDictionary<string, float> Relationships;
         
         /// <summary>
         /// The number of times that the player has attempted to start a dialogue with the actor
         /// </summary>
-        [HideInInspector] public int DialogueAttempts;
+        public int DialogueAttempts;
 
         /// <summary>
         /// Overridden ToString method

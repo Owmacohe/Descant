@@ -193,22 +193,27 @@ DescantNodeGroup Button {
 
 DescantChoiceNode #title, DescantChoiceNode #contents {
     background-color: var(--choice-background);
+    justify-content: flex-start;
 }
 
 DescantResponseNode #title, DescantResponseNode #contents {
     background-color: var(--response-background);
+    justify-content: flex-start;
 }
 
 DescantIfNode #title, DescantIfNode #contents {
     background-color: var(--if-background);
+    justify-content: flex-start;
 }
 
 DescantStartNode #title, DescantStartNode #contents {
     background-color: var(--start-background);
+    justify-content: flex-start;
 }
 
 DescantEndNode #title, DescantEndNode #contents {
     background-color: var(--end-background);
+    justify-content: flex-start;
 }
 
 #title .names {

@@ -17,10 +17,7 @@ namespace Descant.Editor
         VisualElement logList; // The editor's log event list parent VisualElement
         
         [MenuItem("Window/Descant/Log"), MenuItem("Descant/Log")]
-        public static void Open()
-        {
-            GetWindow<DescantLog>("Descant Log");
-        }
+        public static void Open() => GetWindow<DescantLog>("Descant Log");
 
         void CreateGUI()
         {

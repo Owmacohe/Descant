@@ -604,10 +604,7 @@ namespace Descant.Editor
         /// <param name="nodeType">The type (as a string) to check it against</param>
         /// <param name="nodeID">the ID to check it against</param>
         /// <returns></returns>
-        bool NodeMatches(DescantNode node, string nodeType, int nodeID)
-        {
-            return node.Type.ToString() == nodeType && node.ID == nodeID;
-        }
+        bool NodeMatches(DescantNode node, string nodeType, int nodeID) => node.Type.ToString() == nodeType && node.ID == nodeID;
         
         #endregion
     }

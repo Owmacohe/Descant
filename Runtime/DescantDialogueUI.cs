@@ -111,7 +111,7 @@ namespace Descant.Runtime
         void Awake()
         {
             // Making sure to warn the user if there are no EventSystems present
-            if (!FindObjectOfType(typeof(EventSystem)))
+            if (!FindFirstObjectByType<EventSystem>())
                 DescantUtilities.ErrorMessage(
                     GetType(),
                     "Don't forget to add an EventSystem to the scene with Create/UI/Event System!");

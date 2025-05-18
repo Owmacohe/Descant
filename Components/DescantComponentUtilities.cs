@@ -4,6 +4,7 @@ using System.Linq;
 using Descant.Utilities;
 using System.Reflection;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Descant.Components
 {
@@ -178,7 +179,7 @@ namespace Descant.Components
         {
             if (objectTag == "")
             {
-                foreach (var i in GameObject.FindObjectsOfType<MonoBehaviour>())
+                foreach (var i in Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None))
                     if (InvokeMethod(component, i, scriptName, methodName, parameter))
                         return true;   
             }
@@ -267,10 +268,7 @@ namespace Descant.Components
         /// <param name="value">The string value to parse</param>
         /// <typeparam name="T">The enum type we are checking</typeparam>
         /// <returns>The value that the string corresponds to</returns>
-        public static T ParseEnum<T>(string value) where T : Enum
-        {
-            return (T)Enum.Parse(typeof(T), value, true);
-        }
+        public static T ParseEnum<T>(string value) where T : Enum => (T)Enum.Parse(typeof(T), value, true);
 
         /// <summary>
         /// Method to copy all values from one DescantActor to another

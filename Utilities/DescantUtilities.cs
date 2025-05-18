@@ -41,10 +41,7 @@ namespace Descant.Utilities
         /// </summary>
         /// <param name="source">The type of the script this is being called from</param>
         /// <param name="message">The error message to display</param>
-        public static void ErrorMessage(Type source, string message)
-        {
-            LogMessage(source, message, "#f08080");
-        }
+        public static void ErrorMessage(Type source, string message) => LogMessage(source, message, "#f08080");
 
         /// <summary>
         /// Prints a message to the console, formatted with a bold source name
@@ -52,10 +49,8 @@ namespace Descant.Utilities
         /// <param name="source">The type of the script this is being called from</param>
         /// <param name="message">The message to display</param>
         /// <param name="colour">The colour that the message should print in</param>
-        public static void LogMessage(Type source, string message, string colour = "white")
-        {
+        public static void LogMessage(Type source, string message, string colour = "white") =>
             Debug.Log("<color='" + colour + "'><b>" + source.Name + ":</b> " + message + "</color>");
-        }
 
         #if UNITY_EDITOR
         /// <summary>

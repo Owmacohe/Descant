@@ -62,10 +62,7 @@ namespace Descant.Components
             return Equals((DescantComponent)other);
         }
 
-        public override int GetHashCode()
-        {
-            return Collapsed.GetHashCode();
-        }
+        public override int GetHashCode() => HashCode.Combine(Collapsed);
 
         /// <summary>
         /// Custom Equals method

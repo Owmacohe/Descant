@@ -24,14 +24,11 @@ namespace Descant.Runtime
         /// <summary>
         /// Method to call to initialize all of the supplied data in the Descant UI
         /// </summary>
-        public void Display()
-        {
-            UI.Initialize(
-                graph,
-                player,
-                NPC, 
-                extraActors
-            );
-        }
+        public void Display() => UI.Initialize(
+            graph,
+            player,
+            NPC, 
+            extraActors
+        );
     }
 }

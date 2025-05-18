@@ -46,10 +46,7 @@ namespace Descant.Editor
         int foundElementIndex; // The current index within the found elements that we have snapped to
         
         [MenuItem("Window/Descant/Graph Editor"), MenuItem("Descant/Graph Editor")]
-        public static void Open()
-        {
-            GetWindow<DescantEditor>("Descant Graph Editor");
-        }
+        public static void Open() => GetWindow<DescantEditor>("Descant Graph Editor");
 
         #region GUI
 
