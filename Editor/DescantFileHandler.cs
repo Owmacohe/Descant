@@ -12,13 +12,13 @@ namespace Descant.Editor
     public static class DescantFileHandler
     {
         /// <summary>
-        /// Gets a ScriptableObject from the instanceID of a file
+        /// Gets a ScriptableObject from the entityID of a file
         /// </summary>
-        /// <param name="instanceID">The instanceID of the file being checked</param>
+        /// <param name="entityID">The entityID of the file being checked</param>
         /// <returns>The graph object (null if the selection is not of the desired type)</returns>
-        static T GetAssetFromInstanceID<T>(int instanceID) where T : ScriptableObject
+        static T GetAssetFromEntityID<T>(EntityId entityID) where T : ScriptableObject
         {
-            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(instanceID, out string guid, out long _);
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(entityID, out string guid, out long _);
             
             string assetPath = AssetDatabase.GUIDToAssetPath(guid);
             Object asset = AssetDatabase.LoadAssetAtPath(assetPath, typeof(Object));
@@ -28,13 +28,13 @@ namespace Descant.Editor
         }
         
         /// <summary>
-        /// Checks to see whether the file with the supplied instanceID is a DescantGraph
+        /// Checks to see whether the file with the supplied entityID is a DescantGraph
         /// </summary>
-        /// <param name="instanceID">The instanceID of the file being checked</param>
+        /// <param name="entityID">The entityID of the file being checked</param>
         /// <returns>Whether the file is a DescantGraph</returns>
-        static bool IsDescantGraphFile(int instanceID)
+        static bool IsDescantGraphFile(EntityId entityID)
         {
-            return GetAssetFromInstanceID<DescantGraph>(instanceID) != null;
+            return GetAssetFromEntityID<DescantGraph>(entityID) != null;
         }
         
         /// <summary>
@@ -44,7 +44,7 @@ namespace Descant.Editor
         static void EditGraphFile()
         {
             EditorWindow.GetWindow<DescantEditor>("Descant Graph Editor").Load(
-                GetAssetFromInstanceID<DescantGraph>(Selection.activeObject.GetInstanceID()));
+                GetAssetFromEntityID<DescantGraph>(Selection.activeObject.GetEntityId()));
         }
  
         /// <summary>
@@ -52,7 +52,7 @@ namespace Descant.Editor
         /// </summary>
         /// <returns>Whether the selected file is a Descant Graph file</returns>
         [MenuItem("Assets/Edit Descant Graph", true)]
-        static bool ConfirmEditGraphFile() => IsDescantGraphFile(Selection.activeObject.GetInstanceID());
+        static bool ConfirmEditGraphFile() => IsDescantGraphFile(Selection.activeObject.GetEntityId());
     }
 }
 #endif
