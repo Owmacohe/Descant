@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace Descant.Runtime
@@ -13,6 +14,7 @@ namespace Descant.Runtime
     public class DescantDialogueUI : MonoBehaviour
     {
         [SerializeField, Tooltip("Whether to display Debug.Log messages from Log Components")] bool verbose = true;
+        [SerializeField, Tooltip("The input action used to skip the typewriter and/or advance to the next dialogue")] InputActionReference skipDialogueAction;
         
         [Header("Player")]
         [SerializeField, Tooltip("The parent UI object for the player's choices (ideally a LayoutGroup)")] Transform choices;
@@ -38,6 +40,7 @@ namespace Descant.Runtime
         string targetTypewriterText; // The full text that the typewriter is typing out
         int typewriterIndex; // The index in the target text that the typewriter is currently at
         float currentTypewriterSpeed; // The current speed that the typewriter is typing at
+        bool startedTypewriterThisFrame; // Whether the typewriter has started typing this frame
 
         [Header("Callbacks")]
         
@@ -127,11 +130,11 @@ namespace Descant.Runtime
         {
             if (dialogueController.HasEnded && !hasEnded) EndDialogue(); // Constantly checking to see if the dialogue has ended
 
-            if (Input.GetButtonDown("Fire1"))
+            if (skipDialogueAction.action.WasPerformedThisFrame() && !startedTypewriterThisFrame)
             {
                 if (typing)
                 {
-                    currentTypewriterSpeed *= 10;
+                    currentTypewriterSpeed = dialogueController.TypewriterSpeed * 10;
                 }
                 // Advancing the dialogue when the player clicks (if it's waiting for that)
                 else if (waitForClick)
@@ -140,6 +143,8 @@ namespace Descant.Runtime
                     else DisplayNode();
                 }
             }
+
+            startedTypewriterThisFrame = false;
         }
 
         #region Node processing
@@ -287,6 +292,7 @@ namespace Descant.Runtime
         void StartTypewriter(string text, DescantActor npc)
         {
             typing = true;
+            startedTypewriterThisFrame = true;
 
             currentTypewriterSpeed = dialogueController.TypewriterSpeed;
             

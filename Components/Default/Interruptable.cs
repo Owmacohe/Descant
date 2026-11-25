@@ -3,14 +3,14 @@
 using System;
 using UnityEngine;
 using Descant.Utilities;
+using UnityEngine.InputSystem;
 
 namespace Descant.Components
 {
     [Serializable, MaxQuantity(float.PositiveInfinity), NodeType(DescantNodeType.Response)]
     public class Interruptable : DescantComponent
     {
-        [ParameterGroup("Keys/buttons to check")] public string KeyCode;
-        [ParameterGroup("Keys/buttons to check")] public string ButtonName;
+        [ParameterGroup("Keys/buttons to check")] public InputActionReference InputReference;
         
         [ParameterGroup("Tag of object to find")] public string ObjectTag;
         [ParameterGroup("Script to find")] public string ScriptName;
@@ -19,8 +19,7 @@ namespace Descant.Components
 
         public override bool Update()
         {
-            bool interrupted = (KeyCode != "" && Input.GetKeyDown(UnityEngine.KeyCode.A)) ||
-                               (ButtonName != "" && Input.GetButtonDown(ButtonName));
+            bool interrupted = InputReference.action.WasPerformedThisFrame();
 
             if (interrupted && ScriptName != "" && MethodName != "")
             {

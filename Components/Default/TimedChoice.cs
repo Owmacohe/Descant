@@ -1,6 +1,7 @@
 ﻿// Please see https://omch.tech/descant/#timedchoice for documentation
 
 using System;
+using System.Linq;
 using UnityEngine;
 using Descant.Utilities;
 using Object = UnityEngine.Object;
@@ -32,7 +33,7 @@ namespace Descant.Components
         {
             float percentage = (UnityEngine.Time.time - startTime) / Time;
             
-            foreach (var i in Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None))
+            foreach (var i in Object.FindObjectsByType(typeof(MonoBehaviour)).Select(o => (MonoBehaviour)o))
             {
                 if (ScriptName != "")
                 {

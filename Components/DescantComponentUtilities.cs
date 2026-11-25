@@ -179,7 +179,7 @@ namespace Descant.Components
         {
             if (objectTag == "")
             {
-                foreach (var i in Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None))
+                foreach (var i in Object.FindObjectsByType(typeof(MonoBehaviour)).Select(o => (MonoBehaviour)o))
                     if (InvokeMethod(component, i, scriptName, methodName, parameter))
                         return true;   
             }

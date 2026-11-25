@@ -3,6 +3,7 @@
     "rootNamespace": "",
     "references": [
         "Unity.TextMeshPro",
+        "Unity.InputSystem",
         "omch.descant.editor",
         "omch.descant.components",
         "omch.descant.utilities"
